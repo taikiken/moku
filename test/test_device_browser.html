@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>devices</title>
+<link href="//cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.css" rel="stylesheet" />
+  <style>
+    .container {
+      padding: 10px;
+      border: 1px solid #333;
+      margin-bottom: 16px;
+    }
+  </style>
+</head>
+<body>
+<div id="ua" class="container"></div>
+<div id="app" class="container"></div>
+<div id="result" class="container"></div>
+<div id="mocha"></div>
+<script src="//cdn.rawgit.com/jquery/jquery/2.1.4/dist/jquery.min.js"></script>
+<script src="//cdn.rawgit.com/Automattic/expect.js/0.3.1/index.js"></script>
+<script src="//cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.js"></script>
+<script src="//chaijs.com/chai.js"></script>
+<script src="../dist/moku.bundle.js" charset="utf-8"></script>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+<script>
+  // mochaの機能を呼び出します。ここでは、BDDとTDDを使用します。
+  mocha.setup('bdd');
+  mocha.setup('tdd');
+  var assert = chai.assert;
+  // expectの機能を読み込み
+  var expect = chai.expect;
+  // shouldの機能を読み込み
+  chai.Should();
+</script>
+<script type="text/babel">
+const ua = document.getElementById('ua');
+const app = document.getElementById('app');
+const result = document.getElementById('result');
+
+const devices = MOKU.device.devices;
+ua.innerHTML = devices.ua;
+app.innerHTML = devices.app;
+// ----
+const output = (title, browsers) => {
+  result.innerHTML += `<h1>${title}</h1>`;
+  Object.keys(browsers).map((key) => {
+    const value = browsers[key];
+    const bool = typeof value === 'boolean' ? value : false;
+    let start = '';
+    let end = '';
+    if (bool || (key === 'version' && value >= 0)) {
+      start = '<strong style="color: red;">';
+      end = '</strong>';
+    }
+    result.innerHTML += `${start}${key}: ${browsers[key]}${end}<br>`;
+  });
+  result.innerHTML += '<p>-----------------------------------------------</p>';
+};
+
+output('Chrome', MOKU.device.browser.Chrome.browsers());
+output('CriOS', MOKU.device.browser.CriOS.browsers());
+output('Edge', MOKU.device.browser.Edge.browsers());
+output('Firefox', MOKU.device.browser.Firefox.browsers());
+output('FxiOS', MOKU.device.browser.FxiOS.browsers());
+output('IE', MOKU.device.browser.IE.browsers());
+output('Safari', MOKU.device.browser.Safari.browsers());
+
+</script>
+<script>
+  mocha.checkLeaks();
+  mocha.globals(['jQuery']);
+  mocha.run();
+</script>
+</body>
+</html>

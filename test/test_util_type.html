@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Mocha</title>
+<link href="//cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.css" rel="stylesheet" />
+</head>
+<body>
+<div id="mocha"></div>
+<script src="//cdn.rawgit.com/jquery/jquery/2.1.4/dist/jquery.min.js"></script>
+<script src="//cdn.rawgit.com/Automattic/expect.js/0.3.1/index.js"></script>
+<script src="//cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.js"></script>
+<script src="//chaijs.com/chai.js"></script>
+<script src="../dist/moku.bundle.js" charset="utf-8"></script>
+<script>
+  // mochaの機能を呼び出します。ここでは、BDDとTDDを使用します。
+  mocha.setup('bdd');
+  mocha.setup('tdd');
+  var assert = chai.assert;
+  // expectの機能を読み込み
+  var expect = chai.expect;
+  // shouldの機能を読み込み
+  chai.Should();
+</script>
+<script>
+  var MOKU = window.MOKU;
+  var util = MOKU.util;
+  var Type = util.Type;
+
+  //  Type.method
+  describe('#Type.method, type check', function() {
+    it("null is not function", function() {
+      expect(Type.method(null)).to.eql(false);
+    });
+    it("undefined is not function", function() {
+      expect(Type.method(undefined)).to.eql(false);
+    });
+    it("1 is not function", function() {
+      expect(Type.method(1)).to.eql(false);
+    });
+    it("'a' is not function", function() {
+      expect(Type.method('a')).to.eql(false);
+    });
+    it("true is not function", function() {
+      expect(Type.method(true)).to.eql(false);
+    });
+    it("Type.method is function", function() {
+      expect(Type.method(Type.method)).to.eql(true);
+    });
+  });
+
+  // Type.exist
+  describe('#Type.exist, type check', function() {
+    it("null is not exist", function() {
+      expect(Type.exist(null)).to.eql(false);
+    });
+    it("undefined is not exist", function() {
+      expect(Type.exist(undefined)).to.eql(false);
+    });
+    it("'' is not exist", function() {
+      expect(Type.exist('')).to.eql(false);
+    });
+    it("0 is not exist", function() {
+      expect(Type.exist(0)).to.eql(false);
+    });
+    it("false is not exist", function() {
+      expect(Type.exist(false)).to.eql(false);
+    });
+    it("true is exist", function() {
+      expect(Type.exist(true)).to.be.true;
+    });
+    it("'a' is exist", function() {
+      expect(Type.exist('a')).to.be.true;
+    });
+    it("1 is exist", function() {
+      expect(Type.exist(1)).to.be.true;
+    });
+  });
+
+  // Type.number
+  describe('#Type.int, type check', function() {
+    it("1 is number", function() {
+      expect(Type.number(1)).to.be.true;
+    });
+    it("1.0 is number", function() {
+      expect(Type.number(1.0)).to.be.true;
+    });
+    it("2 is number", function() {
+      expect(Type.number(2)).to.be.true;
+    });
+    it("-3.1 is number", function() {
+      expect(Type.number(-3.1)).to.be.true;
+    });
+    it("'1' is not number", function() {
+      expect(Type.number('1')).to.be.false;
+    });
+  });
+
+  // Type.int
+  describe('#Type.number, type check', function() {
+    it("1 is int", function() {
+      expect(Type.int(1)).to.be.true;
+    });
+    it("'1' is not int", function() {
+      expect(Type.int('1')).to.be.false;
+    });
+  });
+
+  // Type.string
+  describe('#Type.string, type check', function() {
+    it("1 is not string", function() {
+      expect(Type.string(1)).to.be.false;
+    });
+    it("'1' is string", function() {
+      expect(Type.string('1')).to.be.true;
+    });
+  });
+
+  // Type.array
+  describe('#Type.array, type check', function() {
+    it("1 is not array", function() {
+      expect(Type.array(1)).to.be.false;
+    });
+    it("'1' is not array", function() {
+      expect(Type.array('1')).to.be.false;
+    });
+    it("{} is not array", function() {
+      expect(Type.array({})).to.be.false;
+    });
+    it("[] is array", function() {
+      expect(Type.array([])).to.be.true;
+    });
+  });
+
+  // Type.extension
+  describe('#Type.extension', function() {
+    it("moku.js is js", function() {
+      expect(Type.extension('moku.js')).to.eql('js');
+    });
+    it("moku.min.js js js", function() {
+      expect(Type.extension('moku.min.js')).to.eql('js');
+    });
+    it("moku.min.abc.js js js", function() {
+      expect(Type.extension('moku.min.abc.js')).to.eql('js');
+    });
+    it(".js is js", function() {
+      expect(Type.extension('.js')).to.eql('js');
+    });
+    it("js is ''", function() {
+      expect(Type.extension('js')).to.eql('');
+    });
+  });
+</script>
+<script>
+  mocha.checkLeaks();
+  mocha.globals(['jQuery']);
+  mocha.run();
+</script>
+</body>
+</html>

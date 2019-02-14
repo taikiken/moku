@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Mocha</title>
+  <link href="//cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.css" rel="stylesheet" />
+</head>
+<body>
+<div id="mocha"></div>
+<script src="//cdn.rawgit.com/jquery/jquery/2.1.4/dist/jquery.min.js"></script>
+<script src="//cdn.rawgit.com/Automattic/expect.js/0.3.1/index.js"></script>
+<script src="//cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.js"></script>
+<script src="http://chaijs.com/chai.js"></script>
+<script src="../dist/moku.bundle.js" charset="utf-8"></script>
+<script>
+  // mochaの機能を呼び出します。ここでは、BDDとTDDを使用します。
+  mocha.setup('bdd');
+  mocha.setup('tdd');
+  var assert = chai.assert;
+  // expectの機能を読み込み
+  var expect = chai.expect;
+  // shouldの機能を読み込み
+  chai.Should();
+</script>
+<script>
+  var css = window.MOKU.css;
+  var Patterns = css.Patterns;
+
+  //  Patterns.match
+  describe('#Patterns.match', function() {
+    it("Patterns.match('padding') is true", function() {
+      expect(Patterns.match('padding')).to.eql(true);
+    });
+    it("Patterns.match('border-color') is true", function() {
+      expect(Patterns.match('border-color')).to.eql(true);
+    });
+    it("Patterns.match('font') is false", function() {
+      expect(Patterns.match('font')).to.eql(false);
+    });
+  });
+
+  //  Patterns.get
+  describe('#Patterns.get', function() {
+    it("Patterns.get('border-style') is ['borderTopStyle', 'borderRightStyle', 'borderBottomStyle', 'borderLeftStyle']", function() {
+      expect(Patterns.get('border-style')).to.eql(['borderTopStyle', 'borderRightStyle', 'borderBottomStyle', 'borderLeftStyle']);
+    });
+  });
+
+</script>
+<script>
+  mocha.checkLeaks();
+  mocha.globals(['jQuery']);
+  mocha.run();
+</script>
+</body>
+</html>

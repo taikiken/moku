@@ -1,0 +1,44 @@
+extends:
+  - "eslint:recommended"
+  # https://github.com/airbnb/javascript
+  # https://github.com/airbnb/javascript/blob/master/react
+  # eslint: recommend + airbnb JavaScript type guide
+#  - "airbnb"
+rules:
+  # http://eslint.org/docs/rules/indent
+  # space 2
+  indent:
+    - 2
+    - 2
+    - SwitchCase: 1
+
+  # http://eslint.org/docs/rules/require-jsdoc
+  # JSDoc 必須
+  require-jsdoc:
+    - 1
+    - require: {
+        FunctionDeclaration: true,
+        MethodDefinition: true,
+        ClassDeclaration: true,
+      }
+
+  # http://eslint.org/docs/rules/no-console
+  # console.warn, console.error は許可
+  no-console:
+    - 1
+    - allow:
+      - warn
+      - error
+      # redux.logger 使用する
+      - group
+      - info
+      - groupEnd
+
+  # comment は許可する
+  # http://eslint.org/docs/rules/max-len#ignorecomments
+  max-len:
+   - 1
+   - {
+      ignoreComments: true,
+      code: 100,
+     }

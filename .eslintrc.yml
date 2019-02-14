@@ -1,0 +1,10 @@
+parser: 'babel-eslint'
+#plugins: [
+#  'react',
+#  'jsx-a11y'
+#]
+env:
+  browser: true
+  node: true
+  es6: true
+extends: './eslint.extends.yml'
