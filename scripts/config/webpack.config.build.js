@@ -2,7 +2,7 @@
 
 const webpack = require('webpack');
 
-const pkg = require('../../_package');
+const pkg = require('../../package');
 const settings = require('../settings');
 
 const mode = 'production';

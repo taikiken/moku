@@ -124,9 +124,13 @@ export default class EventDispatcher {
 
     // @type {Object} - events.type:String: [listener:Function...]
     const { listeners } = this;
-    if (!Type.has(listeners, type)) {
-      // listener.type が存在しない
-      // 処理しない
+    // if (!Type.has(listeners, type)) {
+    //   // listener.type が存在しない
+    //   // 処理しない
+    //   return false;
+    // }
+    if (!Object.keys(listeners).includes(type)) {
+      // listener.type が存在しない - 処理しない
       return false;
     }
 
@@ -190,14 +194,19 @@ export default class EventDispatcher {
     // @type {Object} - events.type:String: [listener:Function...]
     const { listeners } = this;
 
-    if (!Type.has(listeners, type)) {
-      // listener.type が存在しない
-      // 処理しない
+    // if (!Type.has(listeners, type)) {
+    //   // listener.type が存在しない
+    //   // 処理しない
+    //   return false;
+    // }
+    if (!Object.keys(listeners).includes(type)) {
+      // listener.type が存在しない - 処理しない
       return false;
     }
 
     // @type {boolean} - 存在チェック
-    return listeners[type].indexOf(listener) !== -1;
+    // return listeners[type].indexOf(listener) !== -1;
+    return listeners[type].includes(listener);
   }
 
   /**
@@ -212,9 +221,13 @@ export default class EventDispatcher {
     // @type {string} - event type
     const { type } = events;
 
-    if (!Type.has(listeners, type)) {
-      // listener.type が存在しない
-      // 処理しない
+    // if (!Type.has(listeners, type)) {
+    //   // listener.type が存在しない
+    //   // 処理しない
+    //   return false;
+    // }
+    if (!Object.keys(listeners).includes(type)) {
+      // listener.type が存在しない - 処理しない
       return false;
     }
 
