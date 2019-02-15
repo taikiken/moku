@@ -33,15 +33,9 @@ import Type from '../util/Type';
 // const Request = self.Request;
 
 /**
- * <p>fetch API を使用し Ajax request を行います</p>
- * <p>Safari, IE はサポートしていないので polyfill ライブラリを使用します<br>
- * また、 fetch は Promise も必要としています。</p>
- *
- * ```
- * $ bower install fetch
- *
- * $ bower install es6-promise
- * ```
+ * fetch API を使用し Ajax request を行います、
+ * Safari, IE はサポートしていないので polyfill ライブラリを使用します。
+ * また、 fetch は Promise も必要としています。
  *
  * thunk friendly - ES2017 async / await するために
  * - fetch Promise を返すように変更
@@ -49,6 +43,7 @@ import Type from '../util/Type';
  * - fetch.then から result / error を return
  *
  * [caution] resolve / reject を使用しない場合は {@link AjaxThunk} を使用する方が効率的です
+ *
  * @example
  * const ajax = new Ajax();
  * // async / await 1
@@ -92,68 +87,6 @@ import Type from '../util/Type';
  */
 export default class Ajax {
   // ----------------------------------------
-  // STATIC METHOD
-  // ----------------------------------------
-  /**
-   * <p>fetch API へ送るオプションを作成します</p>
-   *
-   * 必ず設定します
-   * - method: GET, POST, PUT, DELETE...etc
-   * - cache: 'no-cache'
-   * - credentials: 'same-origin'
-   *
-   * headers, formData は存在すれば option に追加されます
-   *
-   * ```
-   * var myRequest = new Request(input, init);
-   * ```
-   * <blockquote>
-   * リクエストに適用するカスタム設定を含むオプションオブジェクト。設定可能なオプションは：
-   *   method：リクエストメソッド、たとえば GET、POST。
-   *   headers：Headers オブジェクトか ByteString を含む、リクエストに追加するヘッダー。
-   *   body： リクエストに追加するボディー：Blob か BufferSource、FormData、URLSearchParams、USVString オブジェクトが使用できる。リクエストが GET か HEAD メソッドを使用している場合、ボディーを持てないことに注意。
-   *   mode：リクエストで使用するモード。たとえば、cors か no-cors、same-origin。既定値は cors。Chrome では、47 以前は no-cors が既定値であり、 same-origin は 47 から使用できるようになった。
-   *   credentials：リクエストで使用するリクエスト credential：omit か same-origin、include が使用できる。 既定値は omit。Chrome では、47 以前は same-origin が既定値であり、include は 47 から使用できるようになった。
-   *   cache：リクエストで使用する cache モード：default か no-store、reload、no-cache、force-cache、only-if-cached が設定できる。
-   *   redirect：使用するリダイレクトモード：follow か error、manual が使用できる。Chrome では、47 以前は既定値が follow であり、manual は 47 から使用できるようになった。
-   *   referrer：no-referrer か client、URL を指定する USVString。既定値は client。
-   * </blockquote>
-   * @param {string|USVString|Request} path Ajax request path
-   * @param {string} method GET, POST, PUT, DELETE...etc request method
-   * @param {Headers|Object|null} headers Headers option
-   * @param {FormData|null} formData 送信フォームデータオプション
-   * @returns {*|Request} fetch API へ送る Request instance を返します
-   *
-   * @see https://developers.google.com/web/updates/2015/03/introduction-to-fetch
-   * @see https://developer.mozilla.org/ja/docs/Web/API/Request
-   * @see https://developer.mozilla.org/ja/docs/Web/API/Request/Request
-   */
-  option(path, method, headers, formData) {
-    // request option
-    const option = Object.assign({}, this.props);
-    // const option = Object.create({
-    //   method,
-    //   cache: 'no-cache',
-    //   // https://developers.google.com/web/updates/2015/03/introduction-to-fetch
-    //   credentials: 'same-origin',
-    // });
-    option.method = method;
-
-    // headers option
-    if (Type.exist(headers)) {
-      option.headers = headers;
-    }
-
-    // body へ FormData をセット
-    if (Type.exist(formData)) {
-      option.body = formData;
-    }
-
-    // https://developer.mozilla.org/ja/docs/Web/API/Request
-    return new Request(path, option);
-  }
-
-  // ----------------------------------------
   // CONSTRUCTOR
   // ----------------------------------------
   /**
@@ -182,7 +115,7 @@ export default class Ajax {
      * - method: GET|POST|PUT|DELETE...
      * - cache: no-cache
      * - credentials: same-origin
-     * @type {{method: ?string, cache: string, credentials: string}}
+     * @type {RequestInit|undefined|{method: ?string, cache: string, credentials: string}}
      * @see https://developer.mozilla.org/ja/docs/Web/API/Request/Request
      */
     this.props = {
@@ -197,9 +130,63 @@ export default class Ajax {
   // METHOD
   // ----------------------------------------
   /**
-   * <p>Ajax request 開始します</p>
-   * <p>request 可能 / 不可能 flag が false の時は実行しません<br>
-   * true の時は false にしリクエストを開始します</p>
+   * fetch API へ送るオプションを作成します
+   *
+   * 必ず設定します
+   * - method: GET, POST, PUT, DELETE...etc
+   * - cache: 'no-cache'
+   * - credentials: 'same-origin'
+   *
+   * headers, formData は存在すれば option に追加されます
+   *
+   * ```
+   * var myRequest = new Request(input, init);
+   * ```
+   * <blockquote>
+   * リクエストに適用するカスタム設定を含むオプションオブジェクト。設定可能なオプションは：
+   *   method：リクエストメソッド、たとえば GET、POST。
+   *   headers：Headers オブジェクトか ByteString を含む、リクエストに追加するヘッダー。
+   *   body： リクエストに追加するボディー：Blob か BufferSource、FormData、URLSearchParams、USVString オブジェクトが使用できる。リクエストが GET か HEAD メソッドを使用している場合、ボディーを持てないことに注意。
+   *   mode：リクエストで使用するモード。たとえば、cors か no-cors、same-origin。既定値は cors。Chrome では、47 以前は no-cors が既定値であり、 same-origin は 47 から使用できるようになった。
+   *   credentials：リクエストで使用するリクエスト credential：omit か same-origin、include が使用できる。 既定値は omit。Chrome では、47 以前は same-origin が既定値であり、include は 47 から使用できるようになった。
+   *   cache：リクエストで使用する cache モード：default か no-store、reload、no-cache、force-cache、only-if-cached が設定できる。
+   *   redirect：使用するリダイレクトモード：follow か error、manual が使用できる。Chrome では、47 以前は既定値が follow であり、manual は 47 から使用できるようになった。
+   *   referrer：no-referrer か client、URL を指定する USVString。既定値は client。
+   * </blockquote>
+   * @param {string|*|RequestInfo} path Ajax request path
+   * @param {string} method GET, POST, PUT, DELETE...etc request method
+   * @param {Headers|Object|null} headers Headers option
+   * @param {FormData|null} formData 送信フォームデータオプション
+   * @returns {*|Request} fetch API へ送る Request instance を返します
+   *
+   * @see https://developers.google.com/web/updates/2015/03/introduction-to-fetch
+   * @see https://developer.mozilla.org/ja/docs/Web/API/Request
+   * @see https://developer.mozilla.org/ja/docs/Web/API/Request/Request
+   */
+  option(path, method, headers, formData) {
+    // request option
+    // const option = Object.assign({}, this.props);
+    const option = {...this.props};
+    option.method = method;
+
+    // headers option
+    if (Type.exist(headers)) {
+      option.headers = headers;
+    }
+
+    // body へ FormData をセット
+    if (Type.exist(formData)) {
+      option.body = formData;
+    }
+
+    // https://developer.mozilla.org/ja/docs/Web/API/Request
+    return new Request(path, option);
+  }
+
+  /**
+   * Ajax request 開始します、
+   * request 可能 / 不可能 flag が false の時は実行しません。
+   * true の時は false にしリクエストを開始します
    *
    * from v0.3.4
    * - resolve, reject 関数確認後実行します

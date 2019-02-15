@@ -32,9 +32,9 @@ export default class Freeze {
    * @returns {void}
    */
   static start() {
-    window.addEventListener('touchstart', Freeze.onScroll, false);
-    window.addEventListener('touchmove', Freeze.onScroll, false);
-    window.addEventListener('touchend', Freeze.onScroll, false);
+    // window.addEventListener('touchstart', Freeze.onScroll, false);
+    // window.addEventListener('touchmove', Freeze.onScroll, false);
+    // window.addEventListener('touchend', Freeze.onScroll, false);
     window.addEventListener('scroll', Freeze.onScroll, false);
     document.addEventListener('wheel', Freeze.onScroll, false);
     document.addEventListener('mousewheel', Freeze.onScroll, false);
@@ -46,9 +46,9 @@ export default class Freeze {
    * @returns {void}
    */
   static stop() {
-    window.removeEventListener('touchstart', Freeze.onScroll);
-    window.removeEventListener('touchmove', Freeze.onScroll);
-    window.removeEventListener('touchend', Freeze.onScroll);
+    // window.removeEventListener('touchstart', Freeze.onScroll);
+    // window.removeEventListener('touchmove', Freeze.onScroll);
+    // window.removeEventListener('touchend', Freeze.onScroll);
     window.removeEventListener('scroll', Freeze.onScroll);
     document.removeEventListener('wheel', Freeze.onScroll);
     document.removeEventListener('mousewheel', Freeze.onScroll);

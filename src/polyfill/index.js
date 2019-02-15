@@ -10,19 +10,13 @@
  *
  */
 
-// babel polyfill
-// import './method/babel';
-
-// promise
-import './method/promise';
-
 // fetch
 import './method/fetch';
 
-// import animationFrame from './method/animationFrame';
+import animationFrame from './method/animationFrame';
 
 // ------------------------------------------------
-// animationFrame();
+animationFrame();
 
 // /**
 //  * 以下全てを読み込みます、一部だけ必要な時は個別に `import` します

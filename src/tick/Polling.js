@@ -45,6 +45,36 @@ export default class Polling extends EventDispatcher {
   static UPDATE = 'pollingUpdate';
 
   // ----------------------------------------
+  // CALLBACK
+  // ----------------------------------------
+  /**
+   * Cycle.UPDATE event handler, polling を計測しイベントを発火するかを判断します
+   *
+   * @param {CycleEvents} events Cycle event object
+   * @listens {Cycle.UPDATE} Cycle.UPDATE が発生すると実行されます
+   * @returns {boolean} Polling.UPDATE event が発生すると true を返します
+   */
+  onUpdate = (events) => {
+    // 現在時間
+    // @type {number}
+    const present = Date.now();
+    // @type {number} - interval 間隔
+    // const interval = this.interval;
+    // @type {number} - 開始時間
+    const { begin, interval } = this;
+    // 現在時間 が interval より大きくなったか
+    if ((present - begin) >= interval) {
+      // event 発火
+      this.fire(this.updateEvents(begin, present, events));
+      // 開始時間を update
+      this.begin = present;
+      // event 発生
+      return true;
+    }
+    return false;
+  };
+
+  // ----------------------------------------
   // CONSTRUCTOR
   // ----------------------------------------
   /**
@@ -63,11 +93,11 @@ export default class Polling extends EventDispatcher {
      * @type {number}
      */
     this.interval = interval;
-    /**
-     * bound onUpdate, Cycle.UPDATE event handler
-     * @returns {function}
-     */
-    this.onUpdate = this.onUpdate.bind(this);
+    // /**
+    //  * bound onUpdate, Cycle.UPDATE event handler
+    //  * @returns {function}
+    //  */
+    // this.onUpdate = this.onUpdate.bind(this);
     /**
      * Events instance - Polling.UPDATE Events object
      * @type {Events}
@@ -115,33 +145,6 @@ export default class Polling extends EventDispatcher {
   stop() {
     this.cycle.off(Cycle.UPDATE, this.onUpdate);
     return true;
-  }
-
-  /**
-   * Cycle.UPDATE event handler, polling を計測しイベントを発火するかを判断します
-   *
-   * @param {CycleEvents} events Cycle event object
-   * @listens {Cycle.UPDATE} Cycle.UPDATE が発生すると実行されます
-   * @returns {boolean} Polling.UPDATE event が発生すると true を返します
-   */
-  onUpdate(events) {
-    // 現在時間
-    // @type {number}
-    const present = Date.now();
-    // @type {number} - interval 間隔
-    // const interval = this.interval;
-    // @type {number} - 開始時間
-    const { begin, interval } = this;
-    // 現在時間 が interval より大きくなったか
-    if ((present - begin) >= interval) {
-      // event 発火
-      this.fire(this.updateEvents(begin, present, events));
-      // 開始時間を update
-      this.begin = present;
-      // event 発生
-      return true;
-    }
-    return false;
   }
 
   // -----

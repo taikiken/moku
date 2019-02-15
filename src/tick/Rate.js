@@ -126,6 +126,25 @@ export default class Rate extends Polling {
    */
   static UPDATE = 'rateUpdate';
 
+  /**
+   * {@link Cycle}.UPDATE event handler
+   *
+   * count property を `+1` 加算後設定 rate で割り算し余りが `0` の時にイベント Rate.UPDATE を発生させます
+   * @param {CycleEvents} events Polling event object
+   * @returns {boolean} Rate.UPDATE event が発生すると true を返します
+   */
+  onUpdate = (events) => {
+    // 余りが 0 の時にイベントを発火します
+    this.count += 1;
+    const reminder = this.count % this.rate;
+    if (reminder === 0) {
+      this.count = 0;
+      this.fire(this.updateEvents(0, 0, events));
+      return true;
+    }
+    return false;
+  };
+
   // ----------------------------------------
   // CONSTRUCTOR
   // ----------------------------------------
@@ -216,24 +235,5 @@ export default class Rate extends Polling {
   change(rate) {
     this.setRate(rate);
     return this.start();
-  }
-
-  /**
-   * {@link Cycle}.UPDATE event handler
-   *
-   * count property を `+1` 加算後設定 rate で割り算し余りが `0` の時にイベント Rate.UPDATE を発生させます
-   * @param {CycleEvents} events Polling event object
-   * @returns {boolean} Rate.UPDATE event が発生すると true を返します
-   */
-  onUpdate(events) {
-    // 余りが 0 の時にイベントを発火します
-    this.count += 1;
-    const reminder = this.count % this.rate;
-    if (reminder === 0) {
-      this.count = 0;
-      this.fire(this.updateEvents(0, 0, events));
-      return true;
-    }
-    return false;
   }
 }
