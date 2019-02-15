@@ -35,7 +35,7 @@ export default class Type {
 
   /**
    * 引数(target)が number かを調べます
-   * @param {*} target 調査対象
+   * @param {*|string} target 調査対象
    * @returns {boolean} 引数(target)が number かを調べ結果を返します、true: number
    */
   static number(target) {
@@ -99,7 +99,8 @@ export default class Type {
    * @returns {boolean} 存在する時は true を返します
    */
   static has(target, key) {
-    return Object.keys(target).indexOf(key) !== -1;
+    // return Object.keys(target).indexOf(key) !== -1;
+    return Object.keys(target).includes(key);
   }
 
   /**
