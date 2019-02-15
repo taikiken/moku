@@ -31,70 +31,6 @@ export default class Resizing extends Scrolling {
    */
   static UPDATE = 'resizingUpdate';
 
-  // ----------------------------------------
-  // CONSTRUCTOR
-  // ----------------------------------------
-  /**
-   * events instance を準備します
-   */
-  constructor() {
-    super();
-    // ------
-    /**
-     * bound onUpdate, Rate.UPDATE event handler
-     * @type {function}
-     */
-    this.onUpdate = this.onUpdate.bind(this);
-    /**
-     * Resizing event を準備します
-     * @type {ScrollEvents}
-     */
-    this.events = new ResizingEvents(Resizing.UPDATE, this, this);
-    // console.log('Resizing events', this.events);
-    /**
-     * document.body size - clientWidth / clientHeight
-     * @type {{width: number, height: number}}
-     */
-    this.body = {
-      width: -1,
-      height: -1,
-    };
-    /**
-     * window innerWidth / innerHeight
-     * @type {{width: number, height: number}}
-     */
-    this.window = {
-      width: -1,
-      height: -1,
-    };
-    /**
-     * 前回スクロールトップ値
-     * @type {number}
-     */
-    this.previous = -1;
-  }
-
-  // ----------------------------------------
-  // METHOD
-  // ----------------------------------------
-  /**
-   * 監視を開始します
-   * - 常時監視します - document.body.onresize が作動しないため
-   * @returns {*} method chain 可能なように instance を返します
-   */
-  start() {
-    this.watch();
-    return this;
-  }
-
-  /**
-   * 監視を停止します
-   * @returns {*} method chain 可能なように instance を返します
-   */
-  stop() {
-    this.unwatch();
-    return this;
-  }
 
   /**
    * 指定 rate(fps) 毎にスクロール位置を scroll top 位置をもたせた Scrolling.UPDATE custom event を発火します
@@ -113,7 +49,7 @@ export default class Resizing extends Scrolling {
    *
    * @param {?Events} event {@link Rate.UPDATE} Events instance
    */
-  onUpdate(event) {
+  onUpdate = (event) => {
     // @type {number} - scroll top
     const y = Scroll.y();
     // @type {number} - previous scroll top
@@ -170,5 +106,70 @@ export default class Resizing extends Scrolling {
     // if (!changed) {
     //   this.unwatch();
     // }
+  };
+
+  // ----------------------------------------
+  // CONSTRUCTOR
+  // ----------------------------------------
+  /**
+   * events instance を準備します
+   */
+  constructor() {
+    super();
+    // ------
+    // /**
+    //  * bound onUpdate, Rate.UPDATE event handler
+    //  * @type {function}
+    //  */
+    // this.onUpdate = this.onUpdate.bind(this);
+    /**
+     * Resizing event を準備します
+     * @type {ScrollEvents}
+     */
+    this.events = new ResizingEvents(Resizing.UPDATE, this, this);
+    // console.log('Resizing events', this.events);
+    /**
+     * document.body size - clientWidth / clientHeight
+     * @type {{width: number, height: number}}
+     */
+    this.body = {
+      width: -1,
+      height: -1,
+    };
+    /**
+     * window innerWidth / innerHeight
+     * @type {{width: number, height: number}}
+     */
+    this.window = {
+      width: -1,
+      height: -1,
+    };
+    /**
+     * 前回スクロールトップ値
+     * @type {number}
+     */
+    this.previous = -1;
+  }
+
+  // ----------------------------------------
+  // METHOD
+  // ----------------------------------------
+  /**
+   * 監視を開始します
+   * - 常時監視します - document.body.onresize が作動しないため
+   * @returns {*} method chain 可能なように instance を返します
+   */
+  start() {
+    this.watch();
+    return this;
+  }
+
+  /**
+   * 監視を停止します
+   * @returns {*} method chain 可能なように instance を返します
+   */
+  stop() {
+    this.unwatch();
+    return this;
   }
 }

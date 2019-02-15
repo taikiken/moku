@@ -51,6 +51,64 @@ export default class Swipe extends EventDispatcher {
   static DRAG = 'drag';
 
   // ----------------------------------------
+  // CALLBACK
+  // ----------------------------------------
+  /**
+   * touchstart - event handler
+   */
+  onStart = () => {
+    this.dispose();
+    this.reset();
+    // ----
+    const { touching } = this;
+    touching.on(Touching.MOVE, this.onMove);
+    touching.on(Touching.END, this.onEnd);
+    touching.on(Touching.CANCEL, this.onCancel);
+  };
+
+  /**
+   * touchmove {@link Touching}.MOVE - event handler
+   * @param {TouchingEvents} events events.between.y で移動量を計算します
+   */
+  onMove = (events) => {
+    // 移動量を累積する
+    this.dragging += events.between.x;
+    this.drag(this.dragging);
+    if (this.swipeCheck()) {
+      this.dispose();
+      this.reset();
+    }
+  };
+
+  /**
+   * touchend {@link Touching}.END - event handler
+   * @param {TouchingEvents} events events.between.y で移動量を計算します
+   */
+  onEnd = (events) => {
+    // 移動量を累積する
+    this.dragging += events.between.x;
+    this.drag(this.dragging);
+    // ---
+    const move = this.swipeCheck();
+    if (!move) {
+      this.dispatch(this.events.end);
+    }
+    // ---
+    this.dispose();
+    this.reset();
+  };
+
+  /**
+   * touchend {@link Touching}.CANCEL - event handler
+   * - 処理を中止します
+   */
+  onCancel = () => {
+    this.dispose();
+    this.reset();
+    this.dispatch(this.events.end);
+  };
+
+  // ----------------------------------------
   // CONSTRUCTOR
   // ----------------------------------------
   /**
@@ -77,26 +135,26 @@ export default class Swipe extends EventDispatcher {
      * @type {number}
      */
     this.marginal = marginal;
-    /**
-     * bound onStart - touchstart event handler
-     * @type {function}
-     */
-    this.onStart = this.onStart.bind(this);
-    /**
-     * bound onMove - touchmove event handler
-     * @type {function}
-     */
-    this.onMove = this.onMove.bind(this);
-    /**
-     * bound onEnd - touchend event handler
-     * @type {function}
-     */
-    this.onEnd = this.onEnd.bind(this);
-    /**
-     * bound onCancel - touchcancel event handler
-     * @type {function}
-     */
-    this.onCancel = this.onCancel.bind(this);
+    // /**
+    //  * bound onStart - touchstart event handler
+    //  * @type {function}
+    //  */
+    // this.onStart = this.onStart.bind(this);
+    // /**
+    //  * bound onMove - touchmove event handler
+    //  * @type {function}
+    //  */
+    // this.onMove = this.onMove.bind(this);
+    // /**
+    //  * bound onEnd - touchend event handler
+    //  * @type {function}
+    //  */
+    // this.onEnd = this.onEnd.bind(this);
+    // /**
+    //  * bound onCancel - touchcancel event handler
+    //  * @type {function}
+    //  */
+    // this.onCancel = this.onCancel.bind(this);
     /**
      * X 移動量を累積加算します
      * @type {number}
@@ -121,61 +179,6 @@ export default class Swipe extends EventDispatcher {
   // ----------------------------------------
   // METHOD
   // ----------------------------------------
-  /**
-   * touchstart - event handler
-   */
-  onStart() {
-    this.dispose();
-    this.reset();
-    // ----
-    const { touching } = this;
-    touching.on(Touching.MOVE, this.onMove);
-    touching.on(Touching.END, this.onEnd);
-    touching.on(Touching.CANCEL, this.onCancel);
-  }
-
-  /**
-   * touchmove {@link Touching}.MOVE - event handler
-   * @param {TouchingEvents} events events.between.y で移動量を計算します
-   */
-  onMove(events) {
-    // 移動量を累積する
-    this.dragging += events.between.x;
-    this.drag(this.dragging);
-    if (this.swipeCheck()) {
-      this.dispose();
-      this.reset();
-    }
-  }
-
-  /**
-   * touchend {@link Touching}.END - event handler
-   * @param {TouchingEvents} events events.between.y で移動量を計算します
-   */
-  onEnd(events) {
-    // 移動量を累積する
-    this.dragging += events.between.x;
-    this.drag(this.dragging);
-    // ---
-    const move = this.swipeCheck();
-    if (!move) {
-      this.dispatch(this.events.end);
-    }
-    // ---
-    this.dispose();
-    this.reset();
-  }
-
-  /**
-   * touchend {@link Touching}.CANCEL - event handler
-   * - 処理を中止します
-   */
-  onCancel() {
-    this.dispose();
-    this.reset();
-    this.dispatch(this.events.end);
-  }
-
   /**
    * x 方向閾値(`marginal`)超えているかをチェックします
    * - 超えているときは swipe 方向を check し `swipe` event を発火します

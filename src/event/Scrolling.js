@@ -40,6 +40,69 @@ export default class Scrolling extends EventDispatcher {
   static UPDATE = 'scrollingUpdate';
 
   // ---------------------------------------------------
+  //  CALLBACK
+  // ---------------------------------------------------
+  /**
+   * 指定 rate(fps) 毎 scroll top 位置をもたせた Scrolling.UPDATE custom event を発火します
+   *
+   * 下記のプロパティをイベント・インスタンスに追加します
+   *
+   * - original {Events} - Rate Events instance
+   * - y {number} - scroll top
+   * - height {number} - window height
+   * - width {number} - window width
+   * - bottom {number} - window bottom 位置 (y + height)
+   * - previous {number} - 前回の scroll top
+   * - moving {number} - 前回からの移動量, 正: scroll down, 負: scroll up
+   * - wide {boolean} - width が 768 以上の時に true
+   * - changed {boolean} - scroll top が前回と変わっていたら true
+   *
+   * @param {?Events} event {@link Rate.UPDATE} Events instance
+   */
+  onUpdate = (event) => {
+    // @type {number} - scroll top
+    const y = Scroll.y();
+    // @type {ScrollEvents} - events
+    // const { events } = this;
+    // @type {number} - previous scroll top
+    const { previous, events } = this;
+    // @type {boolean} - 移動したかを表します,
+    const changed = event === null || previous !== y;
+    // 移動量 0 の時は rate 監視を停止する
+    if (!changed) {
+      this.unwatch();
+    }
+    // @type {number} - window height
+    const height = window.innerHeight;
+    // @type {number} - window width
+    const width = window.innerWidth;
+
+    // @type {Event} - Rate Events instance
+    events.original = event;
+    // @type {number} - scroll top
+    events.y = y;
+    // @type {number} - window height
+    events.height = height;
+    // @type {number} - window width
+    events.width = width;
+    // @type {number} - window bottom(y + height)
+    events.bottom = y + height;
+    // @type {boolean} - 移動したかを表します,
+    // event が null の時は強制発火なので移動量 0 （scroll top 位置に変更がない）でも changed を true にします
+    events.changed = changed;
+    // @type {number} - 前回の y 位置
+    events.previous = previous;
+    // @type {number} - 移動量 +: down, -: up
+    events.moving = y - previous;
+    // event fire
+    // console.log('Scrolling.scroll', events);
+    this.dispatch(events);
+
+    // save scroll top -> previous
+    this.previous = y;
+  };
+
+  // ---------------------------------------------------
   //  CONSTRUCTOR
   // ---------------------------------------------------
   /**
@@ -49,11 +112,11 @@ export default class Scrolling extends EventDispatcher {
     super();
     // @type {function}
     // const onUpdate = this.scroll.bind(this);
-    /**
-     * bound onUpdate, Rate.UPDATE event handler
-     * @type {function}
-     */
-    this.onUpdate = this.onUpdate.bind(this);
+    // /**
+    //  * bound onUpdate, Rate.UPDATE event handler
+    //  * @type {function}
+    //  */
+    // this.onUpdate = this.onUpdate.bind(this);
     // this.onUpdate = onUpdate;
     // @type {ScrollEvents}
     // const events = new ScrollEvents(Scrolling.UPDATE, this, this);
@@ -93,18 +156,6 @@ export default class Scrolling extends EventDispatcher {
     this.onNativeEvent = this.onNativeEvent.bind(this);
   }
 
-  // ----------------------------------------
-  // EVENT
-  // ----------------------------------------
-  // /**
-  //  * fps で発生するイベントを取得します
-  //  * @event SCROLL
-  //  * @returns {string} event, scrollingScroll を返します
-  //  * @default scrollingScroll
-  //  */
-  // static get UPDATE() {
-  //   return 'scrollingUpdate';
-  // }
   // ----------------------------------------
   // METHOD
   // ----------------------------------------
@@ -162,67 +213,6 @@ export default class Scrolling extends EventDispatcher {
     this.rate.off(Rate.UPDATE, this.onUpdate);
     this.watching = false;
     return this;
-  }
-
-  /**
-   * 指定 rate(fps) 毎にスクロール位置を<br>
-   * scroll top 位置をもたせた Scrolling.UPDATE custom event を発火します
-   *
-   * 下記のプロパティをイベント・インスタンスに追加します
-   *
-   * - original {Events} - Rate Events instance
-   * - y {number} - scroll top
-   * - height {number} - window height
-   * - width {number} - window width
-   * - bottom {number} - window bottom 位置 (y + height)
-   * - previous {number} - 前回の scroll top
-   * - moving {number} - 前回からの移動量, 正: scroll down, 負: scroll up
-   * - wide {boolean} - width が 768 以上の時に true
-   * - changed {boolean} - scroll top が前回と変わっていたら true
-   *
-   * @param {?Events} event {@link Rate.UPDATE} Events instance
-   */
-  onUpdate(event) {
-    // @type {number} - scroll top
-    const y = Scroll.y();
-    // @type {ScrollEvents} - events
-    // const { events } = this;
-    // @type {number} - previous scroll top
-    const { previous, events } = this;
-    // @type {boolean} - 移動したかを表します,
-    const changed = event === null || previous !== y;
-    // 移動量 0 の時は rate 監視を停止する
-    if (!changed) {
-      this.unwatch();
-    }
-    // @type {number} - window height
-    const height = window.innerHeight;
-    // @type {number} - window width
-    const width = window.innerWidth;
-
-    // @type {Event} - Rate Events instance
-    events.original = event;
-    // @type {number} - scroll top
-    events.y = y;
-    // @type {number} - window height
-    events.height = height;
-    // @type {number} - window width
-    events.width = width;
-    // @type {number} - window bottom(y + height)
-    events.bottom = y + height;
-    // @type {boolean} - 移動したかを表します,
-    // event が null の時は強制発火なので移動量 0 （scroll top 位置に変更がない）でも changed を true にします
-    events.changed = changed;
-    // @type {number} - 前回の y 位置
-    events.previous = previous;
-    // @type {number} - 移動量 +: down, -: up
-    events.moving = y - previous;
-    // event fire
-    // console.log('Scrolling.scroll', events);
-    this.dispatch(events);
-
-    // save scroll top -> previous
-    this.previous = y;
   }
 
   /**

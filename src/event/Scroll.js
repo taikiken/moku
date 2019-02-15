@@ -18,11 +18,12 @@ import ScrollEvents from './events/ScrollEvents';
 import Freeze from '../util/Freeze';
 
 /**
- * new を許可しないための Symbol
- * @type {Symbol}
+ * new を許可しないための inner Symbol
+ * @type {symbol}
  * @private
  */
 const singletonSymbol = Symbol('Scroll singleton symbol');
+
 /**
  * singleton instance, nullable
  * @type {?Scroll}
@@ -32,16 +33,36 @@ let instance = null;
 
 /**
  * window scroll event を監視し通知を行います
- * <p>singleton なので new ではなく factory を使用し instance を作成します</p>
+ * - singleton です。 new ではなく factory を使用し instance を作成します
  *
- * ```
- * const instance = Scroll.factory();
- * ```
+ * @example
+ *  const instance = Scroll.factory();
  */
 export default class Scroll extends EventDispatcher {
   // ----------------------------------------
+  // STATIC CONST
+  // ----------------------------------------
+  /**
+   * scroll で発生するイベント - `scrollScroll`
+   * @event SCROLL
+   * @type {string}
+   */
+  static SCROLL = 'scrollScroll';
+
+  // ----------------------------------------
   // STATIC METHOD
   // ----------------------------------------
+  /**
+   * Scroll instance を singleton を保証し作成します
+   * @returns {Scroll} Scroll instance を返します
+   */
+  static factory() {
+    if (instance === null) {
+      instance = new Scroll(singletonSymbol);
+    }
+    return instance;
+  }
+
   /**
    * y 位置に scroll top を即座に移動させます
    * @param {number} [y=0] scroll top 目標値
@@ -74,124 +95,15 @@ export default class Scroll extends EventDispatcher {
         || document.body).scrollTop;
   }
 
-  // ----------------------------------------
-  /**
-   * Scroll instance を singleton を保証し作成します
-   * @returns {Scroll} Scroll instance を返します
-   */
-  static factory() {
-    if (instance === null) {
-      instance = new Scroll(singletonSymbol);
-    }
-    return instance;
-  }
-
-  // ----------------------------------------
-  // EVENT
-  // ----------------------------------------
-  /**
-   * scroll で発生するイベントを取得します
-   * @event SCROLL
-   * @returns {string} event, scrollScroll を返します
-   * @default scrollScroll
-   */
-  static get SCROLL() {
-    return 'scrollScroll';
-  }
-
   // ---------------------------------------------------
-  //  CONSTRUCTOR
+  //  CALLBACK
   // ---------------------------------------------------
   /**
-  /**
-   * singleton です
-   * @param {Symbol} checkSymbol singleton を保証するための private instance
-   * @returns {Scroll} singleton instance を返します
-   */
-  constructor(checkSymbol) {
-    // checkSymbol と singleton が等価かをチェックします
-    if (checkSymbol !== singletonSymbol) {
-      throw new Error('don\'t use new, instead use static factory method.');
-    }
-    // instance 作成済みかをチェックし instance が null の時 this を設定します
-    if (instance !== null) {
-      return instance;
-    }
-    // onetime setting
-    super();
-    // instance = this;
-
-    // event handler
-    // const boundScroll = this.scroll.bind(this);
-    /**
-     * bound onScroll, window.onscroll event handler
-     * @type {function}
-     */
-    // this.boundScroll = this.scroll.bind(this);
-    this.onScroll = this.onScroll.bind(this);
-    // this.boundScroll = () => boundScroll;
-    // @type {Events} - events instance
-    // const events = new ScrollEvents(Scroll.SCROLL, this, this);
-    /**
-     * ScrollEvents instance, 発火時に使用します
-     * @type {ScrollEvents}
-     */
-    this.events = new ScrollEvents(Scroll.SCROLL, this, this);
-    // this.events = () => events;
-    /**
-     * 前回 scroll top 位置
-     * @type {number}
-     * @default -1
-     */
-    this.previous = -1;
-    // /**
-    //  * start 済みフラッグ
-    //  * @type {boolean}
-    //  * @default false
-    //  */
-    // this.started = false;
-
-    // 設定済み instance を返します
-    return this;
-  }
-
-  // ----------------------------------------
-  // METHOD
-  // ----------------------------------------
-  /**
-   * scroll event を監視します
-   * @returns {Scroll} method chain 可能なように instance を返します
-   */
-  start() {
-    // if (this.started) {
-    //   return this;
-    // }
-    // this.started = true;
-    this.stop();
-    window.addEventListener('scroll', this.onScroll, false);
-    return this;
-  }
-
-  /**
-   * scroll event を監視を止めます
-   * @returns {Scroll} method chain 可能なように instance を返します
-   */
-  stop() {
-    // if (!this.started) {
-    //   return this;
-    // }
-    // this.started = false;
-    window.removeEventListener('scroll', this.onScroll);
-    return this;
-  }
-
-  /**
-   * window scroll event handler<br>
-   * window scroll event 発生後に scroll top 位置をもたせた Scroll.SCROLL custom event を発火します
+   * window scroll event handler
+   * - window scroll event 発生後に scroll top 位置をもたせた Scroll.SCROLL custom event を発火します
    * @param {?Event} event window scroll event, nullable
-   * @returns {void}
    */
-  onScroll(event) {
+  onScroll = (event) => {
     // @type {number} - scroll top
     const y = Scroll.y();
     // @type {number} - window height
@@ -215,5 +127,70 @@ export default class Scroll extends EventDispatcher {
     // event fire
     this.dispatch(events);
     this.previous = y;
+  };
+
+  // ---------------------------------------------------
+  //  CONSTRUCTOR
+  // ---------------------------------------------------
+  /**
+  /**
+   * singleton です
+   * @param {symbol} checkSymbol singleton を保証するための private instance
+   * @returns {Scroll} singleton instance を返します
+   */
+  constructor(checkSymbol) {
+    // checkSymbol と singleton が等価かをチェックします
+    if (checkSymbol !== singletonSymbol) {
+      throw new Error('don\'t use new, instead use static factory method.');
+    }
+    // instance 作成済みかをチェックし instance が null の時 this を設定します
+    if (instance !== null) {
+      return instance;
+    }
+    // onetime setting
+    super();
+    // instance = this;
+
+    // event handler
+    // /**
+    //  * bound onScroll, window.onscroll event handler
+    //  * @type {function}
+    //  */
+    // this.onScroll = this.onScroll.bind(this);
+    /**
+     * ScrollEvents instance, 発火時に使用します
+     * @type {ScrollEvents}
+     */
+    this.events = new ScrollEvents(Scroll.SCROLL, this, this);
+    /**
+     * 前回 scroll top 位置
+     * @type {number}
+     * @default -1
+     */
+    this.previous = -1
+    // 設定済み instance を返します
+    return this;
+  }
+
+  // ----------------------------------------
+  // METHOD
+  // ----------------------------------------
+  /**
+   * scroll event を監視します
+   * @returns {Scroll} method chain 可能なように instance を返します
+   */
+  start() {
+    this.stop();
+    window.addEventListener('scroll', this.onScroll, false);
+    return this;
+  }
+
+  /**
+   * scroll event を監視を止めます
+   * @returns {Scroll} method chain 可能なように instance を返します
+   */
+  stop() {
+    window.removeEventListener('scroll', this.onScroll);
+    return this;
   }
 }

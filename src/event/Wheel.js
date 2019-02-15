@@ -14,43 +14,30 @@
 import EventDispatcher from './EventDispatcher';
 import WheelEvents from './events/WheelEvents';
 
-// /**
-//  * new を許可しないための Symbol
-//  * @type {Symbol}
-//  * @private
-//  */
-// const singletonSymbol = Symbol('Scroll singleton symbol');
-// /**
-//  * singleton instance, nullable
-//  * @type {?Wheel}
-//  * @private
-//  */
-// let instance = null;
-
 /**
  * mousewheel event を監視し通知を行います
- * <p>singleton なので new ではなく factory を使用し instance を作成します</p>
+ *
+ * singleton です new ではなく factory を使用し instance を作成します
  *
  * event handler 引数 `events` は {@link WheelEvents} instance です
  * - events.moved > 0 - wheel up
  *
- * ```
- * const up = (events) => {
- *  // wheel up
- * };
- * const down = (events) => {
- *  // wheel down
- * };
- * const update = (events) => {
- *  // wheel up / down
- * };
- * const wheel = new Wheel();
- * wheel.threshold = 500;
- * wheel.on(Wheel.UP, up);
- * wheel.on(Wheel.DOWN, down);
- * wheel.on(Wheel.UPDATE, update);
- * wheel.start();
- * ```
+ * @example
+ *  const up = (events) => {
+ *    // wheel up
+ *  };
+ *  const down = (events) => {
+ *    // wheel down
+ *  };
+ *  const update = (events) => {
+ *    // wheel up / down
+ *  };
+ *  const wheel = new Wheel();
+ *  wheel.threshold = 500;
+ *  wheel.on(Wheel.UP, up);
+ *  wheel.on(Wheel.DOWN, down);
+ *  wheel.on(Wheel.UPDATE, update);
+ *  wheel.start();
  */
 export default class Wheel extends EventDispatcher {
   // ----------------------------------------
@@ -74,52 +61,36 @@ export default class Wheel extends EventDispatcher {
    */
   static UPDATE = 'wheelUpdate';
 
-  // // ----------------------------------------
-  // // STATIC METHOD
-  // // ----------------------------------------
-  // /**
-  //  * Wheel instance を singleton を保証し作成します
-  //  * @returns {Wheel} Wheel instance を返します
-  //  */
-  // static factory() {
-  //   if (instance === null) {
-  //     instance = new Wheel(singletonSymbol);
-  //   }
-  //   return instance;
-  // }
+  // ---------------------------------------------------
+  //  CALLBACK
+  // ---------------------------------------------------
+  /**
+   * window mousewheel event handler
+   * <p>delta 値を取得し `this.moving` を実行します</p>
+   *
+   * @listens {WheelEvent} WheelEvent.wheel
+   * @param {WheelEvent} event window wheel event
+   * @returns {number} 前回移動量に delta 値 を加算した値を返します
+   */
+  onMouseWheel = (event) => {
+    const { deltaY } = event;
+    return this.moving(deltaY);
+  };
+
   // ---------------------------------------------------
   //  CONSTRUCTOR
   // ---------------------------------------------------
-  // /**
-  //  * singleton です
-  //  * @param {Symbol} checkSymbol singleton を保証するための private instance
-  //  * @returns {Wheel} singleton instance を返します
-  //  */
   /**
    * wheel event を管理します
    * @param {number} [threshold=200] 閾値 - event を発生させる移動量(px)
    */
   constructor(threshold = 200) {
-    // // checkSymbol と singleton が等価かをチェックします
-    // if (checkSymbol !== singletonSymbol) {
-    //   throw new Error('don\'t use new, instead use static factory method.');
-    // }
-    // // instance 作成済みかをチェックし instance が null の時 this を設定します
-    // if (instance !== null) {
-    //   return instance;
-    // }
     super();
-    // onetime setting
-    // instance = this;
-
-    // event handler
-    // const onMouseWheel = this.onMouseWheel.bind(this);
-    /**
-     * bound onMouseWheel
-     * @type {function}
-     */
-    this.onMouseWheel = this.onMouseWheel.bind(this);
-    // this.onMouseWheel = () => onMouseWheel;
+    // /**
+    //  * bound onMouseWheel
+    //  * @type {function}
+    //  */
+    // this.onMouseWheel = this.onMouseWheel.bind(this);
     /**
      * 閾値, wheel 移動量が閾値を超えたときにイベントを発生させます
      * @type {number}
@@ -154,27 +125,6 @@ export default class Wheel extends EventDispatcher {
     // return this;
   }
 
-  // // ----------------------------------------
-  // // EVENT
-  // // ----------------------------------------
-  // /**
-  //  * wheel up で発生するイベントを取得します
-  //  * @event UP
-  //  * @returns {string} event, wheelUp を返します
-  //  * @default wheelUp
-  //  */
-  // static get UP() {
-  //   return 'wheelUp';
-  // }
-  // /**
-  //  * wheel  で発生するイベントを取得します
-  //  * @event DOWN
-  //  * @returns {string} event, wheelUp を返します
-  //  * @default wheelUp
-  //  */
-  // static get DOWN() {
-  //   return 'wheelDown';
-  // }
   // ----------------------------------------
   // METHOD
   // ----------------------------------------
@@ -212,19 +162,6 @@ export default class Wheel extends EventDispatcher {
     // this.started = false;
     window.removeEventListener('wheel', this.onMouseWheel);
     return this;
-  }
-
-  /**
-   * window mousewheel event handler
-   * <p>delta 値を取得し `this.moving` を実行します</p>
-   *
-   * @listens {WheelEvent} WheelEvent.wheel
-   * @param {WheelEvent} event window wheel event
-   * @returns {number} 前回移動量に delta 値 を加算した値を返します
-   */
-  onMouseWheel(event) {
-    const { deltaY } = event;
-    return this.moving(deltaY);
   }
 
   /**
