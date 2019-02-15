@@ -3259,793 +3259,6 @@ for (var collections = getKeys(DOMIterables), i = 0; i < collections.length; i++
 
 /***/ }),
 
-/***/ "./node_modules/process/browser.js":
-/*!*****************************************!*\
-  !*** ./node_modules/process/browser.js ***!
-  \*****************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-
-/***/ }),
-
-/***/ "./node_modules/promise-polyfill/src/finally.js":
-/*!******************************************************!*\
-  !*** ./node_modules/promise-polyfill/src/finally.js ***!
-  \******************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/**
- * @this {Promise}
- */
-function finallyConstructor(callback) {
-  var constructor = this.constructor;
-  return this.then(
-    function(value) {
-      return constructor.resolve(callback()).then(function() {
-        return value;
-      });
-    },
-    function(reason) {
-      return constructor.resolve(callback()).then(function() {
-        return constructor.reject(reason);
-      });
-    }
-  );
-}
-
-/* harmony default export */ __webpack_exports__["default"] = (finallyConstructor);
-
-
-/***/ }),
-
-/***/ "./node_modules/promise-polyfill/src/index.js":
-/*!****************************************************!*\
-  !*** ./node_modules/promise-polyfill/src/index.js ***!
-  \****************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* WEBPACK VAR INJECTION */(function(setImmediate) {/* harmony import */ var _finally__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./finally */ "./node_modules/promise-polyfill/src/finally.js");
-
-
-// Store setTimeout reference so promise-polyfill will be unaffected by
-// other code modifying setTimeout (like sinon.useFakeTimers())
-var setTimeoutFunc = setTimeout;
-
-function noop() {}
-
-// Polyfill for Function.prototype.bind
-function bind(fn, thisArg) {
-  return function() {
-    fn.apply(thisArg, arguments);
-  };
-}
-
-/**
- * @constructor
- * @param {Function} fn
- */
-function Promise(fn) {
-  if (!(this instanceof Promise))
-    throw new TypeError('Promises must be constructed via new');
-  if (typeof fn !== 'function') throw new TypeError('not a function');
-  /** @type {!number} */
-  this._state = 0;
-  /** @type {!boolean} */
-  this._handled = false;
-  /** @type {Promise|undefined} */
-  this._value = undefined;
-  /** @type {!Array<!Function>} */
-  this._deferreds = [];
-
-  doResolve(fn, this);
-}
-
-function handle(self, deferred) {
-  while (self._state === 3) {
-    self = self._value;
-  }
-  if (self._state === 0) {
-    self._deferreds.push(deferred);
-    return;
-  }
-  self._handled = true;
-  Promise._immediateFn(function() {
-    var cb = self._state === 1 ? deferred.onFulfilled : deferred.onRejected;
-    if (cb === null) {
-      (self._state === 1 ? resolve : reject)(deferred.promise, self._value);
-      return;
-    }
-    var ret;
-    try {
-      ret = cb(self._value);
-    } catch (e) {
-      reject(deferred.promise, e);
-      return;
-    }
-    resolve(deferred.promise, ret);
-  });
-}
-
-function resolve(self, newValue) {
-  try {
-    // Promise Resolution Procedure: https://github.com/promises-aplus/promises-spec#the-promise-resolution-procedure
-    if (newValue === self)
-      throw new TypeError('A promise cannot be resolved with itself.');
-    if (
-      newValue &&
-      (typeof newValue === 'object' || typeof newValue === 'function')
-    ) {
-      var then = newValue.then;
-      if (newValue instanceof Promise) {
-        self._state = 3;
-        self._value = newValue;
-        finale(self);
-        return;
-      } else if (typeof then === 'function') {
-        doResolve(bind(then, newValue), self);
-        return;
-      }
-    }
-    self._state = 1;
-    self._value = newValue;
-    finale(self);
-  } catch (e) {
-    reject(self, e);
-  }
-}
-
-function reject(self, newValue) {
-  self._state = 2;
-  self._value = newValue;
-  finale(self);
-}
-
-function finale(self) {
-  if (self._state === 2 && self._deferreds.length === 0) {
-    Promise._immediateFn(function() {
-      if (!self._handled) {
-        Promise._unhandledRejectionFn(self._value);
-      }
-    });
-  }
-
-  for (var i = 0, len = self._deferreds.length; i < len; i++) {
-    handle(self, self._deferreds[i]);
-  }
-  self._deferreds = null;
-}
-
-/**
- * @constructor
- */
-function Handler(onFulfilled, onRejected, promise) {
-  this.onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : null;
-  this.onRejected = typeof onRejected === 'function' ? onRejected : null;
-  this.promise = promise;
-}
-
-/**
- * Take a potentially misbehaving resolver function and make sure
- * onFulfilled and onRejected are only called once.
- *
- * Makes no guarantees about asynchrony.
- */
-function doResolve(fn, self) {
-  var done = false;
-  try {
-    fn(
-      function(value) {
-        if (done) return;
-        done = true;
-        resolve(self, value);
-      },
-      function(reason) {
-        if (done) return;
-        done = true;
-        reject(self, reason);
-      }
-    );
-  } catch (ex) {
-    if (done) return;
-    done = true;
-    reject(self, ex);
-  }
-}
-
-Promise.prototype['catch'] = function(onRejected) {
-  return this.then(null, onRejected);
-};
-
-Promise.prototype.then = function(onFulfilled, onRejected) {
-  // @ts-ignore
-  var prom = new this.constructor(noop);
-
-  handle(this, new Handler(onFulfilled, onRejected, prom));
-  return prom;
-};
-
-Promise.prototype['finally'] = _finally__WEBPACK_IMPORTED_MODULE_0__["default"];
-
-Promise.all = function(arr) {
-  return new Promise(function(resolve, reject) {
-    if (!arr || typeof arr.length === 'undefined')
-      throw new TypeError('Promise.all accepts an array');
-    var args = Array.prototype.slice.call(arr);
-    if (args.length === 0) return resolve([]);
-    var remaining = args.length;
-
-    function res(i, val) {
-      try {
-        if (val && (typeof val === 'object' || typeof val === 'function')) {
-          var then = val.then;
-          if (typeof then === 'function') {
-            then.call(
-              val,
-              function(val) {
-                res(i, val);
-              },
-              reject
-            );
-            return;
-          }
-        }
-        args[i] = val;
-        if (--remaining === 0) {
-          resolve(args);
-        }
-      } catch (ex) {
-        reject(ex);
-      }
-    }
-
-    for (var i = 0; i < args.length; i++) {
-      res(i, args[i]);
-    }
-  });
-};
-
-Promise.resolve = function(value) {
-  if (value && typeof value === 'object' && value.constructor === Promise) {
-    return value;
-  }
-
-  return new Promise(function(resolve) {
-    resolve(value);
-  });
-};
-
-Promise.reject = function(value) {
-  return new Promise(function(resolve, reject) {
-    reject(value);
-  });
-};
-
-Promise.race = function(values) {
-  return new Promise(function(resolve, reject) {
-    for (var i = 0, len = values.length; i < len; i++) {
-      values[i].then(resolve, reject);
-    }
-  });
-};
-
-// Use polyfill for setImmediate for performance gains
-Promise._immediateFn =
-  (typeof setImmediate === 'function' &&
-    function(fn) {
-      setImmediate(fn);
-    }) ||
-  function(fn) {
-    setTimeoutFunc(fn, 0);
-  };
-
-Promise._unhandledRejectionFn = function _unhandledRejectionFn(err) {
-  if (typeof console !== 'undefined' && console) {
-    console.warn('Possible Unhandled Promise Rejection:', err); // eslint-disable-line no-console
-  }
-};
-
-/* harmony default export */ __webpack_exports__["default"] = (Promise);
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../timers-browserify/main.js */ "./node_modules/timers-browserify/main.js").setImmediate))
-
-/***/ }),
-
-/***/ "./node_modules/setimmediate/setImmediate.js":
-/*!***************************************************!*\
-  !*** ./node_modules/setimmediate/setImmediate.js ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
-    "use strict";
-
-    if (global.setImmediate) {
-        return;
-    }
-
-    var nextHandle = 1; // Spec says greater than zero
-    var tasksByHandle = {};
-    var currentlyRunningATask = false;
-    var doc = global.document;
-    var registerImmediate;
-
-    function setImmediate(callback) {
-      // Callback can either be a function or a string
-      if (typeof callback !== "function") {
-        callback = new Function("" + callback);
-      }
-      // Copy function arguments
-      var args = new Array(arguments.length - 1);
-      for (var i = 0; i < args.length; i++) {
-          args[i] = arguments[i + 1];
-      }
-      // Store and register the task
-      var task = { callback: callback, args: args };
-      tasksByHandle[nextHandle] = task;
-      registerImmediate(nextHandle);
-      return nextHandle++;
-    }
-
-    function clearImmediate(handle) {
-        delete tasksByHandle[handle];
-    }
-
-    function run(task) {
-        var callback = task.callback;
-        var args = task.args;
-        switch (args.length) {
-        case 0:
-            callback();
-            break;
-        case 1:
-            callback(args[0]);
-            break;
-        case 2:
-            callback(args[0], args[1]);
-            break;
-        case 3:
-            callback(args[0], args[1], args[2]);
-            break;
-        default:
-            callback.apply(undefined, args);
-            break;
-        }
-    }
-
-    function runIfPresent(handle) {
-        // From the spec: "Wait until any invocations of this algorithm started before this one have completed."
-        // So if we're currently running a task, we'll need to delay this invocation.
-        if (currentlyRunningATask) {
-            // Delay by doing a setTimeout. setImmediate was tried instead, but in Firefox 7 it generated a
-            // "too much recursion" error.
-            setTimeout(runIfPresent, 0, handle);
-        } else {
-            var task = tasksByHandle[handle];
-            if (task) {
-                currentlyRunningATask = true;
-                try {
-                    run(task);
-                } finally {
-                    clearImmediate(handle);
-                    currentlyRunningATask = false;
-                }
-            }
-        }
-    }
-
-    function installNextTickImplementation() {
-        registerImmediate = function(handle) {
-            process.nextTick(function () { runIfPresent(handle); });
-        };
-    }
-
-    function canUsePostMessage() {
-        // The test against `importScripts` prevents this implementation from being installed inside a web worker,
-        // where `global.postMessage` means something completely different and can't be used for this purpose.
-        if (global.postMessage && !global.importScripts) {
-            var postMessageIsAsynchronous = true;
-            var oldOnMessage = global.onmessage;
-            global.onmessage = function() {
-                postMessageIsAsynchronous = false;
-            };
-            global.postMessage("", "*");
-            global.onmessage = oldOnMessage;
-            return postMessageIsAsynchronous;
-        }
-    }
-
-    function installPostMessageImplementation() {
-        // Installs an event handler on `global` for the `message` event: see
-        // * https://developer.mozilla.org/en/DOM/window.postMessage
-        // * http://www.whatwg.org/specs/web-apps/current-work/multipage/comms.html#crossDocumentMessages
-
-        var messagePrefix = "setImmediate$" + Math.random() + "$";
-        var onGlobalMessage = function(event) {
-            if (event.source === global &&
-                typeof event.data === "string" &&
-                event.data.indexOf(messagePrefix) === 0) {
-                runIfPresent(+event.data.slice(messagePrefix.length));
-            }
-        };
-
-        if (global.addEventListener) {
-            global.addEventListener("message", onGlobalMessage, false);
-        } else {
-            global.attachEvent("onmessage", onGlobalMessage);
-        }
-
-        registerImmediate = function(handle) {
-            global.postMessage(messagePrefix + handle, "*");
-        };
-    }
-
-    function installMessageChannelImplementation() {
-        var channel = new MessageChannel();
-        channel.port1.onmessage = function(event) {
-            var handle = event.data;
-            runIfPresent(handle);
-        };
-
-        registerImmediate = function(handle) {
-            channel.port2.postMessage(handle);
-        };
-    }
-
-    function installReadyStateChangeImplementation() {
-        var html = doc.documentElement;
-        registerImmediate = function(handle) {
-            // Create a <script> element; its readystatechange event will be fired asynchronously once it is inserted
-            // into the document. Do so, thus queuing up the task. Remember to clean up once it's been called.
-            var script = doc.createElement("script");
-            script.onreadystatechange = function () {
-                runIfPresent(handle);
-                script.onreadystatechange = null;
-                html.removeChild(script);
-                script = null;
-            };
-            html.appendChild(script);
-        };
-    }
-
-    function installSetTimeoutImplementation() {
-        registerImmediate = function(handle) {
-            setTimeout(runIfPresent, 0, handle);
-        };
-    }
-
-    // If supported, we should attach to the prototype of global, since that is where setTimeout et al. live.
-    var attachTo = Object.getPrototypeOf && Object.getPrototypeOf(global);
-    attachTo = attachTo && attachTo.setTimeout ? attachTo : global;
-
-    // Don't get fooled by e.g. browserify environments.
-    if ({}.toString.call(global.process) === "[object process]") {
-        // For Node.js before 0.9
-        installNextTickImplementation();
-
-    } else if (canUsePostMessage()) {
-        // For non-IE10 modern browsers
-        installPostMessageImplementation();
-
-    } else if (global.MessageChannel) {
-        // For web workers, where supported
-        installMessageChannelImplementation();
-
-    } else if (doc && "onreadystatechange" in doc.createElement("script")) {
-        // For IE 6–8
-        installReadyStateChangeImplementation();
-
-    } else {
-        // For older browsers
-        installSetTimeoutImplementation();
-    }
-
-    attachTo.setImmediate = setImmediate;
-    attachTo.clearImmediate = clearImmediate;
-}(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js"), __webpack_require__(/*! ./../process/browser.js */ "./node_modules/process/browser.js")))
-
-/***/ }),
-
-/***/ "./node_modules/timers-browserify/main.js":
-/*!************************************************!*\
-  !*** ./node_modules/timers-browserify/main.js ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
-            (typeof self !== "undefined" && self) ||
-            window;
-var apply = Function.prototype.apply;
-
-// DOM APIs, for completeness
-
-exports.setTimeout = function() {
-  return new Timeout(apply.call(setTimeout, scope, arguments), clearTimeout);
-};
-exports.setInterval = function() {
-  return new Timeout(apply.call(setInterval, scope, arguments), clearInterval);
-};
-exports.clearTimeout =
-exports.clearInterval = function(timeout) {
-  if (timeout) {
-    timeout.close();
-  }
-};
-
-function Timeout(id, clearFn) {
-  this._id = id;
-  this._clearFn = clearFn;
-}
-Timeout.prototype.unref = Timeout.prototype.ref = function() {};
-Timeout.prototype.close = function() {
-  this._clearFn.call(scope, this._id);
-};
-
-// Does not start the time, just sets up the members needed.
-exports.enroll = function(item, msecs) {
-  clearTimeout(item._idleTimeoutId);
-  item._idleTimeout = msecs;
-};
-
-exports.unenroll = function(item) {
-  clearTimeout(item._idleTimeoutId);
-  item._idleTimeout = -1;
-};
-
-exports._unrefActive = exports.active = function(item) {
-  clearTimeout(item._idleTimeoutId);
-
-  var msecs = item._idleTimeout;
-  if (msecs >= 0) {
-    item._idleTimeoutId = setTimeout(function onTimeout() {
-      if (item._onTimeout)
-        item._onTimeout();
-    }, msecs);
-  }
-};
-
-// setimmediate attaches itself to the global object
-__webpack_require__(/*! setimmediate */ "./node_modules/setimmediate/setImmediate.js");
-// On some exotic environments, it's not clear which object `setimmediate` was
-// able to install onto.  Search each possibility in the same order as the
-// `setimmediate` library.
-exports.setImmediate = (typeof self !== "undefined" && self.setImmediate) ||
-                       (typeof global !== "undefined" && global.setImmediate) ||
-                       (this && this.setImmediate);
-exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
-                         (typeof global !== "undefined" && global.clearImmediate) ||
-                         (this && this.clearImmediate);
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
-
-/***/ }),
-
-/***/ "./node_modules/webpack/buildin/global.js":
-/*!***********************************!*\
-  !*** (webpack)/buildin/global.js ***!
-  \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || new Function("return this")();
-} catch (e) {
-	// This works if the window reference is available
-	if (typeof window === "object") g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-
 /***/ "./node_modules/whatwg-fetch/fetch.js":
 /*!********************************************!*\
   !*** ./node_modules/whatwg-fetch/fetch.js ***!
@@ -12136,7 +11349,7 @@ MOKU.version = function () {
 
 
 MOKU.buildTime = function () {
-  return 1550212615167;
+  return 1550215284171;
 };
 /**
  * MOKU.event
@@ -12253,10 +11466,20 @@ window.MOKU = MOKU;
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Ajax; });
-/* harmony import */ var core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.object.assign */ "./node_modules/core-js/modules/es6.object.assign.js");
-/* harmony import */ var core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _util_Type__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../util/Type */ "./src/util/Type.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.array.iterator */ "./node_modules/core-js/modules/es6.array.iterator.js");
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.object.keys */ "./node_modules/core-js/modules/es6.object.keys.js");
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _util_Type__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../util/Type */ "./src/util/Type.js");
 
+
+
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -12296,15 +11519,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 // const Request = self.Request;
 
 /**
- * <p>fetch API を使用し Ajax request を行います</p>
- * <p>Safari, IE はサポートしていないので polyfill ライブラリを使用します<br>
- * また、 fetch は Promise も必要としています。</p>
- *
- * ```
- * $ bower install fetch
- *
- * $ bower install es6-promise
- * ```
+ * fetch API を使用し Ajax request を行います、
+ * Safari, IE はサポートしていないので polyfill ライブラリを使用します。
+ * また、 fetch は Promise も必要としています。
  *
  * thunk friendly - ES2017 async / await するために
  * - fetch Promise を返すように変更
@@ -12312,6 +11529,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  * - fetch.then から result / error を return
  *
  * [caution] resolve / reject を使用しない場合は {@link AjaxThunk} を使用する方が効率的です
+ *
  * @example
  * const ajax = new Ajax();
  * // async / await 1
@@ -12357,80 +11575,15 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var Ajax =
 /*#__PURE__*/
 function () {
-  _createClass(Ajax, [{
-    key: "option",
-    // ----------------------------------------
-    // STATIC METHOD
-    // ----------------------------------------
+  // ----------------------------------------
+  // CONSTRUCTOR
+  // ----------------------------------------
 
-    /**
-     * <p>fetch API へ送るオプションを作成します</p>
-     *
-     * 必ず設定します
-     * - method: GET, POST, PUT, DELETE...etc
-     * - cache: 'no-cache'
-     * - credentials: 'same-origin'
-     *
-     * headers, formData は存在すれば option に追加されます
-     *
-     * ```
-     * var myRequest = new Request(input, init);
-     * ```
-     * <blockquote>
-     * リクエストに適用するカスタム設定を含むオプションオブジェクト。設定可能なオプションは：
-     *   method：リクエストメソッド、たとえば GET、POST。
-     *   headers：Headers オブジェクトか ByteString を含む、リクエストに追加するヘッダー。
-     *   body： リクエストに追加するボディー：Blob か BufferSource、FormData、URLSearchParams、USVString オブジェクトが使用できる。リクエストが GET か HEAD メソッドを使用している場合、ボディーを持てないことに注意。
-     *   mode：リクエストで使用するモード。たとえば、cors か no-cors、same-origin。既定値は cors。Chrome では、47 以前は no-cors が既定値であり、 same-origin は 47 から使用できるようになった。
-     *   credentials：リクエストで使用するリクエスト credential：omit か same-origin、include が使用できる。 既定値は omit。Chrome では、47 以前は same-origin が既定値であり、include は 47 から使用できるようになった。
-     *   cache：リクエストで使用する cache モード：default か no-store、reload、no-cache、force-cache、only-if-cached が設定できる。
-     *   redirect：使用するリダイレクトモード：follow か error、manual が使用できる。Chrome では、47 以前は既定値が follow であり、manual は 47 から使用できるようになった。
-     *   referrer：no-referrer か client、URL を指定する USVString。既定値は client。
-     * </blockquote>
-     * @param {string|USVString|Request} path Ajax request path
-     * @param {string} method GET, POST, PUT, DELETE...etc request method
-     * @param {Headers|Object|null} headers Headers option
-     * @param {FormData|null} formData 送信フォームデータオプション
-     * @returns {*|Request} fetch API へ送る Request instance を返します
-     *
-     * @see https://developers.google.com/web/updates/2015/03/introduction-to-fetch
-     * @see https://developer.mozilla.org/ja/docs/Web/API/Request
-     * @see https://developer.mozilla.org/ja/docs/Web/API/Request/Request
-     */
-    value: function option(path, method, headers, formData) {
-      // request option
-      var option = Object.assign({}, this.props); // const option = Object.create({
-      //   method,
-      //   cache: 'no-cache',
-      //   // https://developers.google.com/web/updates/2015/03/introduction-to-fetch
-      //   credentials: 'same-origin',
-      // });
-
-      option.method = method; // headers option
-
-      if (_util_Type__WEBPACK_IMPORTED_MODULE_1__["default"].exist(headers)) {
-        option.headers = headers;
-      } // body へ FormData をセット
-
-
-      if (_util_Type__WEBPACK_IMPORTED_MODULE_1__["default"].exist(formData)) {
-        option.body = formData;
-      } // https://developer.mozilla.org/ja/docs/Web/API/Request
-
-
-      return new Request(path, option);
-    } // ----------------------------------------
-    // CONSTRUCTOR
-    // ----------------------------------------
-
-    /**
-     * request 可能 / 不可能 flag を true に設定します
-     * @param {?function} [resolve=null] Promise success callback
-     * @param {?function} [reject=null] Promise fail callback
-     */
-
-  }]);
-
+  /**
+   * request 可能 / 不可能 flag を true に設定します
+   * @param {?function} [resolve=null] Promise success callback
+   * @param {?function} [reject=null] Promise fail callback
+   */
   function Ajax() {
     var resolve = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var reject = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -12459,7 +11612,7 @@ function () {
      * - method: GET|POST|PUT|DELETE...
      * - cache: no-cache
      * - credentials: same-origin
-     * @type {{method: ?string, cache: string, credentials: string}}
+     * @type {RequestInit|undefined|{method: ?string, cache: string, credentials: string}}
      * @see https://developer.mozilla.org/ja/docs/Web/API/Request/Request
      */
 
@@ -12474,24 +11627,80 @@ function () {
   // ----------------------------------------
 
   /**
-   * <p>Ajax request 開始します</p>
-   * <p>request 可能 / 不可能 flag が false の時は実行しません<br>
-   * true の時は false にしリクエストを開始します</p>
+   * fetch API へ送るオプションを作成します
    *
-   * from v0.3.4
-   * - resolve, reject 関数確認後実行します
-   * - Promise instance を返します
-   * - json / error を返します
+   * 必ず設定します
+   * - method: GET, POST, PUT, DELETE...etc
+   * - cache: 'no-cache'
+   * - credentials: 'same-origin'
    *
-   * @param {string} path Ajax request path
-   * @param {string} [method=GET] GET, POST, PUT, DELETE...etc request method
-   * @param {?Headers} [headers=null] Headers option, token などを埋め込むのに使用します
-   * @param {?FormData} [formData=null] フォームデータを送信するのに使用します
-   * @return {Promise} ajax request を開始し fetch Promise 返します
+   * headers, formData は存在すれば option に追加されます
+   *
+   * ```
+   * var myRequest = new Request(input, init);
+   * ```
+   * <blockquote>
+   * リクエストに適用するカスタム設定を含むオプションオブジェクト。設定可能なオプションは：
+   *   method：リクエストメソッド、たとえば GET、POST。
+   *   headers：Headers オブジェクトか ByteString を含む、リクエストに追加するヘッダー。
+   *   body： リクエストに追加するボディー：Blob か BufferSource、FormData、URLSearchParams、USVString オブジェクトが使用できる。リクエストが GET か HEAD メソッドを使用している場合、ボディーを持てないことに注意。
+   *   mode：リクエストで使用するモード。たとえば、cors か no-cors、same-origin。既定値は cors。Chrome では、47 以前は no-cors が既定値であり、 same-origin は 47 から使用できるようになった。
+   *   credentials：リクエストで使用するリクエスト credential：omit か same-origin、include が使用できる。 既定値は omit。Chrome では、47 以前は same-origin が既定値であり、include は 47 から使用できるようになった。
+   *   cache：リクエストで使用する cache モード：default か no-store、reload、no-cache、force-cache、only-if-cached が設定できる。
+   *   redirect：使用するリダイレクトモード：follow か error、manual が使用できる。Chrome では、47 以前は既定値が follow であり、manual は 47 から使用できるようになった。
+   *   referrer：no-referrer か client、URL を指定する USVString。既定値は client。
+   * </blockquote>
+   * @param {string|*|RequestInfo} path Ajax request path
+   * @param {string} method GET, POST, PUT, DELETE...etc request method
+   * @param {Headers|Object|null} headers Headers option
+   * @param {FormData|null} formData 送信フォームデータオプション
+   * @returns {*|Request} fetch API へ送る Request instance を返します
+   *
+   * @see https://developers.google.com/web/updates/2015/03/introduction-to-fetch
+   * @see https://developer.mozilla.org/ja/docs/Web/API/Request
+   * @see https://developer.mozilla.org/ja/docs/Web/API/Request/Request
    */
 
 
   _createClass(Ajax, [{
+    key: "option",
+    value: function option(path, method, headers, formData) {
+      // request option
+      // const option = Object.assign({}, this.props);
+      var option = _objectSpread({}, this.props);
+
+      option.method = method; // headers option
+
+      if (_util_Type__WEBPACK_IMPORTED_MODULE_3__["default"].exist(headers)) {
+        option.headers = headers;
+      } // body へ FormData をセット
+
+
+      if (_util_Type__WEBPACK_IMPORTED_MODULE_3__["default"].exist(formData)) {
+        option.body = formData;
+      } // https://developer.mozilla.org/ja/docs/Web/API/Request
+
+
+      return new Request(path, option);
+    }
+    /**
+     * Ajax request 開始します、
+     * request 可能 / 不可能 flag が false の時は実行しません。
+     * true の時は false にしリクエストを開始します
+     *
+     * from v0.3.4
+     * - resolve, reject 関数確認後実行します
+     * - Promise instance を返します
+     * - json / error を返します
+     *
+     * @param {string} path Ajax request path
+     * @param {string} [method=GET] GET, POST, PUT, DELETE...etc request method
+     * @param {?Headers} [headers=null] Headers option, token などを埋め込むのに使用します
+     * @param {?FormData} [formData=null] フォームデータを送信するのに使用します
+     * @return {Promise} ajax request を開始し fetch Promise 返します
+     */
+
+  }, {
     key: "start",
     value: function start(path) {
       var _this = this;
@@ -12521,7 +11730,7 @@ function () {
       }) // @param {Object} - JSON パース済み Object
       .then(function (json) {
         // complete event fire
-        if (_util_Type__WEBPACK_IMPORTED_MODULE_1__["default"].method(_this.resolve)) {
+        if (_util_Type__WEBPACK_IMPORTED_MODULE_3__["default"].method(_this.resolve)) {
           _this.resolve(json);
         } // flag true
 
@@ -12532,7 +11741,7 @@ function () {
       }) // @param {Error} - Ajax something error
       .catch(function (error) {
         // error event fire
-        if (_util_Type__WEBPACK_IMPORTED_MODULE_1__["default"].method(_this.reject)) {
+        if (_util_Type__WEBPACK_IMPORTED_MODULE_3__["default"].method(_this.reject)) {
           _this.reject(error);
         } // flag true
 
@@ -13279,8 +12488,8 @@ function () {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _method_promise__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./method/promise */ "./src/polyfill/method/promise.js");
-/* harmony import */ var _method_fetch__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./method/fetch */ "./src/polyfill/method/fetch.js");
+/* harmony import */ var _method_fetch__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./method/fetch */ "./src/polyfill/method/fetch.js");
+/* harmony import */ var _method_animationFrame__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./method/animationFrame */ "./src/polyfill/method/animationFrame.js");
 /**
  * Copyright (c) 2011-2017 inazumatv.com, inc.
  * @author (at)taikiken / http://inazumatv.com
@@ -13292,15 +12501,11 @@ __webpack_require__.r(__webpack_exports__);
  * This notice shall be included in all copies or substantial portions of the Software.
  *
  */
-// babel polyfill
-// import './method/babel';
-// promise
- // fetch
+// fetch
 
- // import animationFrame from './method/animationFrame';
-// ------------------------------------------------
-// animationFrame();
-// /**
+ // ------------------------------------------------
+
+Object(_method_animationFrame__WEBPACK_IMPORTED_MODULE_1__["default"])(); // /**
 //  * 以下全てを読み込みます、一部だけ必要な時は個別に `import` します
 //  * - babel-polyfill - `./method/babel`
 //  *   - IE, Symbol 対応できない問題を解決するために...
@@ -13326,6 +12531,74 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./src/polyfill/method/animationFrame.js":
+/*!***********************************************!*\
+  !*** ./src/polyfill/method/animationFrame.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/**
+ * Copyright (c) 2011-2017 inazumatv.com, inc.
+ * @author (at)taikiken / http://inazumatv.com
+ * @date 2017/08/28 - 18:26
+ *
+ * Distributed under the terms of the MIT license.
+ * http://www.opensource.org/licenses/mit-license.html
+ *
+ * This notice shall be included in all copies or substantial portions of the Software.
+ *
+ */
+
+/**
+ * Android 4.3 以下
+ * requestAnimationFrame 未実装なので polyfill する
+ * babel-preset-env 補完しない？
+ */
+var animationFrame = function animationFrame() {
+  // native code check
+  if (window.requestAnimationFrame && window.cancelAnimationFrame) {
+    return;
+  } // vendor prefix
+
+
+  var vendors = ['ms', 'moz', 'webkit', 'o']; // add vendor prefix
+
+  vendors.some(function (prefix) {
+    window.requestAnimationFrame = window["".concat(prefix, "RequestAnimationFrame")];
+    window.cancelAnimationFrame = window["".concat(prefix, "CancelAnimationFrame")] || window["".concat(prefix, "CancelRequestAnimationFrame")]; // return false;
+
+    return !!window.requestAnimationFrame;
+  }); // ------------------------------------------------
+  // still check
+
+  if (!window.requestAnimationFrame) {
+    var lastTime = 0;
+
+    window.requestAnimationFrame = function (callback) {
+      var currentTime = new Date().getTime();
+      var timeToCall = Math.max(0, 16 - (currentTime - lastTime));
+      var id = setTimeout(function () {
+        callback(currentTime + timeToCall);
+      }, timeToCall);
+      lastTime = currentTime + timeToCall;
+      return id;
+    };
+  }
+
+  if (!window.cancelAnimationFrame) {
+    window.cancelAnimationFrame = function (id) {
+      clearTimeout(id);
+    };
+  }
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (animationFrame);
+
+/***/ }),
+
 /***/ "./src/polyfill/method/fetch.js":
 /*!**************************************!*\
   !*** ./src/polyfill/method/fetch.js ***!
@@ -13335,7 +12608,8 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var whatwg_fetch__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! whatwg-fetch */ "./node_modules/whatwg-fetch/fetch.js");
+/* harmony import */ var _fetch__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./fetch */ "./src/polyfill/method/fetch.js");
+/* harmony import */ var whatwg_fetch__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! whatwg-fetch */ "./node_modules/whatwg-fetch/fetch.js");
 /**
  * Copyright (c) 2011-2017 inazumatv.com, inc.
  * @author (at)taikiken / http://inazumatv.com
@@ -13347,54 +12621,11 @@ __webpack_require__.r(__webpack_exports__);
  * This notice shall be included in all copies or substantial portions of the Software.
  *
  */
-// @see https://github.com/whatwg/fetch
+ // @see https://github.com/whatwg/fetch
 // @see https://fetch.spec.whatwg.org/
 // @see https://github.github.io/fetch/
 
 
-/***/ }),
-
-/***/ "./src/polyfill/method/promise.js":
-/*!****************************************!*\
-  !*** ./src/polyfill/method/promise.js ***!
-  \****************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var promise_polyfill__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! promise-polyfill */ "./node_modules/promise-polyfill/src/index.js");
-/**
- * Copyright (c) 2011-2017 inazumatv.com, inc.
- * @author (at)taikiken / http://inazumatv.com
- * @date 2017/08/29 - 14:05
- *
- * Distributed under the terms of the MIT license.
- * http://www.opensource.org/licenses/mit-license.html
- *
- * This notice shall be included in all copies or substantial portions of the Software.
- *
- */
-// @see https://github.com/taylorhakes/promise-polyfill
-// @see https://developers.google.com/web/fundamentals/getting-started/primers/promises
-// > Chrome 32、Opera 19、Firefox 29、Safari 8、および Microsoft Edge - enabled
-
-/**
- * Promise 未実装ブラウザへ polyfill します
- * - Chrome 32、Opera 19、Firefox 29、Safari 8、および Microsoft Edge - enabled
- * @see https://github.com/taylorhakes/promise-polyfill
- * @see https://developers.google.com/web/fundamentals/getting-started/primers/promises
- */
-
-var activate = function activate() {
-  // Promise: To add to window
-  if (!window.Promise) {
-    window.Promise = promise_polyfill__WEBPACK_IMPORTED_MODULE_0__["default"];
-  }
-};
-
-activate();
-/* harmony default export */ __webpack_exports__["default"] = (activate);
 
 /***/ }),
 
@@ -13457,11 +12688,11 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 
 /**
  * new を許可しないための Symbol
- * @type {Symbol}
+ * @type {symbol}
  * @private
  */
 
-var singletonSymbol = Symbol('singleton instance');
+var singletonSymbol = Symbol('Cycle singleton instance');
 /**
  * singleton instance, nullable
  * @type {?Cycle}
@@ -13470,8 +12701,8 @@ var singletonSymbol = Symbol('singleton instance');
 
 var instance = null;
 /**
- * <p>requestAnimationFrame を使用しループイベントを発生させます</p>
- * <p>singleton なので new ではなく factory を使用し instance を作成します</p>
+ * requestAnimationFrame を使用しループイベントを発生させます
+ * singleton です。 new ではなく factory を使用し instance を作成します
  *
  * ```
  * const loop = Cycle.factory();
@@ -13482,9 +12713,9 @@ var instance = null;
  * ```
  *
  * Cycle は `requestAnimationFrame` を auto start させます
- * <p>【注意】requestAnimationFrame は tab が active(focus) な時のみ発生します<br>
- * `blur` 時にも動作させたい時は使用しないでください。<br>
- *   `setTimeout` の利用を検討してください</p>
+ *
+ * - 【注意】requestAnimationFrame は tab が active(focus) な時のみ発生します
+ * - `blur` 時にも動作させたい時は使用しないでください。`setTimeout` の利用を検討してください
  */
 
 var Cycle =
@@ -13518,17 +12749,27 @@ function (_EventDispatcher) {
 
       return instance;
     } // ----------------------------------------
-    //  CONSTRUCTOR
+    // CALLBACK
     // ----------------------------------------
 
     /**
-     * singleton です
-     * @param {Symbol} checkSymbol singleton を保証するための private instance
-     * @returns {Cycle} singleton instance を返します
+     * loop(requestAnimationFrame)コールバック関数
+     * - Cycle.UPDATE event を発火します
+     * @param {number} [time=0] animation time
+     * @returns {number} requestAnimationFrame ID
      */
 
   }]);
 
+  // ----------------------------------------
+  //  CONSTRUCTOR
+  // ----------------------------------------
+
+  /**
+   * singleton です
+   * @param {symbol} checkSymbol singleton を保証するための private instance
+   * @returns {Cycle} singleton instance を返します
+   */
   function Cycle(checkSymbol) {
     var _this;
 
@@ -13552,13 +12793,29 @@ function (_EventDispatcher) {
      * @type {Events}
      */
 
-    _this.events = new _events_CycleEvents__WEBPACK_IMPORTED_MODULE_4__["default"](Cycle.UPDATE, _assertThisInitialized(_assertThisInitialized(_this)), _assertThisInitialized(_assertThisInitialized(_this)));
-    /**
-     * bound update requestAnimationFrame callback
-     * @type {function}
-     */
+    _this.onUpdate = function () {
+      var time = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+      // @type {number} - requestAnimationFrame id
+      var id = requestAnimationFrame(_this.onUpdate);
+      _this.id = id; // @type {Events} - events
 
-    _this.onUpdate = _this.onUpdate.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+      var _assertThisInitialize = _assertThisInitialized(_assertThisInitialized(_this)),
+          events = _assertThisInitialize.events;
+
+      events.id = id;
+      events.time = time; // event fire
+
+      _this.dispatch(events);
+
+      return id;
+    };
+
+    _this.events = new _events_CycleEvents__WEBPACK_IMPORTED_MODULE_4__["default"](Cycle.UPDATE, _assertThisInitialized(_assertThisInitialized(_this)), _assertThisInitialized(_assertThisInitialized(_this))); // /**
+    //  * bound update requestAnimationFrame callback
+    //  * @type {function}
+    //  */
+    // this.onUpdate = this.onUpdate.bind(this);
+
     /**
      * requestAnimationFrame ID
      * @type {number}
@@ -13601,30 +12858,6 @@ function (_EventDispatcher) {
     value: function stop() {
       var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.id;
       cancelAnimationFrame(id);
-    } // ----------------------------------------
-    // PRIVATE METHOD
-    // ----------------------------------------
-
-    /**
-     * loop(requestAnimationFrame)コールバック関数
-     * - Cycle.UPDATE event を発火します
-     * @param {number} time animation time
-     * @returns {number} requestAnimationFrame ID
-     */
-
-  }, {
-    key: "onUpdate",
-    value: function onUpdate(time) {
-      // @type {number} - requestAnimationFrame id
-      var id = requestAnimationFrame(this.onUpdate);
-      this.id = id; // @type {Events} - events
-
-      var events = this.events;
-      events.id = id;
-      events.time = time; // event fire
-
-      this.dispatch(events);
-      return id;
     }
   }]);
 
@@ -13876,6 +13109,17 @@ function (_EventDispatcher) {
    * @type {string}
    */
   // ----------------------------------------
+  // CALLBACK
+  // ----------------------------------------
+
+  /**
+   * Cycle.UPDATE event handler, polling を計測しイベントを発火するかを判断します
+   *
+   * @param {CycleEvents} events Cycle event object
+   * @listens {Cycle.UPDATE} Cycle.UPDATE が発生すると実行されます
+   * @returns {boolean} Polling.UPDATE event が発生すると true を返します
+   */
+  // ----------------------------------------
   // CONSTRUCTOR
   // ----------------------------------------
 
@@ -13896,19 +13140,20 @@ function (_EventDispatcher) {
      * @ty[e {Cycle}
      */
 
+    _initialiseProps.call(_assertThisInitialized(_assertThisInitialized(_this)));
+
     _this.cycle = _Cycle__WEBPACK_IMPORTED_MODULE_4__["default"].factory();
     /**
      * 間隔(ms)
      * @type {number}
      */
 
-    _this.interval = interval;
-    /**
-     * bound onUpdate, Cycle.UPDATE event handler
-     * @returns {function}
-     */
+    _this.interval = interval; // /**
+    //  * bound onUpdate, Cycle.UPDATE event handler
+    //  * @returns {function}
+    //  */
+    // this.onUpdate = this.onUpdate.bind(this);
 
-    _this.onUpdate = _this.onUpdate.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     /**
      * Events instance - Polling.UPDATE Events object
      * @type {Events}
@@ -13966,37 +13211,6 @@ function (_EventDispatcher) {
     value: function stop() {
       this.cycle.off(_Cycle__WEBPACK_IMPORTED_MODULE_4__["default"].UPDATE, this.onUpdate);
       return true;
-    }
-    /**
-     * Cycle.UPDATE event handler, polling を計測しイベントを発火するかを判断します
-     *
-     * @param {CycleEvents} events Cycle event object
-     * @listens {Cycle.UPDATE} Cycle.UPDATE が発生すると実行されます
-     * @returns {boolean} Polling.UPDATE event が発生すると true を返します
-     */
-
-  }, {
-    key: "onUpdate",
-    value: function onUpdate(events) {
-      // 現在時間
-      // @type {number}
-      var present = Date.now(); // @type {number} - interval 間隔
-      // const interval = this.interval;
-      // @type {number} - 開始時間
-
-      var begin = this.begin,
-          interval = this.interval; // 現在時間 が interval より大きくなったか
-
-      if (present - begin >= interval) {
-        // event 発火
-        this.fire(this.updateEvents(begin, present, events)); // 開始時間を update
-
-        this.begin = present; // event 発生
-
-        return true;
-      }
-
-      return false;
     } // -----
     // event create & fire
 
@@ -14037,6 +13251,34 @@ function (_EventDispatcher) {
 }(_event_EventDispatcher__WEBPACK_IMPORTED_MODULE_3__["default"]);
 
 Polling.UPDATE = 'pollingUpdate';
+
+var _initialiseProps = function _initialiseProps() {
+  var _this2 = this;
+
+  this.onUpdate = function (events) {
+    // 現在時間
+    // @type {number}
+    var present = Date.now(); // @type {number} - interval 間隔
+    // const interval = this.interval;
+    // @type {number} - 開始時間
+
+    var begin = _this2.begin,
+        interval = _this2.interval; // 現在時間 が interval より大きくなったか
+
+    if (present - begin >= interval) {
+      // event 発火
+      _this2.fire(_this2.updateEvents(begin, present, events)); // 開始時間を update
+
+
+      _this2.begin = present; // event 発生
+
+      return true;
+    }
+
+    return false;
+  };
+};
+
 
 
 /***/ }),
@@ -14198,6 +13440,14 @@ function (_Polling) {
    * @event UPDATE
    * @type {string}
    */
+
+  /**
+   * {@link Cycle}.UPDATE event handler
+   *
+   * count property を `+1` 加算後設定 rate で割り算し余りが `0` の時にイベント Rate.UPDATE を発生させます
+   * @param {CycleEvents} events Polling event object
+   * @returns {boolean} Rate.UPDATE event が発生すると true を返します
+   */
   // ----------------------------------------
   // CONSTRUCTOR
   // ----------------------------------------
@@ -14215,6 +13465,8 @@ function (_Polling) {
 
     // 60fps で polling を行う
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Rate).call(this, 1000 / 60)); // @type {Events}
+
+    _initialiseProps.call(_assertThisInitialized(_assertThisInitialized(_this)));
 
     var events = new _event_Events__WEBPACK_IMPORTED_MODULE_3__["default"](Rate.UPDATE, _assertThisInitialized(_assertThisInitialized(_this)), _assertThisInitialized(_assertThisInitialized(_this))); // 設定可能な rate list
 
@@ -14296,29 +13548,6 @@ function (_Polling) {
       this.setRate(rate);
       return this.start();
     }
-    /**
-     * {@link Cycle}.UPDATE event handler
-     *
-     * count property を `+1` 加算後設定 rate で割り算し余りが `0` の時にイベント Rate.UPDATE を発生させます
-     * @param {CycleEvents} events Polling event object
-     * @returns {boolean} Rate.UPDATE event が発生すると true を返します
-     */
-
-  }, {
-    key: "onUpdate",
-    value: function onUpdate(events) {
-      // 余りが 0 の時にイベントを発火します
-      this.count += 1;
-      var reminder = this.count % this.rate;
-
-      if (reminder === 0) {
-        this.count = 0;
-        this.fire(this.updateEvents(0, 0, events));
-        return true;
-      }
-
-      return false;
-    }
   }]);
 
   return Rate;
@@ -14337,6 +13566,27 @@ Rate.RATE_3 = 20;
 Rate.RATE_2 = 30;
 Rate.RATE_1 = 60;
 Rate.UPDATE = 'rateUpdate';
+
+var _initialiseProps = function _initialiseProps() {
+  var _this2 = this;
+
+  this.onUpdate = function (events) {
+    // 余りが 0 の時にイベントを発火します
+    _this2.count += 1;
+    var reminder = _this2.count % _this2.rate;
+
+    if (reminder === 0) {
+      _this2.count = 0;
+
+      _this2.fire(_this2.updateEvents(0, 0, events));
+
+      return true;
+    }
+
+    return false;
+  };
+};
+
 
 
 /***/ }),
@@ -14697,9 +13947,9 @@ function () {
      * @returns {void}
      */
     value: function start() {
-      window.addEventListener('touchstart', Freeze.onScroll, false);
-      window.addEventListener('touchmove', Freeze.onScroll, false);
-      window.addEventListener('touchend', Freeze.onScroll, false);
+      // window.addEventListener('touchstart', Freeze.onScroll, false);
+      // window.addEventListener('touchmove', Freeze.onScroll, false);
+      // window.addEventListener('touchend', Freeze.onScroll, false);
       window.addEventListener('scroll', Freeze.onScroll, false);
       document.addEventListener('wheel', Freeze.onScroll, false);
       document.addEventListener('mousewheel', Freeze.onScroll, false);
@@ -14713,9 +13963,9 @@ function () {
   }, {
     key: "stop",
     value: function stop() {
-      window.removeEventListener('touchstart', Freeze.onScroll);
-      window.removeEventListener('touchmove', Freeze.onScroll);
-      window.removeEventListener('touchend', Freeze.onScroll);
+      // window.removeEventListener('touchstart', Freeze.onScroll);
+      // window.removeEventListener('touchmove', Freeze.onScroll);
+      // window.removeEventListener('touchend', Freeze.onScroll);
       window.removeEventListener('scroll', Freeze.onScroll);
       document.removeEventListener('wheel', Freeze.onScroll);
       document.removeEventListener('mousewheel', Freeze.onScroll);
@@ -14846,7 +14096,6 @@ function () {
       if (offset.top >= 0 && offset.top <= height && offset.bottom >= 0 && offset.bottom <= height) {
         hit.include = true;
       } // return
-      // return hit.top || hit.bottom || hit.contain || hit.include;
 
 
       hit.result = hit.top || hit.bottom || hit.contain || hit.include;
