@@ -4785,7 +4785,7 @@ function () {
      * @param {Object|Window} view Document.defaultView
      * @param {Element} element 操作対象 Element
      * @param {Array<string>} patterns 調査対象 CSS property name の配列
-     * @returns {CssStyle|string|undefined} style value を返します
+     * @returns {*|string|undefined} style value を返します
      * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/defaultView
      */
 
@@ -4871,15 +4871,7 @@ function () {
      * @type {string}
      */
 
-    this.original = css; // /**
-    //  * インスタンス作成時の inline CSS を上書きします
-    //  * @param {string} style 上書き用 CSS 設定
-    //  * @returns {string} 上書きされた CSS
-    //  */
-    // this.update = (style) => {
-    //   css = style;
-    //   return style;
-    // };
+    this.original = css;
   } // ----------------------------------------
   // METHOD
   // ----------------------------------------
@@ -7879,12 +7871,18 @@ function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Classes; });
-/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.regexp.split */ "./node_modules/core-js/modules/es6.regexp.split.js");
-/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_string_iterator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.string.iterator */ "./node_modules/core-js/modules/es6.string.iterator.js");
-/* harmony import */ var core_js_modules_es6_string_iterator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_string_iterator__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_array_from__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.array.from */ "./node_modules/core-js/modules/es6.array.from.js");
-/* harmony import */ var core_js_modules_es6_array_from__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_from__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es7.array.includes */ "./node_modules/core-js/modules/es7.array.includes.js");
+/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_string_includes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.string.includes */ "./node_modules/core-js/modules/es6.string.includes.js");
+/* harmony import */ var core_js_modules_es6_string_includes__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_string_includes__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es6_string_iterator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.string.iterator */ "./node_modules/core-js/modules/es6.string.iterator.js");
+/* harmony import */ var core_js_modules_es6_string_iterator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_string_iterator__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es6_array_from__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.array.from */ "./node_modules/core-js/modules/es6.array.from.js");
+/* harmony import */ var core_js_modules_es6_array_from__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_from__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es6.regexp.split */ "./node_modules/core-js/modules/es6.regexp.split.js");
+/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_4__);
+
+
 
 
 
@@ -7914,17 +7912,42 @@ var Classes =
 /*#__PURE__*/
 function () {
   _createClass(Classes, null, [{
-    key: "get",
+    key: "convert",
     // ----------------------------------------
     // STATIC METHOD
     // ----------------------------------------
 
     /**
+     * 可哀相な IE のための配列コンバーター, `.classList` 代用します
+     * @param {Element} element 操作対象 NodeList
+     * @returns {Array} 配列にコンバートして返します
+     */
+    value: function convert(element) {
+      var arr = element.className.split(' ');
+      var i = 0;
+      var limit = arr.length;
+      var empty = [];
+
+      for (; i < limit; i += 1) {
+        var className = arr[i];
+
+        if (!!className && className !== ' ') {
+          empty.push(className);
+        }
+      }
+
+      return empty;
+    }
+    /**
+     * 引数 `element` の class name list を取得します
      * 1. `classList` && `Array.from` - `Array.from(element.classList)`
      * 2. {@link Classes.convert}
      * @param {Element} element 操作対象 Element
      * @returns {Array.<string>} 引数 `element` の class を配列変換し返します
      */
+
+  }, {
+    key: "get",
     value: function get(element) {
       return element.classList && Array.from ? Array.from(element.classList) : Classes.convert(element);
     }
@@ -7938,8 +7961,8 @@ function () {
   }, {
     key: "has",
     value: function has(element, className) {
-      var elementClasses = Classes.get(element);
-      return elementClasses.indexOf(className) !== -1;
+      return element.classList ? element.classList.contains(className) : Classes.get(element).includes(className); // const elementClasses = Classes.get(element);
+      // return elementClasses.indexOf(className) !== -1;
     }
     /**
      * Element へ引数 className を追加します
@@ -7953,7 +7976,12 @@ function () {
   }, {
     key: "add",
     value: function add(node, className) {
-      // CSS class の存在チェック
+      if (node.classList) {
+        node.classList.add(className);
+        return true;
+      } // CSS class の存在チェック
+
+
       if (Classes.has(node, className)) {
         return false;
       } // argument copy
@@ -7978,6 +8006,11 @@ function () {
   }, {
     key: "remove",
     value: function remove(node, className) {
+      if (node.classList) {
+        node.classList.remove(className);
+        return true;
+      }
+
       if (!Classes.has(node, className)) {
         return false;
       } // argument copy
@@ -7993,30 +8026,6 @@ function () {
 
       element.className = elementClasses.join(' ');
       return true;
-    }
-    /**
-     * 可哀相な IE のための配列コンバーター, `.classList` 代用します
-     * @param {Element} element 操作対象 NodeList
-     * @returns {Array} 配列にコンバートして返します
-     */
-
-  }, {
-    key: "convert",
-    value: function convert(element) {
-      var arr = element.className.split(' ');
-      var i = 0;
-      var limit = arr.length;
-      var empty = [];
-
-      for (; i < limit; i += 1) {
-        var className = arr[i];
-
-        if (!!className && className !== ' ') {
-          empty.push(className);
-        }
-      }
-
-      return empty;
     } // ----------------------------------------
     // CONSTRUCTOR
     // ----------------------------------------
@@ -8096,7 +8105,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _css_Style__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../css/Style */ "./src/css/Style.js");
 /* harmony import */ var _Bounding__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Bounding */ "./src/dom/Bounding.js");
 /* harmony import */ var _Classes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Classes */ "./src/dom/Classes.js");
-/* harmony import */ var _util_Type__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../util/Type */ "./src/util/Type.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -8119,7 +8127,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
  // util
-
+// import Type from '../util/Type';
 
 /**
  * HTMLElement の操作を行います。
@@ -8144,9 +8152,10 @@ function () {
      * @return {?Element} Element を返します, 取得できない時は null を返します
      */
     value: function id(idName) {
-      var element = document.getElementById(idName); // 存在チェックを行います
-
-      return _util_Type__WEBPACK_IMPORTED_MODULE_3__["default"].exist(element) ? element : null;
+      // const element = document.getElementById(idName);
+      // // 存在チェックを行います
+      // return Type.exist(element) ? element : null;
+      return document.getElementById(idName);
     }
     /**
      * querySelector を使用し Element を探します
@@ -8305,6 +8314,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -8331,7 +8344,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 // const listenersKey = Symbol('event listeners object');
 
 /**
- * <p>Custom Event を作成し Event 通知を行います</p>
+ * Custom Event を作成し Event 通知を行います
  *
  * ```
  * const callback = (event) => {
@@ -8361,28 +8374,12 @@ function () {
   function EventDispatcher() {
     _classCallCheck(this, EventDispatcher);
 
-    // // @type {Object}
-    // let listeners = {};
-    // /**
-    //  * リスナーリストを取得します
-    //  * @returns {Object} リスナーリストを返します
-    //  */
-    // this.listeners = () => listeners;
-    // /**
-    //  * 全てのリスナーを破棄します
-    //  * @returns {boolean} 成功・不成功の真偽値を返します
-    //  */
-    // this.destroy = () => {
-    //   listeners = Object.create({});
-    //   return true;
-    // };
-
     /**
      * リスナーリスト object,
      * event type {string} を key, 値は Array.<function> になります
      * @type {Object}
      */
-    this.listeners = Object.create({});
+    this.listeners = _objectSpread({}, {}); // this.listeners = Object.create({});
   } // ----------------------------------------
   // METHOD
   // ----------------------------------------
@@ -8395,7 +8392,8 @@ function () {
   _createClass(EventDispatcher, [{
     key: "destroy",
     value: function destroy() {
-      this.listeners = Object.create({});
+      // this.listeners = Object.create({});
+      this.listeners = _objectSpread({}, {});
     }
     /**
      * event type に リスナー関数を bind します
@@ -8432,8 +8430,9 @@ function () {
       return true;
     }
     /**
-     * <p>event type からリスナー関数を remove します<br>
-     * 内部処理は一時的に null 設定にします</p>
+     * event type からリスナー関数を remove します
+     * - 一時的に null 設定にします
+     * - {@link EventDispatcher.clean} で all null の時に空にします
      * @param {string} type event type（種類）
      * @param {Function} listener リスナー関数
      * @returns {boolean} 成功・不成功の真偽値を返します
@@ -8448,13 +8447,9 @@ function () {
       } // @type {Object} - events.type:String: [listener:Function...]
 
 
-      var listeners = this.listeners; // if (!Type.has(listeners, type)) {
-      //   // listener.type が存在しない
-      //   // 処理しない
-      //   return false;
-      // }
+      var listeners = this.listeners;
 
-      if (!Object.keys(listeners).includes(type)) {
+      if (!_util_Type__WEBPACK_IMPORTED_MODULE_5__["default"].has(listeners, type)) {
         // listener.type が存在しない - 処理しない
         return false;
       } // @type {Array} - listener list
@@ -8478,8 +8473,8 @@ function () {
       return true;
     }
     /**
-     * <p>リスナー配列を調べ可能なら空にします<br>
-     * リスナーリストが全て null の時に 空配列にします</p>
+     * リスナー配列を調べ可能なら空にします
+     * - リスナーリストが全て null の時に 空配列にします
      * @param {string} type event type（種類）
      * @param {Array<Function>} types event type に登録されている配列（関数）
      * @returns {boolean} 成功・不成功の真偽値を返します, true: 空にした
@@ -8498,7 +8493,8 @@ function () {
 
       if (!hasFunction) {
         // null 以外が無いので空にする
-        this.listeners[type] = [].slice(0);
+        // this.listeners[type] = [].slice(0);
+        this.listeners[type] = [].concat();
       } // 空配列にしたかを hasFunction flag を反転させることで知らせます
 
 
@@ -8520,13 +8516,9 @@ function () {
       } // @type {Object} - events.type:String: [listener:Function...]
 
 
-      var listeners = this.listeners; // if (!Type.has(listeners, type)) {
-      //   // listener.type が存在しない
-      //   // 処理しない
-      //   return false;
-      // }
+      var listeners = this.listeners;
 
-      if (!Object.keys(listeners).includes(type)) {
+      if (!_util_Type__WEBPACK_IMPORTED_MODULE_5__["default"].has(listeners, type)) {
         // listener.type が存在しない - 処理しない
         return false;
       } // @type {boolean} - 存在チェック
@@ -8537,8 +8529,7 @@ function () {
     }
     /**
      * イベントを発生させリスナー関数を call します
-     * @param {Events|*} events 送信される Event Object.<br>
-     *   type キーにイベント種類が設定されています、dispatch 時に target プロパティを追加し this を設定します
+     * @param {Events|*} events 送信される Event Object.type キーにイベント種類が設定されています、dispatch 時に target プロパティを追加し this を設定します
      * @returns {boolean} 成功・不成功の真偽値を返します
      */
 
@@ -8550,13 +8541,9 @@ function () {
       // @type {Object} - events.type:string: [listener:Function...]
       var listeners = this.listeners; // @type {string} - event type
 
-      var type = events.type; // if (!Type.has(listeners, type)) {
-      //   // listener.type が存在しない
-      //   // 処理しない
-      //   return false;
-      // }
+      var type = events.type;
 
-      if (!Object.keys(listeners).includes(type)) {
+      if (!_util_Type__WEBPACK_IMPORTED_MODULE_5__["default"].has(listeners, type)) {
         // listener.type が存在しない - 処理しない
         return false;
       } // event.target = this しようとすると
@@ -8581,8 +8568,8 @@ function () {
     }
     /**
      * **alias on**
-     * <p>event type に リスナー関数を bind します</p>
-     * @deprecated instead use on
+     * - event type に リスナー関数を bind します
+     * @deprecated instead use {@link EventDispatcher.on}
      * @param {string} type event type（種類）
      * @param {Function} listener callback関数
      * @returns {boolean} 成功・不成功の真偽値を返します
@@ -8595,8 +8582,8 @@ function () {
     }
     /**
      * **alias off**
-     * <p>event type からリスナー関数を remove します</p>
-     * @deprecated instead use off
+     * - event type からリスナー関数を remove します
+     * @deprecated instead use {@link EventDispatcher.off}
      * @param {string} type event type（種類）
      * @param {Function} listener リスナー関数
      * @returns {boolean} 成功・不成功の真偽値を返します
@@ -8609,8 +8596,8 @@ function () {
     }
     /**
      * **alias has**
-     * <p>event type にリスナー関数が登録されているかを調べます</p>
-     * @deprecated instead use has
+     * - event type にリスナー関数が登録されているかを調べます
+     * @deprecated instead use {@link EventDispatcher.has}
      * @param {string} type event type（種類）
      * @param {Function} listener リスナー関数
      * @returns {boolean} event type にリスナー関数が登録されているかの真偽値を返します
@@ -8623,8 +8610,8 @@ function () {
     }
     /**
      * **alias dispatch**
-     * <p>イベントを発生させリスナー関数を call します</p>
-     * @deprecated instead use dispatch
+     * - イベントを発生させリスナー関数を call します
+     * @deprecated instead use {@link EventDispatcher.dispatch}
      * @param {Events} events typeキー が必須です
      * @returns {boolean} 成功・不成功の真偽値を返します
      */
@@ -8653,9 +8640,19 @@ function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Events; });
-/* harmony import */ var core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.object.assign */ "./node_modules/core-js/modules/es6.object.assign.js");
-/* harmony import */ var core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.array.iterator */ "./node_modules/core-js/modules/es6.array.iterator.js");
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.object.keys */ "./node_modules/core-js/modules/es6.object.keys.js");
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__);
 
+
+
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -8736,7 +8733,8 @@ function () {
     key: "clone",
     value: function clone() {
       // return new Events(this.type, this.currentTarget, this.target);
-      return Object.assign({}, this);
+      // return Object.assign({}, this);
+      return _objectSpread({}, this);
     }
   }]);
 
@@ -8817,6 +8815,23 @@ function (_EventDispatcher) {
   _inherits(NativeResizing, _EventDispatcher);
 
   // ----------------------------------------
+  // CALLBACK
+  // ----------------------------------------
+
+  /**
+   * 下記のプロパティをイベント・インスタンスに追加します
+   * - original {Events} - Rate Events instance
+   * - y {number} - scroll top
+   * - height {number} - window height
+   * - width {number} - window width
+   * - bottom {number} - window bottom 位置 (y + height)
+   * - previous {number} - 前回の scroll top
+   * - moving {number} - 前回からの移動量, 正: scroll down, 負: scroll up
+   * - wide {boolean} - width が 768 以上の時に true
+   * - changed {boolean} - scroll top が前回と変わっていたら true
+   * @param {?Event} [event] scroll / resize Event
+   */
+  // ----------------------------------------
   // CONSTRUCTOR
   // ----------------------------------------
 
@@ -8834,6 +8849,60 @@ function (_EventDispatcher) {
      * Resizing event を準備します
      * @type {ScrollEvents}
      */
+
+    _this.onUpdate = function (event) {
+      // @type {number} - scroll top
+      var y = _Scroll__WEBPACK_IMPORTED_MODULE_3__["default"].y(); // @type {number} - previous scroll top
+
+      var _assertThisInitialize = _assertThisInitialized(_assertThisInitialized(_this)),
+          previous = _assertThisInitialize.previous; // --- [window]
+      // @type {number} - window width
+
+
+      var width = window.innerWidth; // @type {number} - window height
+
+      var height = window.innerHeight; // --- [body]
+
+      var bodyWidth = document.body.clientWidth;
+      var bodyHeight = document.body.clientHeight; // @type {boolean} - 移動したかを表します,
+
+      var changed = event === null || previous !== y || height !== _this.window.height || width !== _this.window.width || bodyWidth !== _this.body.width || bodyHeight !== _this.body.height; // ----------------------------------------------
+      // @type {ScrollEvents} - events
+
+      var events = _this.events.clone(); // @type {Event} - Rate Events instance
+
+
+      events.original = event; // @type {number} - scroll top
+
+      events.y = y; // @type {number} - window height
+
+      events.height = height; // @type {number} - window width
+
+      events.width = width; // -- body
+
+      events.bodyWidth = bodyWidth;
+      events.bodyHeight = bodyHeight; // @type {number} - window bottom(y + height)
+
+      events.bottom = y + height; // @type {boolean} - 移動したかを表します,
+      // event が null の時は強制発火なので移動量 0 （scroll top 位置に変更がない）でも changed を true にします
+
+      events.changed = changed; // @type {number} - 前回の y 位置
+
+      events.previous = previous; // @type {number} - 移動量 +: down, -: up
+
+      events.moving = y - previous; // event fire
+      // console.log('Resizing.onUpdate', events);
+
+      _this.dispatch(events); // ----------------------------------------------
+
+
+      _this.window.width = width;
+      _this.window.height = height;
+      _this.body.width = bodyWidth;
+      _this.body.height = bodyHeight; // save scroll top -> previous
+
+      _this.previous = y;
+    };
 
     _this.events = new _events_ResizingEvents__WEBPACK_IMPORTED_MODULE_6__["default"](_Resizing__WEBPACK_IMPORTED_MODULE_5__["default"].UPDATE, _assertThisInitialized(_assertThisInitialized(_this)), _assertThisInitialized(_assertThisInitialized(_this))); // console.log('Resizing events', this.events);
 
@@ -8866,13 +8935,12 @@ function (_EventDispatcher) {
      * @type {number}
      */
 
-    _this.timer = 0;
-    /**
-     * bind onUpdate - scroll / resize / timer handler
-     * @type {function}
-     */
+    _this.timer = 0; // /**
+    //  * bind onUpdate - scroll / resize / timer handler
+    //  * @type {function}
+    //  */
+    // this.onUpdate = this.onUpdate.bind(this);
 
-    _this.onUpdate = _this.onUpdate.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     return _this;
   } // ----------------------------------------
   // METHOD
@@ -8910,71 +8978,6 @@ function (_EventDispatcher) {
       window.removeEventListener('scroll', this.onUpdate);
       window.removeEventListener('resize', this.onUpdate);
       return this;
-    }
-    /**
-     * 下記のプロパティをイベント・インスタンスに追加します
-     * - original {Events} - Rate Events instance
-     * - y {number} - scroll top
-     * - height {number} - window height
-     * - width {number} - window width
-     * - bottom {number} - window bottom 位置 (y + height)
-     * - previous {number} - 前回の scroll top
-     * - moving {number} - 前回からの移動量, 正: scroll down, 負: scroll up
-     * - wide {boolean} - width が 768 以上の時に true
-     * - changed {boolean} - scroll top が前回と変わっていたら true
-     * @param {?Event} [event] scroll / resize Event
-     */
-
-  }, {
-    key: "onUpdate",
-    value: function onUpdate(event) {
-      // @type {number} - scroll top
-      var y = _Scroll__WEBPACK_IMPORTED_MODULE_3__["default"].y(); // @type {number} - previous scroll top
-
-      var previous = this.previous; // --- [window]
-      // @type {number} - window width
-
-      var width = window.innerWidth; // @type {number} - window height
-
-      var height = window.innerHeight; // --- [body]
-
-      var bodyWidth = document.body.clientWidth;
-      var bodyHeight = document.body.clientHeight; // @type {boolean} - 移動したかを表します,
-
-      var changed = event === null || previous !== y || height !== this.window.height || width !== this.window.width || bodyWidth !== this.body.width || bodyHeight !== this.body.height; // ----------------------------------------------
-      // @type {ScrollEvents} - events
-
-      var events = this.events.clone(); // @type {Event} - Rate Events instance
-
-      events.original = event; // @type {number} - scroll top
-
-      events.y = y; // @type {number} - window height
-
-      events.height = height; // @type {number} - window width
-
-      events.width = width; // -- body
-
-      events.bodyWidth = bodyWidth;
-      events.bodyHeight = bodyHeight; // @type {number} - window bottom(y + height)
-
-      events.bottom = y + height; // @type {boolean} - 移動したかを表します,
-      // event が null の時は強制発火なので移動量 0 （scroll top 位置に変更がない）でも changed を true にします
-
-      events.changed = changed; // @type {number} - 前回の y 位置
-
-      events.previous = previous; // @type {number} - 移動量 +: down, -: up
-
-      events.moving = y - previous; // event fire
-      // console.log('Resizing.onUpdate', events);
-
-      this.dispatch(events); // ----------------------------------------------
-
-      this.window.width = width;
-      this.window.height = height;
-      this.body.width = bodyWidth;
-      this.body.height = bodyHeight; // save scroll top -> previous
-
-      this.previous = y;
     }
     /**
      * 強制 update
@@ -9141,6 +9144,24 @@ function (_Scrolling) {
    * @event UPDATE
    * @type {string}
    */
+
+  /**
+   * 指定 rate(fps) 毎にスクロール位置を scroll top 位置をもたせた Scrolling.UPDATE custom event を発火します
+   *
+   * 下記のプロパティをイベント・インスタンスに追加します
+   *
+   * - original {Events} - Rate Events instance
+   * - y {number} - scroll top
+   * - height {number} - window height
+   * - width {number} - window width
+   * - bottom {number} - window bottom 位置 (y + height)
+   * - previous {number} - 前回の scroll top
+   * - moving {number} - 前回からの移動量, 正: scroll down, 負: scroll up
+   * - wide {boolean} - width が 768 以上の時に true
+   * - changed {boolean} - scroll top が前回と変わっていたら true
+   *
+   * @param {?Events} event {@link Rate.UPDATE} Events instance
+   */
   // ----------------------------------------
   // CONSTRUCTOR
   // ----------------------------------------
@@ -9154,17 +9175,73 @@ function (_Scrolling) {
     _classCallCheck(this, Resizing);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Resizing).call(this)); // ------
+    // /**
+    //  * bound onUpdate, Rate.UPDATE event handler
+    //  * @type {function}
+    //  */
+    // this.onUpdate = this.onUpdate.bind(this);
 
-    /**
-     * bound onUpdate, Rate.UPDATE event handler
-     * @type {function}
-     */
-
-    _this.onUpdate = _this.onUpdate.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     /**
      * Resizing event を準備します
      * @type {ScrollEvents}
      */
+
+    _this.onUpdate = function (event) {
+      // @type {number} - scroll top
+      var y = _Scroll__WEBPACK_IMPORTED_MODULE_4__["default"].y(); // @type {number} - previous scroll top
+
+      var _assertThisInitialize = _assertThisInitialized(_assertThisInitialized(_this)),
+          previous = _assertThisInitialize.previous; // --- [window]
+      // @type {number} - window width
+
+
+      var width = window.innerWidth; // @type {number} - window height
+
+      var height = window.innerHeight; // --- [body]
+
+      var bodyWidth = document.body.clientWidth;
+      var bodyHeight = document.body.clientHeight; // @type {boolean} - 移動したかを表します,
+
+      var changed = event === null || previous !== y || height !== _this.window.height || width !== _this.window.width || bodyWidth !== _this.body.width || bodyHeight !== _this.body.height; // ----------------------------------------------
+      // @type {ScrollEvents} - events
+
+      var events = _this.events.clone(); // @type {Event} - Rate Events instance
+
+
+      events.original = event; // @type {number} - scroll top
+
+      events.y = y; // @type {number} - window height
+
+      events.height = height; // @type {number} - window width
+
+      events.width = width; // -- body
+
+      events.bodyWidth = bodyWidth;
+      events.bodyHeight = bodyHeight; // @type {number} - window bottom(y + height)
+
+      events.bottom = y + height; // @type {boolean} - 移動したかを表します,
+      // event が null の時は強制発火なので移動量 0 （scroll top 位置に変更がない）でも changed を true にします
+
+      events.changed = changed; // @type {number} - 前回の y 位置
+
+      events.previous = previous; // @type {number} - 移動量 +: down, -: up
+
+      events.moving = y - previous; // event fire
+      // console.log('Resizing.onUpdate', events);
+
+      _this.dispatch(events); // ----------------------------------------------
+
+
+      _this.window.width = width;
+      _this.window.height = height;
+      _this.body.width = bodyWidth;
+      _this.body.height = bodyHeight; // save scroll top -> previous
+
+      _this.previous = y; // // 移動量 0 の時は rate 監視を停止する
+      // if (!changed) {
+      //   this.unwatch();
+      // }
+    };
 
     _this.events = new _events_ResizingEvents__WEBPACK_IMPORTED_MODULE_5__["default"](Resizing.UPDATE, _assertThisInitialized(_assertThisInitialized(_this)), _assertThisInitialized(_assertThisInitialized(_this))); // console.log('Resizing events', this.events);
 
@@ -9220,78 +9297,6 @@ function (_Scrolling) {
     value: function stop() {
       this.unwatch();
       return this;
-    }
-    /**
-     * 指定 rate(fps) 毎にスクロール位置を scroll top 位置をもたせた Scrolling.UPDATE custom event を発火します
-     *
-     * 下記のプロパティをイベント・インスタンスに追加します
-     *
-     * - original {Events} - Rate Events instance
-     * - y {number} - scroll top
-     * - height {number} - window height
-     * - width {number} - window width
-     * - bottom {number} - window bottom 位置 (y + height)
-     * - previous {number} - 前回の scroll top
-     * - moving {number} - 前回からの移動量, 正: scroll down, 負: scroll up
-     * - wide {boolean} - width が 768 以上の時に true
-     * - changed {boolean} - scroll top が前回と変わっていたら true
-     *
-     * @param {?Events} event {@link Rate.UPDATE} Events instance
-     */
-
-  }, {
-    key: "onUpdate",
-    value: function onUpdate(event) {
-      // @type {number} - scroll top
-      var y = _Scroll__WEBPACK_IMPORTED_MODULE_4__["default"].y(); // @type {number} - previous scroll top
-
-      var previous = this.previous; // --- [window]
-      // @type {number} - window width
-
-      var width = window.innerWidth; // @type {number} - window height
-
-      var height = window.innerHeight; // --- [body]
-
-      var bodyWidth = document.body.clientWidth;
-      var bodyHeight = document.body.clientHeight; // @type {boolean} - 移動したかを表します,
-
-      var changed = event === null || previous !== y || height !== this.window.height || width !== this.window.width || bodyWidth !== this.body.width || bodyHeight !== this.body.height; // ----------------------------------------------
-      // @type {ScrollEvents} - events
-
-      var events = this.events.clone(); // @type {Event} - Rate Events instance
-
-      events.original = event; // @type {number} - scroll top
-
-      events.y = y; // @type {number} - window height
-
-      events.height = height; // @type {number} - window width
-
-      events.width = width; // -- body
-
-      events.bodyWidth = bodyWidth;
-      events.bodyHeight = bodyHeight; // @type {number} - window bottom(y + height)
-
-      events.bottom = y + height; // @type {boolean} - 移動したかを表します,
-      // event が null の時は強制発火なので移動量 0 （scroll top 位置に変更がない）でも changed を true にします
-
-      events.changed = changed; // @type {number} - 前回の y 位置
-
-      events.previous = previous; // @type {number} - 移動量 +: down, -: up
-
-      events.moving = y - previous; // event fire
-      // console.log('Resizing.onUpdate', events);
-
-      this.dispatch(events); // ----------------------------------------------
-
-      this.window.width = width;
-      this.window.height = height;
-      this.body.width = bodyWidth;
-      this.body.height = bodyHeight; // save scroll top -> previous
-
-      this.previous = y; // // 移動量 0 の時は rate 監視を停止する
-      // if (!changed) {
-      //   this.unwatch();
-      // }
     }
   }]);
 
@@ -9460,6 +9465,15 @@ function (_EventDispatcher) {
    * @type {string}
    */
   // ----------------------------------------
+  // CALLBACK
+  // ----------------------------------------
+
+  /**
+   * Scrolling.UPDATE event handler - {link Hit.test} 衝突判定を行います
+   * @param {ScrollEvents} scrollEvents scroll events object
+   * @return {boolean} 衝突時に true を返します
+   */
+  // ----------------------------------------
   // CONSTRUCTOR
   // ----------------------------------------
 
@@ -9481,6 +9495,31 @@ function (_EventDispatcher) {
      * @type {elements}
      */
 
+    _this.onUpdate = function (scrollEvents) {
+      if (!scrollEvents.changed) {
+        return false;
+      } // element offset
+
+
+      var offset = _this.elements.offset(); // hit result
+
+
+      var hit = _util_Hit__WEBPACK_IMPORTED_MODULE_6__["default"].test(scrollEvents.height, offset);
+
+      var _assertThisInitialize = _assertThisInitialized(_assertThisInitialized(_this)),
+          events = _assertThisInitialize.events;
+
+      events.type = hit.result ? Rising.COLLISION : Rising.ALIEN; // hit / original / offset を追加します
+
+      events.hit = hit;
+      events.original = scrollEvents;
+      events.offset = offset; // 発火
+
+      _this.dispatch(events);
+
+      return hit.result;
+    };
+
     _this.elements = elements;
     /**
      * スクロールトップ監視インスタンス
@@ -9488,13 +9527,12 @@ function (_EventDispatcher) {
      */
 
     _this.scrolling = scrolling; // const boundScroll = this.scroll.bind(this);
+    // /**
+    //  * bound onUpdate, Rate.UPDATE event handler
+    //  * @type {function}
+    //  */
+    // this.onUpdate = this.onUpdate.bind(this);
 
-    /**
-     * bound onUpdate, Rate.UPDATE event handler
-     * @type {function}
-     */
-
-    _this.onUpdate = _this.onUpdate.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     /**
      * Rising.[COLLISION|ALIEN] event instance
      * @type {RisingEvents}
@@ -9502,26 +9540,7 @@ function (_EventDispatcher) {
 
     _this.events = new _events_RisingEvents__WEBPACK_IMPORTED_MODULE_5__["default"](Rising.COLLISION, _assertThisInitialized(_assertThisInitialized(_this)), _assertThisInitialized(_assertThisInitialized(_this)));
     return _this;
-  } // // ----------------------------------------
-  // // EVENT
-  // // ----------------------------------------
-  // /**
-  //  * 衝突イベント
-  //  * @event COLLISION
-  //  * @return {string} risingCollision を返します
-  //  */
-  // static get COLLISION() {
-  //   return 'risingCollision';
-  // }
-  // /**
-  //  * 衝突「していない」イベント
-  //  * @event ALIEN
-  //  * @return {string} risingAlien を返します
-  //  */
-  // static get ALIEN() {
-  //   return 'risingAlien';
-  // }
-  // ----------------------------------------
+  } // ----------------------------------------
   // METHOD
   // ----------------------------------------
 
@@ -9548,33 +9567,6 @@ function (_EventDispatcher) {
     value: function stop() {
       this.scrolling.off(_Scrolling__WEBPACK_IMPORTED_MODULE_3__["default"].UPDATE, this.onUpdate);
       return this;
-    }
-    /**
-     * Scrolling.UPDATE event handler - {link Hit.test} 衝突判定を行います
-     * @param {ScrollEvents} scrollEvents scroll events object
-     * @return {boolean} 衝突時に true を返します
-     */
-
-  }, {
-    key: "onUpdate",
-    value: function onUpdate(scrollEvents) {
-      if (!scrollEvents.changed) {
-        return false;
-      } // element offset
-
-
-      var offset = this.elements.offset(); // hit result
-
-      var hit = _util_Hit__WEBPACK_IMPORTED_MODULE_6__["default"].test(scrollEvents.height, offset);
-      var events = this.events;
-      events.type = hit.result ? Rising.COLLISION : Rising.ALIEN; // hit / original / offset を追加します
-
-      events.hit = hit;
-      events.original = scrollEvents;
-      events.offset = offset; // 発火
-
-      this.dispatch(events);
-      return hit.result;
     }
   }]);
 
@@ -9645,8 +9637,8 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 
 
 /**
- * new を許可しないための Symbol
- * @type {Symbol}
+ * new を許可しないための inner Symbol
+ * @type {symbol}
  * @private
  */
 
@@ -9660,11 +9652,10 @@ var singletonSymbol = Symbol('Scroll singleton symbol');
 var instance = null;
 /**
  * window scroll event を監視し通知を行います
- * <p>singleton なので new ではなく factory を使用し instance を作成します</p>
+ * - singleton です。 new ではなく factory を使用し instance を作成します
  *
- * ```
- * const instance = Scroll.factory();
- * ```
+ * @example
+ *  const instance = Scroll.factory();
  */
 
 var Scroll =
@@ -9673,17 +9664,40 @@ function (_EventDispatcher) {
   _inherits(Scroll, _EventDispatcher);
 
   _createClass(Scroll, null, [{
-    key: "jump",
+    key: "factory",
+    // ----------------------------------------
+    // STATIC CONST
+    // ----------------------------------------
+
+    /**
+     * scroll で発生するイベント - `scrollScroll`
+     * @event SCROLL
+     * @type {string}
+     */
     // ----------------------------------------
     // STATIC METHOD
     // ----------------------------------------
 
+    /**
+     * Scroll instance を singleton を保証し作成します
+     * @returns {Scroll} Scroll instance を返します
+     */
+    value: function factory() {
+      if (instance === null) {
+        instance = new Scroll(singletonSymbol);
+      }
+
+      return instance;
+    }
     /**
      * y 位置に scroll top を即座に移動させます
      * @param {number} [y=0] scroll top 目標値
      * @param {number} [delay=0] time out 遅延 ms
      * @returns {number} time out id
      */
+
+  }, {
+    key: "jump",
     value: function jump() {
       var y = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
       var delay = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -9712,49 +9726,28 @@ function (_EventDispatcher) {
     key: "y",
     value: function y() {
       return typeof window.pageYOffset !== 'undefined' ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
-    } // ----------------------------------------
-
-    /**
-     * Scroll instance を singleton を保証し作成します
-     * @returns {Scroll} Scroll instance を返します
-     */
-
-  }, {
-    key: "factory",
-    value: function factory() {
-      if (instance === null) {
-        instance = new Scroll(singletonSymbol);
-      }
-
-      return instance;
-    } // ----------------------------------------
-    // EVENT
-    // ----------------------------------------
-
-    /**
-     * scroll で発生するイベントを取得します
-     * @event SCROLL
-     * @returns {string} event, scrollScroll を返します
-     * @default scrollScroll
-     */
-
-  }, {
-    key: "SCROLL",
-    get: function get() {
-      return 'scrollScroll';
     } // ---------------------------------------------------
-    //  CONSTRUCTOR
+    //  CALLBACK
     // ---------------------------------------------------
 
     /**
-    /**
-     * singleton です
-     * @param {Symbol} checkSymbol singleton を保証するための private instance
-     * @returns {Scroll} singleton instance を返します
+     * window scroll event handler
+     * - window scroll event 発生後に scroll top 位置をもたせた Scroll.SCROLL custom event を発火します
+     * @param {?Event} event window scroll event, nullable
      */
 
   }]);
 
+  // ---------------------------------------------------
+  //  CONSTRUCTOR
+  // ---------------------------------------------------
+
+  /**
+  /**
+   * singleton です
+   * @param {symbol} checkSymbol singleton を保証するための private instance
+   * @returns {Scroll} singleton instance を返します
+   */
   function Scroll(checkSymbol) {
     var _this;
 
@@ -9773,38 +9766,56 @@ function (_EventDispatcher) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Scroll).call(this)); // instance = this;
     // event handler
-    // const boundScroll = this.scroll.bind(this);
-
-    /**
-     * bound onScroll, window.onscroll event handler
-     * @type {function}
-     */
-    // this.boundScroll = this.scroll.bind(this);
-
-    _this.onScroll = _this.onScroll.bind(_assertThisInitialized(_assertThisInitialized(_this))); // this.boundScroll = () => boundScroll;
-    // @type {Events} - events instance
-    // const events = new ScrollEvents(Scroll.SCROLL, this, this);
+    // /**
+    //  * bound onScroll, window.onscroll event handler
+    //  * @type {function}
+    //  */
+    // this.onScroll = this.onScroll.bind(this);
 
     /**
      * ScrollEvents instance, 発火時に使用します
      * @type {ScrollEvents}
      */
 
-    _this.events = new _events_ScrollEvents__WEBPACK_IMPORTED_MODULE_4__["default"](Scroll.SCROLL, _assertThisInitialized(_assertThisInitialized(_this)), _assertThisInitialized(_assertThisInitialized(_this))); // this.events = () => events;
+    _this.onScroll = function (event) {
+      // @type {number} - scroll top
+      var y = Scroll.y(); // @type {number} - window height
 
+      var _window = window,
+          innerHeight = _window.innerHeight; // @type {number} - 前回の scroll top
+      // @type {Events} - events
+
+      var _assertThisInitialize = _assertThisInitialized(_assertThisInitialized(_this)),
+          events = _assertThisInitialize.events,
+          previous = _assertThisInitialize.previous; // @type {Event} - scroll event
+
+
+      events.original = event; // @type {number} - scroll top
+
+      events.y = y; // @type {number} - window height
+
+      events.height = innerHeight; // @type {number} - window bottom(y + height)
+
+      events.bottom = y + innerHeight;
+      events.previous = previous; // @type {boolean} - 前回の scroll top と比較し移動したかを真偽値で取得します, true: 移動した
+
+      events.changed = previous !== y; // @type {number} - 移動量 +（正）: down, -（負）: up
+
+      events.moving = y - previous; // event fire
+
+      _this.dispatch(events);
+
+      _this.previous = y;
+    };
+
+    _this.events = new _events_ScrollEvents__WEBPACK_IMPORTED_MODULE_4__["default"](Scroll.SCROLL, _assertThisInitialized(_assertThisInitialized(_this)), _assertThisInitialized(_assertThisInitialized(_this)));
     /**
      * 前回 scroll top 位置
      * @type {number}
      * @default -1
      */
 
-    _this.previous = -1; // /**
-    //  * start 済みフラッグ
-    //  * @type {boolean}
-    //  * @default false
-    //  */
-    // this.started = false;
-    // 設定済み instance を返します
+    _this.previous = -1; // 設定済み instance を返します
 
     return _possibleConstructorReturn(_this, _assertThisInitialized(_assertThisInitialized(_this)));
   } // ----------------------------------------
@@ -9820,10 +9831,6 @@ function (_EventDispatcher) {
   _createClass(Scroll, [{
     key: "start",
     value: function start() {
-      // if (this.started) {
-      //   return this;
-      // }
-      // this.started = true;
       this.stop();
       window.addEventListener('scroll', this.onScroll, false);
       return this;
@@ -9836,54 +9843,15 @@ function (_EventDispatcher) {
   }, {
     key: "stop",
     value: function stop() {
-      // if (!this.started) {
-      //   return this;
-      // }
-      // this.started = false;
       window.removeEventListener('scroll', this.onScroll);
       return this;
-    }
-    /**
-     * window scroll event handler<br>
-     * window scroll event 発生後に scroll top 位置をもたせた Scroll.SCROLL custom event を発火します
-     * @param {?Event} event window scroll event, nullable
-     * @returns {void}
-     */
-
-  }, {
-    key: "onScroll",
-    value: function onScroll(event) {
-      // @type {number} - scroll top
-      var y = Scroll.y(); // @type {number} - window height
-
-      var _window = window,
-          innerHeight = _window.innerHeight; // @type {number} - 前回の scroll top
-      // @type {Events} - events
-
-      var events = this.events,
-          previous = this.previous; // @type {Event} - scroll event
-
-      events.original = event; // @type {number} - scroll top
-
-      events.y = y; // @type {number} - window height
-
-      events.height = innerHeight; // @type {number} - window bottom(y + height)
-
-      events.bottom = y + innerHeight;
-      events.previous = previous; // @type {boolean} - 前回の scroll top と比較し移動したかを真偽値で取得します, true: 移動した
-
-      events.changed = previous !== y; // @type {number} - 移動量 +（正）: down, -（負）: up
-
-      events.moving = y - previous; // event fire
-
-      this.dispatch(events);
-      this.previous = y;
     }
   }]);
 
   return Scroll;
 }(_EventDispatcher__WEBPACK_IMPORTED_MODULE_3__["default"]);
 
+Scroll.SCROLL = 'scrollScroll';
 
 
 /***/ }),
@@ -9973,6 +9941,27 @@ function (_EventDispatcher) {
    * @event UPDATE
    */
   // ---------------------------------------------------
+  //  CALLBACK
+  // ---------------------------------------------------
+
+  /**
+   * 指定 rate(fps) 毎 scroll top 位置をもたせた Scrolling.UPDATE custom event を発火します
+   *
+   * 下記のプロパティをイベント・インスタンスに追加します
+   *
+   * - original {Events} - Rate Events instance
+   * - y {number} - scroll top
+   * - height {number} - window height
+   * - width {number} - window width
+   * - bottom {number} - window bottom 位置 (y + height)
+   * - previous {number} - 前回の scroll top
+   * - moving {number} - 前回からの移動量, 正: scroll down, 負: scroll up
+   * - wide {boolean} - width が 768 以上の時に true
+   * - changed {boolean} - scroll top が前回と変わっていたら true
+   *
+   * @param {?Events} event {@link Rate.UPDATE} Events instance
+   */
+  // ---------------------------------------------------
   //  CONSTRUCTOR
   // ---------------------------------------------------
 
@@ -9988,13 +9977,12 @@ function (_EventDispatcher) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Scrolling).call(this)); // @type {function}
     // const onUpdate = this.scroll.bind(this);
-
-    /**
-     * bound onUpdate, Rate.UPDATE event handler
-     * @type {function}
-     */
-
-    _this.onUpdate = _this.onUpdate.bind(_assertThisInitialized(_assertThisInitialized(_this))); // this.onUpdate = onUpdate;
+    // /**
+    //  * bound onUpdate, Rate.UPDATE event handler
+    //  * @type {function}
+    //  */
+    // this.onUpdate = this.onUpdate.bind(this);
+    // this.onUpdate = onUpdate;
     // @type {ScrollEvents}
     // const events = new ScrollEvents(Scrolling.UPDATE, this, this);
 
@@ -10002,6 +9990,52 @@ function (_EventDispatcher) {
      * ScrollEvents instance, 発火時に使用します
      * @type {ScrollEvents}
      */
+
+    _this.onUpdate = function (event) {
+      // @type {number} - scroll top
+      var y = _Scroll__WEBPACK_IMPORTED_MODULE_3__["default"].y(); // @type {ScrollEvents} - events
+      // const { events } = this;
+      // @type {number} - previous scroll top
+
+      var _assertThisInitialize = _assertThisInitialized(_assertThisInitialized(_this)),
+          previous = _assertThisInitialize.previous,
+          events = _assertThisInitialize.events; // @type {boolean} - 移動したかを表します,
+
+
+      var changed = event === null || previous !== y; // 移動量 0 の時は rate 監視を停止する
+
+      if (!changed) {
+        _this.unwatch();
+      } // @type {number} - window height
+
+
+      var height = window.innerHeight; // @type {number} - window width
+
+      var width = window.innerWidth; // @type {Event} - Rate Events instance
+
+      events.original = event; // @type {number} - scroll top
+
+      events.y = y; // @type {number} - window height
+
+      events.height = height; // @type {number} - window width
+
+      events.width = width; // @type {number} - window bottom(y + height)
+
+      events.bottom = y + height; // @type {boolean} - 移動したかを表します,
+      // event が null の時は強制発火なので移動量 0 （scroll top 位置に変更がない）でも changed を true にします
+
+      events.changed = changed; // @type {number} - 前回の y 位置
+
+      events.previous = previous; // @type {number} - 移動量 +: down, -: up
+
+      events.moving = y - previous; // event fire
+      // console.log('Scrolling.scroll', events);
+
+      _this.dispatch(events); // save scroll top -> previous
+
+
+      _this.previous = y;
+    };
 
     _this.events = new _events_ScrollEvents__WEBPACK_IMPORTED_MODULE_5__["default"](Scrolling.UPDATE, _assertThisInitialized(_assertThisInitialized(_this)), _assertThisInitialized(_assertThisInitialized(_this))); // this.events = events;
 
@@ -10039,18 +10073,6 @@ function (_EventDispatcher) {
     _this.onNativeEvent = _this.onNativeEvent.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     return _this;
   } // ----------------------------------------
-  // EVENT
-  // ----------------------------------------
-  // /**
-  //  * fps で発生するイベントを取得します
-  //  * @event SCROLL
-  //  * @returns {string} event, scrollingScroll を返します
-  //  * @default scrollingScroll
-  //  */
-  // static get UPDATE() {
-  //   return 'scrollingUpdate';
-  // }
-  // ----------------------------------------
   // METHOD
   // ----------------------------------------
 
@@ -10120,69 +10142,6 @@ function (_EventDispatcher) {
       this.rate.off(_tick_Rate__WEBPACK_IMPORTED_MODULE_6__["default"].UPDATE, this.onUpdate);
       this.watching = false;
       return this;
-    }
-    /**
-     * 指定 rate(fps) 毎にスクロール位置を<br>
-     * scroll top 位置をもたせた Scrolling.UPDATE custom event を発火します
-     *
-     * 下記のプロパティをイベント・インスタンスに追加します
-     *
-     * - original {Events} - Rate Events instance
-     * - y {number} - scroll top
-     * - height {number} - window height
-     * - width {number} - window width
-     * - bottom {number} - window bottom 位置 (y + height)
-     * - previous {number} - 前回の scroll top
-     * - moving {number} - 前回からの移動量, 正: scroll down, 負: scroll up
-     * - wide {boolean} - width が 768 以上の時に true
-     * - changed {boolean} - scroll top が前回と変わっていたら true
-     *
-     * @param {?Events} event {@link Rate.UPDATE} Events instance
-     */
-
-  }, {
-    key: "onUpdate",
-    value: function onUpdate(event) {
-      // @type {number} - scroll top
-      var y = _Scroll__WEBPACK_IMPORTED_MODULE_3__["default"].y(); // @type {ScrollEvents} - events
-      // const { events } = this;
-      // @type {number} - previous scroll top
-
-      var previous = this.previous,
-          events = this.events; // @type {boolean} - 移動したかを表します,
-
-      var changed = event === null || previous !== y; // 移動量 0 の時は rate 監視を停止する
-
-      if (!changed) {
-        this.unwatch();
-      } // @type {number} - window height
-
-
-      var height = window.innerHeight; // @type {number} - window width
-
-      var width = window.innerWidth; // @type {Event} - Rate Events instance
-
-      events.original = event; // @type {number} - scroll top
-
-      events.y = y; // @type {number} - window height
-
-      events.height = height; // @type {number} - window width
-
-      events.width = width; // @type {number} - window bottom(y + height)
-
-      events.bottom = y + height; // @type {boolean} - 移動したかを表します,
-      // event が null の時は強制発火なので移動量 0 （scroll top 位置に変更がない）でも changed を true にします
-
-      events.changed = changed; // @type {number} - 前回の y 位置
-
-      events.previous = previous; // @type {number} - 移動量 +: down, -: up
-
-      events.moving = y - previous; // event fire
-      // console.log('Scrolling.scroll', events);
-
-      this.dispatch(events); // save scroll top -> previous
-
-      this.previous = y;
     }
     /**
      * 強制的に Scrolling.SCROLL event を発火させます
@@ -10296,6 +10255,28 @@ function (_EventDispatcher) {
    * @type {string}
    */
   // ----------------------------------------
+  // CALLBACK
+  // ----------------------------------------
+
+  /**
+   * touchstart - event handler
+   */
+
+  /**
+   * touchmove {@link Touching}.MOVE - event handler
+   * @param {TouchingEvents} events events.between.y で移動量を計算します
+   */
+
+  /**
+   * touchend {@link Touching}.END - event handler
+   * @param {TouchingEvents} events events.between.y で移動量を計算します
+   */
+
+  /**
+   * touchend {@link Touching}.CANCEL - event handler
+   * - 処理を中止します
+   */
+  // ----------------------------------------
   // CONSTRUCTOR
   // ----------------------------------------
 
@@ -10319,6 +10300,8 @@ function (_EventDispatcher) {
      * @type {Element}
      */
 
+    _initialiseProps.call(_assertThisInitialized(_assertThisInitialized(_this)));
+
     _this.element = element;
     /**
      * touch event 管理
@@ -10331,31 +10314,27 @@ function (_EventDispatcher) {
      * @type {number}
      */
 
-    _this.marginal = marginal;
-    /**
-     * bound onStart - touchstart event handler
-     * @type {function}
-     */
+    _this.marginal = marginal; // /**
+    //  * bound onStart - touchstart event handler
+    //  * @type {function}
+    //  */
+    // this.onStart = this.onStart.bind(this);
+    // /**
+    //  * bound onMove - touchmove event handler
+    //  * @type {function}
+    //  */
+    // this.onMove = this.onMove.bind(this);
+    // /**
+    //  * bound onEnd - touchend event handler
+    //  * @type {function}
+    //  */
+    // this.onEnd = this.onEnd.bind(this);
+    // /**
+    //  * bound onCancel - touchcancel event handler
+    //  * @type {function}
+    //  */
+    // this.onCancel = this.onCancel.bind(this);
 
-    _this.onStart = _this.onStart.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    /**
-     * bound onMove - touchmove event handler
-     * @type {function}
-     */
-
-    _this.onMove = _this.onMove.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    /**
-     * bound onEnd - touchend event handler
-     * @type {function}
-     */
-
-    _this.onEnd = _this.onEnd.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    /**
-     * bound onCancel - touchcancel event handler
-     * @type {function}
-     */
-
-    _this.onCancel = _this.onCancel.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     /**
      * X 移動量を累積加算します
      * @type {number}
@@ -10383,81 +10362,15 @@ function (_EventDispatcher) {
   // ----------------------------------------
 
   /**
-   * touchstart - event handler
+   * x 方向閾値(`marginal`)超えているかをチェックします
+   * - 超えているときは swipe 方向を check し `swipe` event を発火します
+   *   - 負数 - swipe left
+   *   - 正数 - swipe right
+   * @return {boolean} true: 超えている
    */
 
 
   _createClass(Swipe, [{
-    key: "onStart",
-    value: function onStart() {
-      this.dispose();
-      this.reset(); // ----
-
-      var touching = this.touching;
-      touching.on(_Touching__WEBPACK_IMPORTED_MODULE_6__["default"].MOVE, this.onMove);
-      touching.on(_Touching__WEBPACK_IMPORTED_MODULE_6__["default"].END, this.onEnd);
-      touching.on(_Touching__WEBPACK_IMPORTED_MODULE_6__["default"].CANCEL, this.onCancel);
-    }
-    /**
-     * touchmove {@link Touching}.MOVE - event handler
-     * @param {TouchingEvents} events events.between.y で移動量を計算します
-     */
-
-  }, {
-    key: "onMove",
-    value: function onMove(events) {
-      // 移動量を累積する
-      this.dragging += events.between.x;
-      this.drag(this.dragging);
-
-      if (this.swipeCheck()) {
-        this.dispose();
-        this.reset();
-      }
-    }
-    /**
-     * touchend {@link Touching}.END - event handler
-     * @param {TouchingEvents} events events.between.y で移動量を計算します
-     */
-
-  }, {
-    key: "onEnd",
-    value: function onEnd(events) {
-      // 移動量を累積する
-      this.dragging += events.between.x;
-      this.drag(this.dragging); // ---
-
-      var move = this.swipeCheck();
-
-      if (!move) {
-        this.dispatch(this.events.end);
-      } // ---
-
-
-      this.dispose();
-      this.reset();
-    }
-    /**
-     * touchend {@link Touching}.CANCEL - event handler
-     * - 処理を中止します
-     */
-
-  }, {
-    key: "onCancel",
-    value: function onCancel() {
-      this.dispose();
-      this.reset();
-      this.dispatch(this.events.end);
-    }
-    /**
-     * x 方向閾値(`marginal`)超えているかをチェックします
-     * - 超えているときは swipe 方向を check し `swipe` event を発火します
-     *   - 負数 - swipe left
-     *   - 正数 - swipe right
-     * @return {boolean} true: 超えている
-     */
-
-  }, {
     key: "swipeCheck",
     value: function swipeCheck() {
       var move = Math.abs(this.dragging) > this.marginal;
@@ -10538,6 +10451,63 @@ Swipe.LEFT = 'left';
 Swipe.RIGHT = 'right';
 Swipe.END = 'end';
 Swipe.DRAG = 'drag';
+
+var _initialiseProps = function _initialiseProps() {
+  var _this2 = this;
+
+  this.onStart = function () {
+    _this2.dispose();
+
+    _this2.reset(); // ----
+
+
+    var touching = _this2.touching;
+    touching.on(_Touching__WEBPACK_IMPORTED_MODULE_6__["default"].MOVE, _this2.onMove);
+    touching.on(_Touching__WEBPACK_IMPORTED_MODULE_6__["default"].END, _this2.onEnd);
+    touching.on(_Touching__WEBPACK_IMPORTED_MODULE_6__["default"].CANCEL, _this2.onCancel);
+  };
+
+  this.onMove = function (events) {
+    // 移動量を累積する
+    _this2.dragging += events.between.x;
+
+    _this2.drag(_this2.dragging);
+
+    if (_this2.swipeCheck()) {
+      _this2.dispose();
+
+      _this2.reset();
+    }
+  };
+
+  this.onEnd = function (events) {
+    // 移動量を累積する
+    _this2.dragging += events.between.x;
+
+    _this2.drag(_this2.dragging); // ---
+
+
+    var move = _this2.swipeCheck();
+
+    if (!move) {
+      _this2.dispatch(_this2.events.end);
+    } // ---
+
+
+    _this2.dispose();
+
+    _this2.reset();
+  };
+
+  this.onCancel = function () {
+    _this2.dispose();
+
+    _this2.reset();
+
+    _this2.dispatch(_this2.events.end);
+  };
+};
+
 
 
 /***/ }),
@@ -10729,19 +10699,28 @@ function (_EventDispatcher) {
         y: touch.pageY
       };
     } // ---------------------------------------------------
-    //  CONSTRUCTOR
+    //  CALLBACK
     // ---------------------------------------------------
 
     /**
-     * 処理対象 element などを保存します
-     * @param {Element} element 処理対象 Element
-     * @param {boolean} [canceling=false] touchmove 中に `preventDefault` を行うフラッグ
-     * false の時は {@link Can.passive} を調べ可能なら `{ passive: true }` します - since 0.3.2
-     * @param {number} [threshold=10] y 方向閾値
+     * touchstart event handler
+     * @param {Event|TouchEvent} event touchstart event
+     * @returns {void}
      */
 
   }]);
 
+  // ---------------------------------------------------
+  //  CONSTRUCTOR
+  // ---------------------------------------------------
+
+  /**
+   * 処理対象 element などを保存します
+   * @param {Element} element 処理対象 Element
+   * @param {boolean} [canceling=false] touchmove 中に `preventDefault` を行うフラッグ
+   * false の時は {@link Can.passive} を調べ可能なら `{ passive: true }` します - since 0.3.2
+   * @param {number} [threshold=10] y 方向閾値
+   */
   function Touching(element) {
     var _this;
 
@@ -10755,6 +10734,103 @@ function (_EventDispatcher) {
      * 処理対象 Element
      * @type {Element}
      */
+
+    _this.onStart = function (event) {
+      // event unbind <- 二重 bind にならないように
+      _this.dispose(); // vectors を初期化
+
+
+      _this.reset(); // 現在 position を保存
+
+
+      var _assertThisInitialize = _assertThisInitialized(_assertThisInitialized(_this)),
+          vectors = _assertThisInitialize.vectors,
+          body = _assertThisInitialize.body,
+          eventOption = _assertThisInitialize.eventOption;
+
+      var point = Touching.point(event);
+      vectors.start.update(point.x, point.y);
+      vectors.moving.push(vectors.start); // キャンセル event 監視を開始
+      // const eventOption = this.eventOption;
+      // const body = this.body;
+
+      body.addEventListener('touchend', _this.onEnd, eventOption);
+      body.addEventListener('touchmove', _this.onMove, eventOption);
+      body.addEventListener('touchcancel', _this.onCancel, eventOption); // Touching.START 発火
+
+      _this.dispatch(new _events_TouchingEvents__WEBPACK_IMPORTED_MODULE_4__["default"](Touching.START, _assertThisInitialized(_assertThisInitialized(_this)), event, vectors.start));
+    };
+
+    _this.onMove = function (event) {
+      // console.log('Touching.onMove', event);
+      var _assertThisInitialize2 = _assertThisInitialized(_assertThisInitialized(_this)),
+          vectors = _assertThisInitialize2.vectors;
+
+      var movingArray = vectors.moving; // 現在 position
+
+      var point = Touching.point(event);
+      var position = new _util_Vectors__WEBPACK_IMPORTED_MODULE_5__["default"](point.x, point.y, Date.now()); // 前回 position <- moving 配列最後
+
+      var previous = movingArray.pop(); // 戻す
+
+      movingArray.push(previous); // scroll checked
+
+      var scrolling = Touching.scrolling(position, previous, _this.threshold);
+      position.scrolling = scrolling; // 現在 position を配列後ろにセット
+
+      movingArray.push(position); // global cancel と 閾値チェックで `preventDefault` を実行し scroll を止める
+
+      if (_this.canceling && !scrolling) {
+        event.preventDefault();
+      } // 移動量
+
+
+      var between = position.between(previous); // Touching.MOVE 発火
+
+      _this.dispatch(new _events_TouchingEvents__WEBPACK_IMPORTED_MODULE_4__["default"](Touching.MOVE, _assertThisInitialized(_assertThisInitialized(_this)), event, position, between, scrolling)); // kitkat(Android 4.3 ~ 4.4 && standard browser) - touchend 発火しないので check
+
+
+      if (_this.kitkat) {
+        _this.kitkatEnd(event);
+      }
+    };
+
+    _this.onEnd = function (event) {
+      // console.log('Touching.onEnd', event);
+      var _assertThisInitialize3 = _assertThisInitialized(_assertThisInitialized(_this)),
+          vectors = _assertThisInitialize3.vectors; // 現在 position
+
+
+      var point = Touching.point(event);
+      var position = new _util_Vectors__WEBPACK_IMPORTED_MODULE_5__["default"](point.x, point.y, Date.now()); // 前回 position を touchstart 位置としチェックします
+
+      var previous = vectors.start;
+      var scrolling = Touching.scrolling(position, previous, _this.threshold);
+      position.scrolling = scrolling; // global cancel と 閾値チェックで `preventDefault` を実行し scroll を止める
+
+      if (_this.canceling && !scrolling) {
+        event.preventDefault();
+      } // 移動量
+
+
+      var between = position.between(previous); // Touching.END 発火
+
+      _this.dispatch(new _events_TouchingEvents__WEBPACK_IMPORTED_MODULE_4__["default"](Touching.END, _assertThisInitialized(_assertThisInitialized(_this)), event, position, between, scrolling)); // Touching.Touch 発火
+
+
+      _this.dispatch(new _events_TouchingEvents__WEBPACK_IMPORTED_MODULE_4__["default"](Touching.TOUCH, _assertThisInitialized(_assertThisInitialized(_this)), event, position, between, scrolling)); // ---
+
+
+      _this.dispose();
+    };
+
+    _this.onCancel = function (event) {
+      return _this.abort(event);
+    };
+
+    _this.onBlur = function (event) {
+      return _this.abort(event);
+    };
 
     _this.element = element;
     /**
@@ -10770,37 +10846,32 @@ function (_EventDispatcher) {
      * @default 10
      */
 
-    _this.threshold = threshold;
-    /**
-     * bound onStart
-     * @type {function}
-     */
+    _this.threshold = threshold; // /**
+    //  * bound onStart
+    //  * @type {function}
+    //  */
+    // this.onStart = this.onStart.bind(this);
+    // /**
+    //  * bound onMove
+    //  * @type {function}
+    //  */
+    // this.onMove = this.onMove.bind(this);
+    // /**
+    //  * bound onEnd
+    //  * @type {function}
+    //  */
+    // this.onEnd = this.onEnd.bind(this);
+    // /**
+    //  * bound onCancel
+    //  * @type {function}
+    //  */
+    // this.onCancel = this.onCancel.bind(this);
+    // /**
+    //  * bound onBlur
+    //  * @type {function}
+    //  */
+    // this.onBlur = this.onBlur.bind(this);
 
-    _this.onStart = _this.onStart.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    /**
-     * bound onMove
-     * @type {function}
-     */
-
-    _this.onMove = _this.onMove.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    /**
-     * bound onEnd
-     * @type {function}
-     */
-
-    _this.onEnd = _this.onEnd.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    /**
-     * bound onCancel
-     * @type {function}
-     */
-
-    _this.onCancel = _this.onCancel.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    /**
-     * bound onBlur
-     * @type {function}
-     */
-
-    _this.onBlur = _this.onBlur.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     /**
      * 位置管理を行う Vectors instance を含む object
      * @type {{start: Vectors, end: Vectors, moving: Array.<Vectors>}}
@@ -10844,87 +10915,17 @@ function (_EventDispatcher) {
   } // ---------------------------------------------------
   //  METHOD
   // ---------------------------------------------------
-  // event handlers
-  // ---------------------------------------------------
 
   /**
-   * touchstart event handler
-   * @param {Event|TouchEvent} event touchstart event
-   * @returns {void}
+   * Android 4.3 ~ 4.4 && standard browser - browser bug のため `touchend` が発火しません
+   * - `touchmove` も 1 回だけ発火します - touchmove の後に本 method `kitkatEnd` を実行します
+   * - `onEnd` を強制実行し `touchend` させます
+   * @param {Event} event touch event
+   * @since v0.4.4
    */
 
 
   _createClass(Touching, [{
-    key: "onStart",
-    value: function onStart(event) {
-      // event unbind <- 二重 bind にならないように
-      this.dispose(); // vectors を初期化
-
-      this.reset(); // 現在 position を保存
-
-      var vectors = this.vectors,
-          body = this.body,
-          eventOption = this.eventOption;
-      var point = Touching.point(event);
-      vectors.start.update(point.x, point.y);
-      vectors.moving.push(vectors.start); // キャンセル event 監視を開始
-      // const eventOption = this.eventOption;
-      // const body = this.body;
-
-      body.addEventListener('touchend', this.onEnd, eventOption);
-      body.addEventListener('touchmove', this.onMove, eventOption);
-      body.addEventListener('touchcancel', this.onCancel, eventOption); // Touching.START 発火
-
-      this.dispatch(new _events_TouchingEvents__WEBPACK_IMPORTED_MODULE_4__["default"](Touching.START, this, event, vectors.start));
-    }
-    /**
-     * touchmove event handler
-     * - Android 4.3 ~ 4.4 && standard browser のために `kitkatEnd` を実行します
-     * @param {Event} event touchmove event
-     * @returns {void}
-     */
-
-  }, {
-    key: "onMove",
-    value: function onMove(event) {
-      // console.log('Touching.onMove', event);
-      var vectors = this.vectors;
-      var movingArray = vectors.moving; // 現在 position
-
-      var point = Touching.point(event);
-      var position = new _util_Vectors__WEBPACK_IMPORTED_MODULE_5__["default"](point.x, point.y, Date.now()); // 前回 position <- moving 配列最後
-
-      var previous = movingArray.pop(); // 戻す
-
-      movingArray.push(previous); // scroll checked
-
-      var scrolling = Touching.scrolling(position, previous, this.threshold);
-      position.scrolling = scrolling; // 現在 position を配列後ろにセット
-
-      movingArray.push(position); // global cancel と 閾値チェックで `preventDefault` を実行し scroll を止める
-
-      if (this.canceling && !scrolling) {
-        event.preventDefault();
-      } // 移動量
-
-
-      var between = position.between(previous); // Touching.MOVE 発火
-
-      this.dispatch(new _events_TouchingEvents__WEBPACK_IMPORTED_MODULE_4__["default"](Touching.MOVE, this, event, position, between, scrolling)); // kitkat(Android 4.3 ~ 4.4 && standard browser) - touchend 発火しないので check
-
-      if (this.kitkat) {
-        this.kitkatEnd(event);
-      }
-    }
-    /**
-     * Android 4.3 ~ 4.4 && standard browser - browser bug のため `touchend` が発火しません
-     * - `touchmove` も 1 回だけ発火します - touchmove の後に本 method `kitkatEnd` を実行します
-     * - `onEnd` を強制実行し `touchend` させます
-     * @param {Event} event touch event
-     * @since v0.4.4
-     */
-
-  }, {
     key: "kitkatEnd",
     value: function kitkatEnd(event) {
       var _this2 = this;
@@ -10933,62 +10934,6 @@ function (_EventDispatcher) {
       this.timer.kitkat = setTimeout(function () {
         _this2.onEnd(event);
       }, 32);
-    }
-    /**
-     * touchend event handler
-     * - {@link Touching}.[END|TOUCH] を発火します
-     * @param {Event} event touchend event
-     */
-
-  }, {
-    key: "onEnd",
-    value: function onEnd(event) {
-      // console.log('Touching.onEnd', event);
-      var vectors = this.vectors; // 現在 position
-
-      var point = Touching.point(event);
-      var position = new _util_Vectors__WEBPACK_IMPORTED_MODULE_5__["default"](point.x, point.y, Date.now()); // 前回 position を touchstart 位置としチェックします
-
-      var previous = vectors.start;
-      var scrolling = Touching.scrolling(position, previous, this.threshold);
-      position.scrolling = scrolling; // global cancel と 閾値チェックで `preventDefault` を実行し scroll を止める
-
-      if (this.canceling && !scrolling) {
-        event.preventDefault();
-      } // 移動量
-
-
-      var between = position.between(previous); // Touching.END 発火
-
-      this.dispatch(new _events_TouchingEvents__WEBPACK_IMPORTED_MODULE_4__["default"](Touching.END, this, event, position, between, scrolling)); // Touching.Touch 発火
-
-      this.dispatch(new _events_TouchingEvents__WEBPACK_IMPORTED_MODULE_4__["default"](Touching.TOUCH, this, event, position, between, scrolling)); // ---
-
-      this.dispose();
-    }
-    /**
-     * touchcancel event handler<br>
-     * 処理をキャンセルします
-     * @param {Event} event touchend event
-     * @returns {boolean} 正常終了時に true を返します
-     */
-
-  }, {
-    key: "onCancel",
-    value: function onCancel(event) {
-      return this.abort(event);
-    }
-    /**
-     * window.blur event handler<br>
-     * 処理をキャンセルします
-     * @param {Event} event window blur event
-     * @returns {boolean} 正常終了時に true を返します
-     */
-
-  }, {
-    key: "onBlur",
-    value: function onBlur(event) {
-      return this.abort(event);
     } // 処理
     // ---------------------------------------------------
 
@@ -11146,43 +11091,31 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
  */
 // event
 
- // /**
-//  * new を許可しないための Symbol
-//  * @type {Symbol}
-//  * @private
-//  */
-// const singletonSymbol = Symbol('Scroll singleton symbol');
-// /**
-//  * singleton instance, nullable
-//  * @type {?Wheel}
-//  * @private
-//  */
-// let instance = null;
 
 /**
  * mousewheel event を監視し通知を行います
- * <p>singleton なので new ではなく factory を使用し instance を作成します</p>
+ *
+ * singleton です new ではなく factory を使用し instance を作成します
  *
  * event handler 引数 `events` は {@link WheelEvents} instance です
  * - events.moved > 0 - wheel up
  *
- * ```
- * const up = (events) => {
- *  // wheel up
- * };
- * const down = (events) => {
- *  // wheel down
- * };
- * const update = (events) => {
- *  // wheel up / down
- * };
- * const wheel = new Wheel();
- * wheel.threshold = 500;
- * wheel.on(Wheel.UP, up);
- * wheel.on(Wheel.DOWN, down);
- * wheel.on(Wheel.UPDATE, update);
- * wheel.start();
- * ```
+ * @example
+ *  const up = (events) => {
+ *    // wheel up
+ *  };
+ *  const down = (events) => {
+ *    // wheel down
+ *  };
+ *  const update = (events) => {
+ *    // wheel up / down
+ *  };
+ *  const wheel = new Wheel();
+ *  wheel.threshold = 500;
+ *  wheel.on(Wheel.UP, up);
+ *  wheel.on(Wheel.DOWN, down);
+ *  wheel.on(Wheel.UPDATE, update);
+ *  wheel.start();
  */
 
 var Wheel =
@@ -11208,27 +11141,21 @@ function (_EventDispatcher) {
    * wheel move で発生するイベント - wheelUpdate
    * @type {string}
    */
-  // // ----------------------------------------
-  // // STATIC METHOD
-  // // ----------------------------------------
-  // /**
-  //  * Wheel instance を singleton を保証し作成します
-  //  * @returns {Wheel} Wheel instance を返します
-  //  */
-  // static factory() {
-  //   if (instance === null) {
-  //     instance = new Wheel(singletonSymbol);
-  //   }
-  //   return instance;
-  // }
+  // ---------------------------------------------------
+  //  CALLBACK
+  // ---------------------------------------------------
+
+  /**
+   * window mousewheel event handler
+   * <p>delta 値を取得し `this.moving` を実行します</p>
+   *
+   * @listens {WheelEvent} WheelEvent.wheel
+   * @param {WheelEvent} event window wheel event
+   * @returns {number} 前回移動量に delta 値 を加算した値を返します
+   */
   // ---------------------------------------------------
   //  CONSTRUCTOR
   // ---------------------------------------------------
-  // /**
-  //  * singleton です
-  //  * @param {Symbol} checkSymbol singleton を保証するための private instance
-  //  * @returns {Wheel} singleton instance を返します
-  //  */
 
   /**
    * wheel event を管理します
@@ -11241,31 +11168,22 @@ function (_EventDispatcher) {
 
     _classCallCheck(this, Wheel);
 
-    // // checkSymbol と singleton が等価かをチェックします
-    // if (checkSymbol !== singletonSymbol) {
-    //   throw new Error('don\'t use new, instead use static factory method.');
-    // }
-    // // instance 作成済みかをチェックし instance が null の時 this を設定します
-    // if (instance !== null) {
-    //   return instance;
-    // }
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Wheel).call(this)); // onetime setting
-    // instance = this;
-    // event handler
-    // const onMouseWheel = this.onMouseWheel.bind(this);
-
-    /**
-     * bound onMouseWheel
-     * @type {function}
-     */
-
-    _this.onMouseWheel = _this.onMouseWheel.bind(_assertThisInitialized(_assertThisInitialized(_this))); // this.onMouseWheel = () => onMouseWheel;
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Wheel).call(this)); // /**
+    //  * bound onMouseWheel
+    //  * @type {function}
+    //  */
+    // this.onMouseWheel = this.onMouseWheel.bind(this);
 
     /**
      * 閾値, wheel 移動量が閾値を超えたときにイベントを発生させます
      * @type {number}
      * @default 200
      */
+
+    _this.onMouseWheel = function (event) {
+      var deltaY = event.deltaY;
+      return _this.moving(deltaY);
+    };
 
     _this.threshold = threshold;
     /**
@@ -11296,28 +11214,7 @@ function (_EventDispatcher) {
     // return this;
 
     return _this;
-  } // // ----------------------------------------
-  // // EVENT
-  // // ----------------------------------------
-  // /**
-  //  * wheel up で発生するイベントを取得します
-  //  * @event UP
-  //  * @returns {string} event, wheelUp を返します
-  //  * @default wheelUp
-  //  */
-  // static get UP() {
-  //   return 'wheelUp';
-  // }
-  // /**
-  //  * wheel  で発生するイベントを取得します
-  //  * @event DOWN
-  //  * @returns {string} event, wheelUp を返します
-  //  * @default wheelUp
-  //  */
-  // static get DOWN() {
-  //   return 'wheelDown';
-  // }
-  // ----------------------------------------
+  } // ----------------------------------------
   // METHOD
   // ----------------------------------------
 
@@ -11363,21 +11260,6 @@ function (_EventDispatcher) {
       // this.started = false;
       window.removeEventListener('wheel', this.onMouseWheel);
       return this;
-    }
-    /**
-     * window mousewheel event handler
-     * <p>delta 値を取得し `this.moving` を実行します</p>
-     *
-     * @listens {WheelEvent} WheelEvent.wheel
-     * @param {WheelEvent} event window wheel event
-     * @returns {number} 前回移動量に delta 値 を加算した値を返します
-     */
-
-  }, {
-    key: "onMouseWheel",
-    value: function onMouseWheel(event) {
-      var deltaY = event.deltaY;
-      return this.moving(deltaY);
     }
     /**
      * mouse delta から移動量を計算します
@@ -12254,7 +12136,7 @@ MOKU.version = function () {
 
 
 MOKU.buildTime = function () {
-  return 1550144002860;
+  return 1550212615167;
 };
 /**
  * MOKU.event
@@ -16026,10 +15908,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.object.keys */ "./node_modules/core-js/modules/es6.object.keys.js");
 /* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es6.number.constructor */ "./node_modules/core-js/modules/es6.number.constructor.js");
-/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var core_js_modules_es6_number_is_integer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es6.number.is-integer */ "./node_modules/core-js/modules/es6.number.is-integer.js");
-/* harmony import */ var core_js_modules_es6_number_is_integer__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_is_integer__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es7.array.includes */ "./node_modules/core-js/modules/es7.array.includes.js");
+/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var core_js_modules_es6_string_includes__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es6.string.includes */ "./node_modules/core-js/modules/es6.string.includes.js");
+/* harmony import */ var core_js_modules_es6_string_includes__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_string_includes__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! core-js/modules/es6.number.constructor */ "./node_modules/core-js/modules/es6.number.constructor.js");
+/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var core_js_modules_es6_number_is_integer__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! core-js/modules/es6.number.is-integer */ "./node_modules/core-js/modules/es6.number.is-integer.js");
+/* harmony import */ var core_js_modules_es6_number_is_integer__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_is_integer__WEBPACK_IMPORTED_MODULE_7__);
+
+
 
 
 
@@ -16090,7 +15978,7 @@ function () {
     }
     /**
      * 引数(target)が number かを調べます
-     * @param {*} target 調査対象
+     * @param {*|string} target 調査対象
      * @returns {boolean} 引数(target)が number かを調べ結果を返します、true: number
      */
 
@@ -16167,7 +16055,8 @@ function () {
   }, {
     key: "has",
     value: function has(target, key) {
-      return Object.keys(target).indexOf(key) !== -1;
+      // return Object.keys(target).indexOf(key) !== -1;
+      return Object.keys(target).includes(key);
     }
     /**
      * target が undefined かを調べます

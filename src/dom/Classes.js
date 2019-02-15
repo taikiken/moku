@@ -18,6 +18,26 @@ export default class Classes {
   // STATIC METHOD
   // ----------------------------------------
   /**
+   * 可哀相な IE のための配列コンバーター, `.classList` 代用します
+   * @param {Element} element 操作対象 NodeList
+   * @returns {Array} 配列にコンバートして返します
+   */
+  static convert(element) {
+    const arr = element.className.split(' ');
+    let i = 0;
+    const limit = arr.length;
+    const empty = [];
+    for (;i < limit; i += 1) {
+      const className = arr[i];
+      if (!!className && className !== ' ') {
+        empty.push(className);
+      }
+    }
+    return empty;
+  }
+
+  /**
+   * 引数 `element` の class name list を取得します
    * 1. `classList` && `Array.from` - `Array.from(element.classList)`
    * 2. {@link Classes.convert}
    * @param {Element} element 操作対象 Element
@@ -36,8 +56,11 @@ export default class Classes {
    * @returns {boolean} 存在すると true を返します
    */
   static has(element, className) {
-    const elementClasses = Classes.get(element);
-    return elementClasses.indexOf(className) !== -1;
+    return element.classList ?
+      element.classList.contains(className) :
+      Classes.get(element).includes(className);
+    // const elementClasses = Classes.get(element);
+    // return elementClasses.indexOf(className) !== -1;
   }
 
   /**
@@ -49,6 +72,10 @@ export default class Classes {
    * @returns {boolean} 追加に成功すると true を返します
    */
   static add(node, className) {
+    if (node.classList) {
+      node.classList.add(className);
+      return true;
+    }
     // CSS class の存在チェック
     if (Classes.has(node, className)) {
       return false;
@@ -71,6 +98,10 @@ export default class Classes {
    * @returns {boolean} 削除に成功すると true を返します
    */
   static remove(node, className) {
+    if (node.classList) {
+      node.classList.remove(className);
+      return true;
+    }
     if (!Classes.has(node, className)) {
       return false;
     }
@@ -85,25 +116,6 @@ export default class Classes {
     // 削除後配列を ' '（ワンスペース）でつなぎ文字列変換後に設定します
     element.className = elementClasses.join(' ');
     return true;
-  }
-
-  /**
-   * 可哀相な IE のための配列コンバーター, `.classList` 代用します
-   * @param {Element} element 操作対象 NodeList
-   * @returns {Array} 配列にコンバートして返します
-   */
-  static convert(element) {
-    const arr = element.className.split(' ');
-    let i = 0;
-    const limit = arr.length;
-    const empty = [];
-    for (;i < limit; i += 1) {
-      const className = arr[i];
-      if (!!className && className !== ' ') {
-        empty.push(className);
-      }
-    }
-    return empty;
   }
 
   // ----------------------------------------

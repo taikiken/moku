@@ -49,7 +49,7 @@ export default class Style {
    * @param {Object|Window} view Document.defaultView
    * @param {Element} element 操作対象 Element
    * @param {Array<string>} patterns 調査対象 CSS property name の配列
-   * @returns {CssStyle|string|undefined} style value を返します
+   * @returns {*|string|undefined} style value を返します
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/defaultView
    */
   static shortHand(view, element, patterns) {
@@ -119,15 +119,6 @@ export default class Style {
      * @type {string}
      */
     this.original = css;
-    // /**
-    //  * インスタンス作成時の inline CSS を上書きします
-    //  * @param {string} style 上書き用 CSS 設定
-    //  * @returns {string} 上書きされた CSS
-    //  */
-    // this.update = (style) => {
-    //   css = style;
-    //   return style;
-    // };
   }
 
   // ----------------------------------------
