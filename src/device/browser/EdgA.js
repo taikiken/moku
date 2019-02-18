@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2011-2017 inazumatv.com, inc.
  * @author (at)taikiken / http://inazumatv.com
- * @date 2017/09/22 - 19:29
+ * @date 2017/09/25 - 16:45
  *
  * Distributed under the terms of the MIT license.
  * http://www.opensource.org/licenses/mit-license.html
@@ -11,38 +11,36 @@
  */
 
 import devices from '../devices';
-import CriOS from './CriOS';
-import Edge from './Edge';
-import Chrome from './Chrome';
-import FxiOS from './FxiOS';
-import Android from '../os/Android';
-import EdgiOS from './EdgiOS';
-import EdgA from './EdgA';
 
 /**
  * {@link devices}.browsers
- * {@link Safari}
+ * {@link Edge}
  * @type {?object}
  * @since 0.4.2
  */
 let browsers = null;
 
+
 /**
  * version 情報を計算します
- * {@link Safari}
+ * {@link Edge}
  * @since 0.4.2
  */
 const version = () => {
   const { app } = devices;
-  const numbers = app.match(/version\/(\d+)\.(\d+)\.?(\d+)?/i);
+  const numbers = app.match(/edga\/(\d+)\.(\d+)\.(\d+)\.?(\d+)?/i);
   if (!Array.isArray(numbers)) {
     return;
   }
   // 先頭 削除
   numbers.shift();
-  // array
-  const intArr = numbers.map(number => (parseInt(number, 10)));
-  const versions = intArr.filter(int => !Number.isNaN(int));
+  const versions = numbers.map((number, index) => {
+    const int = parseInt(number, 10);
+    if (index <= 3) {
+      return Number.isNaN(int) ? 0 : int;
+    }
+    return null;
+  });
   browsers.build = versions.join('.');
   const [
     strMajor,
@@ -70,7 +68,7 @@ const version = () => {
 
 /**
  * browser 判別します
- * {@link Safari}
+ * {@link Edge}
  * @since 0.4.2
  */
 const init = () => {
@@ -79,29 +77,19 @@ const init = () => {
   }
   // browsers = Object.assign({}, devices.browsers);
   browsers = {...{}};
-  let { safari } = devices;
-  if (
-    CriOS.is()
-    || Edge.is()
-    || Chrome.is()
-    || FxiOS.is()
-    || EdgiOS.is()
-    || EdgA.is()
-    || Android.standard()
-  ) {
-    safari = false;
-  }
-  browsers.safari = safari;
-  if (safari) {
+  const { ua } = devices;
+  const edge = !!ua.match(/edga/i);
+  browsers.edga = edge;
+  if (edge) {
     version();
   }
 };
 
 /**
- * Safari detector
+ * Edge detector
  * @since 0.4.2
  */
-export default class Safari {
+export default class EdgA {
   /**
    * 書き換え済み `browsers` を取得します
    * @returns {Object} 書き換え済み `browsers` を返します
@@ -112,17 +100,17 @@ export default class Safari {
   }
 
   /**
-   * iOS Chrome 判定
-   * @returns {boolean} true: iOS Chrome
+   * Edge 判定
+   * @returns {boolean} true: Edge
    */
   static is() {
     init();
-    return browsers.safari;
+    return browsers.edga;
   }
 
   /**
-   * Safari Browser version
-   * @returns {number} Safari version, not Android -1
+   * Edge Browser version
+   * @returns {number} Edge version, not Android -1
    */
   static version() {
     init();
@@ -130,8 +118,8 @@ export default class Safari {
   }
 
   /**
-   * Safari Browser major version
-   * @returns {number} Safari major version, not Android -1
+   * Edge Browser major version
+   * @returns {number} Edge major version, not Android -1
    */
   static major() {
     init();
@@ -139,8 +127,8 @@ export default class Safari {
   }
 
   /**
-   * Safari Browser version `major.minor.build`
-   * @returns {string} Safari version NN.NN.NN.NN 型（文字）で返します
+   * Edge Browser version `major.minor.build`
+   * @returns {string} Edge version NN.NN.NN.NN 型（文字）で返します
    */
   static build() {
     init();
