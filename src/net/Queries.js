@@ -17,75 +17,17 @@ import Text from '../util/Text';
  * URL query をパースします
  */
 export default class Queries {
-  /**
-   * URL query を受取パースします
-   * @param {string} [queryString=location.search] パースする URL 文字列
-   */
-  constructor(queryString = window.location.search) {
-    const [data, keys] = Queries.parse(queryString);
-    const naked = Queries.naked(queryString);
-    /**
-     * query key を取得します - query key array
-     * @type {Array<string>}
-     */
-    this.keys = keys;
-    /**
-     * key: value 形式を取得します - URL query を key: value 形式で返します
-     * @type {Object}
-     */
-    this.data = data;
-    /**
-     * query 文字列を取得します - パースする query 文字列
-     * @type {string}
-     */
-    this.queryString = queryString;
-    /**
-     * パースしやすいように正規化した query 文字列 - `?` 以降文字 + `&amp;` を `&` へ置換えます
-     * @type {string}
-     */
-    this.naked = naked;
-  }
-
-  // ----------------------------------------
-  // METHOD
-  // ----------------------------------------
-  /**
-   * key が存在するかを調べます
-   * @param {string} keyName 調査対象 key 名称
-   * @returns {boolean} true: 存在する
-   */
-  has(keyName) {
-    return this.keys.indexOf(keyName) !== -1;
-  }
-
-  /**
-   * key 値を取得します
-   * @param {string} keyName 調査対象 key 名称
-   * @returns {string|undefined} 見つかると文字列で返します, 見つからない時は undefined を返します
-   */
-  get(keyName) {
-    return this.data[keyName];
-  }
-
-  /**
-   * key: value 形式を取得します
-   * @returns {Object} URL query を key: value 形式で返します
-   */
-  getAll() {
-    return this.data;
-  }
-
   // ----------------------------------------
   // STATIC METHOD
   // ----------------------------------------
-  // /**
-  //  * `&amp;` を `&` へ置換えます
-  //  * @param {string} targetText 操作対象文字列
-  //  * @returns {string} `&amp;` を `&` へ置換え返します
-  //  */
-  // static amp(targetText) {
-  //   return targetText.split('&amp;').join('&');
-  // }
+  /**
+   * `&amp;` を `&` へ置換えます
+   * @param {string} targetText 操作対象文字列
+   * @returns {string} `&amp;` を `&` へ置換え返します
+   */
+  static amp(targetText) {
+    return targetText.split('&amp;').join('&');
+  }
   /**
    * 文字列先頭に `?` があればそれ以降の文字列を返し {@link Text.and} を実行し `&amp;` を `&` 変換します
    * @param {string} targetText 操作対象文字列
@@ -145,5 +87,66 @@ export default class Queries {
   static getAll(targetText = window.location.search) {
     // const [data] = Queries.parse(targetText);
     return Queries.parse(targetText);
+  }
+
+  // ----------------------------------------
+  // CONSTRUCTOR
+  // ----------------------------------------
+  /**
+   * URL query を受取パースします
+   * @param {string} [queryString=location.search] パースする URL 文字列
+   */
+  constructor(queryString = window.location.search) {
+    const [data, keys] = Queries.parse(queryString);
+    const naked = Queries.naked(queryString);
+    /**
+     * query key を取得します - query key array
+     * @type {Array<string>}
+     */
+    this.keys = keys;
+    /**
+     * key: value 形式を取得します - URL query を key: value 形式で返します
+     * @type {Object}
+     */
+    this.data = data;
+    /**
+     * query 文字列を取得します - パースする query 文字列
+     * @type {string}
+     */
+    this.queryString = queryString;
+    /**
+     * パースしやすいように正規化した query 文字列 - `?` 以降文字 + `&amp;` を `&` へ置換えます
+     * @type {string}
+     */
+    this.naked = naked;
+  }
+
+  // ----------------------------------------
+  // METHOD
+  // ----------------------------------------
+  /**
+   * key が存在するかを調べます
+   * @param {string} keyName 調査対象 key 名称
+   * @returns {boolean} true: 存在する
+   */
+  has(keyName) {
+    return this.keys.indexOf(keyName) !== -1;
+  }
+
+  /**
+   * key 値を取得します
+   * @param {string} keyName 調査対象 key 名称
+   * @returns {string|undefined} 見つかると文字列で返します, 見つからない時は undefined を返します
+   */
+  get(keyName) {
+    return this.data[keyName];
+  }
+
+  /**
+   * key: value 形式を取得します
+   * @returns {Object} URL query を key: value 形式で返します
+   */
+  getAll() {
+    return this.data;
   }
 }
