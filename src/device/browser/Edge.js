@@ -42,12 +42,12 @@ const version = () => {
     return null;
   });
   browsers.build = versions.join('.');
-  const {
+  const [
     strMajor,
     strMinor,
     strBuild,
     strOption,
-  } = versions;
+  ] = versions;
   const major = parseInt(strMajor, 10);
   let minor = 0;
   if (versions.length >= 2) {
