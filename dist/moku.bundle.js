@@ -6544,20 +6544,26 @@ var devices = {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Android; });
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.array.iterator */ "./node_modules/core-js/modules/es6.array.iterator.js");
-/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.object.keys */ "./node_modules/core-js/modules/es6.object.keys.js");
-/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.number.constructor */ "./node_modules/core-js/modules/es6.number.constructor.js");
-/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es6.number.is-nan */ "./node_modules/core-js/modules/es6.number.is-nan.js");
-/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es6.regexp.match */ "./node_modules/core-js/modules/es6.regexp.match.js");
-/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _devices__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../devices */ "./src/device/devices.js");
-/* harmony import */ var _Windows__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Windows */ "./src/device/os/Windows.js");
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.array.iterator */ "./node_modules/core-js/modules/es6.array.iterator.js");
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.object.keys */ "./node_modules/core-js/modules/es6.object.keys.js");
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es7.symbol.async-iterator */ "./node_modules/core-js/modules/es7.symbol.async-iterator.js");
+/* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.symbol */ "./node_modules/core-js/modules/es6.symbol.js");
+/* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es6.number.constructor */ "./node_modules/core-js/modules/es6.number.constructor.js");
+/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! core-js/modules/es6.number.is-nan */ "./node_modules/core-js/modules/es6.number.is-nan.js");
+/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! core-js/modules/es6.regexp.match */ "./node_modules/core-js/modules/es6.regexp.match.js");
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _devices__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../devices */ "./src/device/devices.js");
+/* harmony import */ var _Windows__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./Windows */ "./src/device/os/Windows.js");
+
+
 
 
 
@@ -6574,6 +6580,14 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 /**
  * Copyright (c) 2011-2017 inazumatv.com, inc.
@@ -6601,7 +6615,7 @@ var props = null;
  */
 
 var version = function version() {
-  var app = _devices__WEBPACK_IMPORTED_MODULE_6__["default"].app;
+  var app = _devices__WEBPACK_IMPORTED_MODULE_8__["default"].app;
   var numbers = app.match(/android (\d+)\.(\d+)\.?(\d+)?/i);
 
   if (!Array.isArray(numbers)) {
@@ -6620,9 +6634,12 @@ var version = function version() {
     return null;
   });
   props.build = versions.join('.');
-  var strMajor = versions.strMajor,
-      strMinor = versions.strMinor,
-      strBuild = versions.strBuild;
+
+  var _versions = _slicedToArray(versions, 3),
+      strMajor = _versions[0],
+      strMinor = _versions[1],
+      strBuild = _versions[2];
+
   var major = parseInt(strMajor, 10);
   var minor = 0;
 
@@ -6658,10 +6675,10 @@ var init = function init() {
   } // props = Object.assign({}, devices.props);
 
 
-  props = _objectSpread({}, _devices__WEBPACK_IMPORTED_MODULE_6__["default"].props);
-  var ua = _devices__WEBPACK_IMPORTED_MODULE_6__["default"].ua; // windows phone ua に `Android` が入っている
+  props = _objectSpread({}, _devices__WEBPACK_IMPORTED_MODULE_8__["default"].props);
+  var ua = _devices__WEBPACK_IMPORTED_MODULE_8__["default"].ua; // windows phone ua に `Android` が入っている
 
-  var android = !_Windows__WEBPACK_IMPORTED_MODULE_7__["default"].phone() && !!ua.match(/android/i);
+  var android = !_Windows__WEBPACK_IMPORTED_MODULE_9__["default"].phone() && !!ua.match(/android/i);
 
   if (android) {
     props.android = true;
@@ -6672,7 +6689,7 @@ var init = function init() {
     } // Android 標準 browser
 
 
-    props.standard = _devices__WEBPACK_IMPORTED_MODULE_6__["default"].safari && (!!ua.match(/version/i) || !!ua.match(/samsungbrowser/i)); // hd
+    props.standard = _devices__WEBPACK_IMPORTED_MODULE_8__["default"].safari && (!!ua.match(/version/i) || !!ua.match(/samsungbrowser/i)); // hd
 
     props.hd = Math.max(window.innerWidth, window.innerHeight) > 1024; // version check
 
@@ -6939,19 +6956,25 @@ function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return iOS; });
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.array.iterator */ "./node_modules/core-js/modules/es6.array.iterator.js");
-/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.object.keys */ "./node_modules/core-js/modules/es6.object.keys.js");
-/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.number.constructor */ "./node_modules/core-js/modules/es6.number.constructor.js");
-/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es6.number.is-nan */ "./node_modules/core-js/modules/es6.number.is-nan.js");
-/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es6.regexp.match */ "./node_modules/core-js/modules/es6.regexp.match.js");
-/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _devices__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../devices */ "./src/device/devices.js");
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.array.iterator */ "./node_modules/core-js/modules/es6.array.iterator.js");
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.object.keys */ "./node_modules/core-js/modules/es6.object.keys.js");
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es7.symbol.async-iterator */ "./node_modules/core-js/modules/es7.symbol.async-iterator.js");
+/* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.symbol */ "./node_modules/core-js/modules/es6.symbol.js");
+/* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es6.number.constructor */ "./node_modules/core-js/modules/es6.number.constructor.js");
+/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! core-js/modules/es6.number.is-nan */ "./node_modules/core-js/modules/es6.number.is-nan.js");
+/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! core-js/modules/es6.regexp.match */ "./node_modules/core-js/modules/es6.regexp.match.js");
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _devices__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../devices */ "./src/device/devices.js");
+
+
 
 
 
@@ -6968,6 +6991,14 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 /**
  * Copyright (c) 2011-2017 inazumatv.com, inc.
@@ -6994,7 +7025,7 @@ var props = null;
  */
 
 var version = function version() {
-  var app = _devices__WEBPACK_IMPORTED_MODULE_6__["default"].app;
+  var app = _devices__WEBPACK_IMPORTED_MODULE_8__["default"].app;
   var numbers = app.match(/os (\d+)_(\d+)_?(\d+)?/i);
 
   if (!Array.isArray(numbers)) {
@@ -7008,9 +7039,12 @@ var version = function version() {
     return Number.isNaN(int) ? 0 : int;
   });
   props.build = versions.join('.');
-  var strMajor = versions.strMajor,
-      strMinor = versions.strMinor,
-      strBuild = versions.strBuild;
+
+  var _versions = _slicedToArray(versions, 3),
+      strMajor = _versions[0],
+      strMinor = _versions[1],
+      strBuild = _versions[2];
+
   var major = parseInt(strMajor, 10);
   var minor = 0;
 
@@ -7040,8 +7074,8 @@ var init = function init() {
   } // props = Object.assign({}, devices.props);
 
 
-  props = _objectSpread({}, _devices__WEBPACK_IMPORTED_MODULE_6__["default"].props);
-  var ua = _devices__WEBPACK_IMPORTED_MODULE_6__["default"].ua;
+  props = _objectSpread({}, _devices__WEBPACK_IMPORTED_MODULE_8__["default"].props);
+  var ua = _devices__WEBPACK_IMPORTED_MODULE_8__["default"].ua;
   var ipad = !!ua.match(/ipad/i);
   var ipod = !!ua.match(/ipod/i);
   var iphone = !!ua.match(/iphone/i) && !ipad && !ipod;
@@ -7060,7 +7094,7 @@ var init = function init() {
   props.phone = iphone || ipod;
   props.tablet = ipad; // アプリ内コンテンツ
 
-  props.webView = ios && !standalone && !_devices__WEBPACK_IMPORTED_MODULE_6__["default"].safari; // version check
+  props.webView = ios && !standalone && !_devices__WEBPACK_IMPORTED_MODULE_8__["default"].safari; // version check
 
   version();
 };
@@ -11644,7 +11678,7 @@ MOKU.version = function () {
 
 
 MOKU.buildTime = function () {
-  return 1550475353921;
+  return 1550476838327;
 };
 /**
  * MOKU.event
@@ -12553,14 +12587,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_symbol_async_iterator__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.symbol */ "./node_modules/core-js/modules/es6.symbol.js");
 /* harmony import */ var core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_symbol__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.regexp.split */ "./node_modules/core-js/modules/es6.regexp.split.js");
-/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
-/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es6.array.iterator */ "./node_modules/core-js/modules/es6.array.iterator.js");
-/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var core_js_modules_es6_regexp_search__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es6.regexp.search */ "./node_modules/core-js/modules/es6.regexp.search.js");
-/* harmony import */ var core_js_modules_es6_regexp_search__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_search__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.array.iterator */ "./node_modules/core-js/modules/es6.array.iterator.js");
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_es6_regexp_search__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es6.regexp.search */ "./node_modules/core-js/modules/es6.regexp.search.js");
+/* harmony import */ var core_js_modules_es6_regexp_search__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_search__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es6.regexp.split */ "./node_modules/core-js/modules/es6.regexp.split.js");
+/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _util_Text__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../util/Text */ "./src/util/Text.js");
 
 
@@ -12603,19 +12637,115 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var Queries =
 /*#__PURE__*/
 function () {
-  /**
-   * URL query を受取パースします
-   * @param {string} [queryString=location.search] パースする URL 文字列
-   */
+  _createClass(Queries, null, [{
+    key: "amp",
+    // ----------------------------------------
+    // STATIC METHOD
+    // ----------------------------------------
+
+    /**
+     * `&amp;` を `&` へ置換えます
+     * @param {string} targetText 操作対象文字列
+     * @returns {string} `&amp;` を `&` へ置換え返します
+     */
+    value: function amp(targetText) {
+      return targetText.split('&amp;').join('&');
+    }
+    /**
+     * 文字列先頭に `?` があればそれ以降の文字列を返し {@link Text.and} を実行し `&amp;` を `&` 変換します
+     * @param {string} targetText 操作対象文字列
+     * @returns {string} query を正規化します
+     */
+
+  }, {
+    key: "naked",
+    value: function naked(targetText) {
+      // const queryString = Queries.amp(targetText);
+      var queryString = _util_Text__WEBPACK_IMPORTED_MODULE_6__["default"].and(targetText);
+      return queryString.substr(0, 1) === '?' ? queryString.substring(1) : targetText;
+    }
+    /**
+     * query を kye: value 形式にします
+     * @param {string} targetText 操作対象文字列
+     * @returns {[Object, Array]} data, keys を返します
+     */
+
+  }, {
+    key: "parse",
+    value: function parse(targetText) {
+      var query = Queries.naked(targetText);
+      var pairs = query.split('&');
+      var data = {};
+      var keys = [];
+      pairs.map(function (pair) {
+        var keyName = '';
+
+        if (pair && pair.indexOf('=') !== -1) {
+          // @type {Array<string>} - `key=value` を `=` で分割する
+          var keyValue = pair.split('='); // @type {string} keyName
+
+          var key = keyValue.shift(); // data object へ keyName を key に値をセットする
+
+          data[key] = keyValue.shift();
+          keyName = key; // key 名称配列へ追加する
+
+          keys.push(key);
+        }
+
+        return keyName;
+      });
+      return [data, keys];
+    }
+    /**
+     * 引数 targetText (query) から引数 keyName 値を取得します
+     * @param {string} keyName key 名称
+     * @param {string} targetText query
+     * @returns {string|undefined} 見つかると文字列で返します, 見つからない時は undefined を返します
+     */
+
+  }, {
+    key: "get",
+    value: function get(keyName) {
+      var targetText = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : window.location.search;
+
+      var _Queries$parse = Queries.parse(targetText),
+          _Queries$parse2 = _slicedToArray(_Queries$parse, 1),
+          data = _Queries$parse2[0];
+
+      return data[keyName];
+    }
+    /**
+     * URL query の key: value 形式を取得します
+     * @param {string} targetText query
+     * @returns {[Object, Array]} URL query を key: value 形式で返します
+     */
+
+  }, {
+    key: "getAll",
+    value: function getAll() {
+      var targetText = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : window.location.search;
+      // const [data] = Queries.parse(targetText);
+      return Queries.parse(targetText);
+    } // ----------------------------------------
+    // CONSTRUCTOR
+    // ----------------------------------------
+
+    /**
+     * URL query を受取パースします
+     * @param {string} [queryString=location.search] パースする URL 文字列
+     */
+
+  }]);
+
   function Queries() {
     var queryString = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : window.location.search;
 
     _classCallCheck(this, Queries);
 
-    var _Queries$parse = Queries.parse(queryString),
-        _Queries$parse2 = _slicedToArray(_Queries$parse, 2),
-        data = _Queries$parse2[0],
-        keys = _Queries$parse2[1];
+    var _Queries$parse3 = Queries.parse(queryString),
+        _Queries$parse4 = _slicedToArray(_Queries$parse3, 2),
+        data = _Queries$parse4[0],
+        keys = _Queries$parse4[1];
 
     var naked = Queries.naked(queryString);
     /**
@@ -12678,93 +12808,6 @@ function () {
     key: "getAll",
     value: function getAll() {
       return this.data;
-    } // ----------------------------------------
-    // STATIC METHOD
-    // ----------------------------------------
-    // /**
-    //  * `&amp;` を `&` へ置換えます
-    //  * @param {string} targetText 操作対象文字列
-    //  * @returns {string} `&amp;` を `&` へ置換え返します
-    //  */
-    // static amp(targetText) {
-    //   return targetText.split('&amp;').join('&');
-    // }
-
-    /**
-     * 文字列先頭に `?` があればそれ以降の文字列を返し {@link Text.and} を実行し `&amp;` を `&` 変換します
-     * @param {string} targetText 操作対象文字列
-     * @returns {string} query を正規化します
-     */
-
-  }], [{
-    key: "naked",
-    value: function naked(targetText) {
-      // const queryString = Queries.amp(targetText);
-      var queryString = _util_Text__WEBPACK_IMPORTED_MODULE_6__["default"].and(targetText);
-      return queryString.substr(0, 1) === '?' ? queryString.substring(1) : targetText;
-    }
-    /**
-     * query を kye: value 形式にします
-     * @param {string} targetText 操作対象文字列
-     * @returns {[Object, Array]} data, keys を返します
-     */
-
-  }, {
-    key: "parse",
-    value: function parse(targetText) {
-      var query = Queries.naked(targetText);
-      var pairs = query.split('&');
-      var data = {};
-      var keys = [];
-      pairs.map(function (pair) {
-        var keyName = '';
-
-        if (pair && pair.indexOf('=') !== -1) {
-          // @type {Array<string>} - `key=value` を `=` で分割する
-          var keyValue = pair.split('='); // @type {string} keyName
-
-          var key = keyValue.shift(); // data object へ keyName を key に値をセットする
-
-          data[key] = keyValue.shift();
-          keyName = key; // key 名称配列へ追加する
-
-          keys.push(key);
-        }
-
-        return keyName;
-      });
-      return [data, keys];
-    }
-    /**
-     * 引数 targetText (query) から引数 keyName 値を取得します
-     * @param {string} keyName key 名称
-     * @param {string} targetText query
-     * @returns {string|undefined} 見つかると文字列で返します, 見つからない時は undefined を返します
-     */
-
-  }, {
-    key: "get",
-    value: function get(keyName) {
-      var targetText = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : window.location.search;
-
-      var _Queries$parse3 = Queries.parse(targetText),
-          _Queries$parse4 = _slicedToArray(_Queries$parse3, 1),
-          data = _Queries$parse4[0];
-
-      return data[keyName];
-    }
-    /**
-     * URL query の key: value 形式を取得します
-     * @param {string} targetText query
-     * @returns {[Object, Array]} URL query を key: value 形式で返します
-     */
-
-  }, {
-    key: "getAll",
-    value: function getAll() {
-      var targetText = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : window.location.search;
-      // const [data] = Queries.parse(targetText);
-      return Queries.parse(targetText);
     }
   }]);
 

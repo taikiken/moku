@@ -36,11 +36,11 @@ const version = () => {
     return Number.isNaN(int) ? 0 : int;
   });
   props.build = versions.join('.');
-  const {
+  const [
     strMajor,
     strMinor,
     strBuild,
-  } = versions;
+  ] = versions;
   const major = parseInt(strMajor, 10);
   let minor = 0;
   if (versions.length >= 2) {

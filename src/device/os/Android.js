@@ -40,11 +40,11 @@ const version = () => {
     return null;
   });
   props.build = versions.join('.');
-  const {
+  const [
     strMajor,
     strMinor,
     strBuild,
-  } = versions;
+  ] = versions;
   const major = parseInt(strMajor, 10);
   let minor = 0;
   if (versions.length >= 2) {
