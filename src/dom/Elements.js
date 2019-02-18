@@ -18,7 +18,7 @@ import Bounding from './Bounding';
 import Classes from './Classes';
 
 // util
-import Type from '../util/Type';
+// import Type from '../util/Type';
 
 /**
  * HTMLElement の操作を行います。
@@ -37,9 +37,10 @@ export default class Elements {
    * @return {?Element} Element を返します, 取得できない時は null を返します
    */
   static id(idName) {
-    const element = document.getElementById(idName);
-    // 存在チェックを行います
-    return Type.exist(element) ? element : null;
+    // const element = document.getElementById(idName);
+    // // 存在チェックを行います
+    // return Type.exist(element) ? element : null;
+    return document.getElementById(idName);
   }
 
   /**

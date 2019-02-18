@@ -58,6 +58,7 @@ export default class Events {
    */
   clone() {
     // return new Events(this.type, this.currentTarget, this.target);
-    return Object.assign({}, this);
+    // return Object.assign({}, this);
+    return {...this};
   }
 }

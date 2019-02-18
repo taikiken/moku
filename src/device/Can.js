@@ -10,113 +10,6 @@
  *
  */
 
-// /**
-//  * [native code] - document
-//  * @type {HTMLDocument}
-//  * @private
-//  * @static
-//  */
-// const document = self.document;
-// /**
-//  * CSS detector に使用する virtual CSSStyleDeclaration
-//  * ```
-//  * document.createElement('p').style
-//  * ```
-//  * @type {CSSStyleDeclaration}
-//  * @private
-//  * @static
-//  * @see https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration
-//  * @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style
-//  */
-// const style = document.createElement('p').style;
-// /**
-//  * vendor prefix list, CSS detector に使用します
-//  * - '-webkit-',
-//  * - '-moz-',
-//  * - '-ms-',
-//  * - '-o-',
-//  * - ''
-//  * @type {[string]}
-//  * @private
-//  * @static
-//  */
-// const vendors = [
-//   '-webkit-',
-//   '-moz-',
-//   '-ms-',
-//   '-o-',
-//   '',
-// ];
-
-// /**
-//  * CSS3 transition 可能フラッグ
-//  * @type {boolean}
-//  * @private
-//  * @static
-//  */
-// const transition = vendors.some(prefix => typeof style[`${prefix}transition`] !== 'undefined');
-// /**
-//  * CSS3 transform 可能フラッグ
-//  * @type {boolean}
-//  * @private
-//  * @static
-//  */
-// const transform = vendors.some(prefix => typeof style[`${prefix}transform`] !== 'undefined');
-
-// /**
-//  * touch event 使用可能フラッグ
-//  * @type {boolean}
-//  */
-// const touch = 'ontouchstart' in document.documentElement;
-
-// /**
-//  * canvas detect flag
-//  * @type {boolean}
-//  */
-// const canvas = !!window.CanvasRenderingContext2D;
-
-// /**
-//  * webgl detect flag
-//  * @type {boolean}
-//  */
-// let webgl = false;
-// if (canvas) {
-//   try {
-//     webgl = !!window.WebGLRenderingContext &&
-//       !!document.createElement('canvas').getContext('experimental-webgl');
-//   } catch (e) {
-//     webgl = false;
-//   }
-// }
-
-// /**
-//  * addEventListener 第三引数 - { passive: true } : false するためのブラウザテスト・フラッグ
-//  *
-//  * TouchEvent#Using with addEventListener() and preventDefault()
-//  * <pre>
-//  * It's important to note that in many cases, both touch and mouse events get sent (in order to let non-touch-specific code still interact with the user). If you use touch events, you should call preventDefault() to keep the mouse event from being sent as well.
-//  * The exception to this is Chrome, starting with version 56 (desktop, Chrome for android, and android webview), where the default value for touchstart and touchmove is true and calls to preventDefault() are not needed. To override this behavior, you simply set the passive option to false as shown in the example below. This change prevents the listener from blocking page rendering while a user is scrolling. A demo is available on the Google Developer site.
-//  * </pre>
-//  * @private
-//  * @type {boolean}
-//  * @see https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent
-//  * @see https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md
-//  * @see https://blog.jxck.io/entries/2016-06-09/passive-event-listeners.html
-//  * @since 0.3.2
-//  */
-// let supportsPassive = false;
-// try {
-//   const opts = Object.defineProperty({}, 'passive', {
-//     get() {
-//       supportsPassive = true;
-//     },
-//   });
-//   window.addEventListener('test', null, opts);
-// } catch (e) {
-//   supportsPassive = false;
-//   // console.warn('passive test', e);
-// }
-
 /**
  * 判定結果を保持します
  * @type {{transition: ?boolean, transform: ?boolean, touch: ?boolean, canvas: ?boolean, webgl: ?boolean, passive: ?boolean}}
@@ -166,8 +59,8 @@ export default class Can {
   static transition() {
     if (can.transition === null) {
       const { style } = document.createElement('p');
-      // eslint-disable-next-line max-len
-      can.transition = Can.vendors.some(prefix => typeof style[`${prefix}transition`] !== 'undefined');
+      can.transition = Can.vendors
+        .some(prefix => (typeof style[`${prefix}transition`] !== 'undefined'));
     }
     return can.transition;
   }
@@ -179,8 +72,8 @@ export default class Can {
   static transform() {
     if (can.transform === null) {
       const { style } = document.createElement('p');
-      // eslint-disable-next-line max-len
-      can.transform = Can.vendors.some(prefix => typeof style[`${prefix}transform`] !== 'undefined');
+      can.transform = Can.vendors
+        .some(prefix => typeof style[`${prefix}transform`] !== 'undefined');
     }
     return can.transform;
   }

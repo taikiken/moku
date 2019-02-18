@@ -73,7 +73,8 @@ const init = () => {
   if (props) {
     return;
   }
-  props = Object.assign({}, devices.props);
+  // props = Object.assign({}, devices.props);
+  props = {...devices.props};
   const { ua } = devices;
   // windows phone ua に `Android` が入っている
   const android = !Windows.phone() && !!ua.match(/android/i);

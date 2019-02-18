@@ -21,7 +21,7 @@ import Type from '../util/Type';
 // const listenersKey = Symbol('event listeners object');
 
 /**
- * <p>Custom Event を作成し Event 通知を行います</p>
+ * Custom Event を作成し Event 通知を行います
  *
  * ```
  * const callback = (event) => {
@@ -46,27 +46,13 @@ export default class EventDispatcher {
    * listener property をイニシャライズします
    */
   constructor() {
-    // // @type {Object}
-    // let listeners = {};
-    // /**
-    //  * リスナーリストを取得します
-    //  * @returns {Object} リスナーリストを返します
-    //  */
-    // this.listeners = () => listeners;
-    // /**
-    //  * 全てのリスナーを破棄します
-    //  * @returns {boolean} 成功・不成功の真偽値を返します
-    //  */
-    // this.destroy = () => {
-    //   listeners = Object.create({});
-    //   return true;
-    // };
     /**
      * リスナーリスト object,
      * event type {string} を key, 値は Array.<function> になります
      * @type {Object}
      */
-    this.listeners = Object.create({});
+    this.listeners = {...{}};
+    // this.listeners = Object.create({});
   }
 
   // ----------------------------------------
@@ -76,7 +62,8 @@ export default class EventDispatcher {
    * 全てのリスナーを破棄します
    */
   destroy() {
-    this.listeners = Object.create({});
+    // this.listeners = Object.create({});
+    this.listeners = {...{}};
   }
 
   /**
@@ -110,8 +97,9 @@ export default class EventDispatcher {
   }
 
   /**
-   * <p>event type からリスナー関数を remove します<br>
-   * 内部処理は一時的に null 設定にします</p>
+   * event type からリスナー関数を remove します
+   * - 一時的に null 設定にします
+   * - {@link EventDispatcher.clean} で all null の時に空にします
    * @param {string} type event type（種類）
    * @param {Function} listener リスナー関数
    * @returns {boolean} 成功・不成功の真偽値を返します
@@ -124,12 +112,7 @@ export default class EventDispatcher {
 
     // @type {Object} - events.type:String: [listener:Function...]
     const { listeners } = this;
-    // if (!Type.has(listeners, type)) {
-    //   // listener.type が存在しない
-    //   // 処理しない
-    //   return false;
-    // }
-    if (!Object.keys(listeners).includes(type)) {
+    if (!Type.has(listeners, type)) {
       // listener.type が存在しない - 処理しない
       return false;
     }
@@ -157,8 +140,8 @@ export default class EventDispatcher {
   }
 
   /**
-   * <p>リスナー配列を調べ可能なら空にします<br>
-   * リスナーリストが全て null の時に 空配列にします</p>
+   * リスナー配列を調べ可能なら空にします
+   * - リスナーリストが全て null の時に 空配列にします
    * @param {string} type event type（種類）
    * @param {Array<Function>} types event type に登録されている配列（関数）
    * @returns {boolean} 成功・不成功の真偽値を返します, true: 空にした
@@ -172,7 +155,8 @@ export default class EventDispatcher {
 
     if (!hasFunction) {
       // null 以外が無いので空にする
-      this.listeners[type] = [].slice(0);
+      // this.listeners[type] = [].slice(0);
+      this.listeners[type] = [...[]];
     }
 
     // 空配列にしたかを hasFunction flag を反転させることで知らせます
@@ -194,12 +178,7 @@ export default class EventDispatcher {
     // @type {Object} - events.type:String: [listener:Function...]
     const { listeners } = this;
 
-    // if (!Type.has(listeners, type)) {
-    //   // listener.type が存在しない
-    //   // 処理しない
-    //   return false;
-    // }
-    if (!Object.keys(listeners).includes(type)) {
+    if (!Type.has(listeners, type)) {
       // listener.type が存在しない - 処理しない
       return false;
     }
@@ -211,8 +190,7 @@ export default class EventDispatcher {
 
   /**
    * イベントを発生させリスナー関数を call します
-   * @param {Events|*} events 送信される Event Object.<br>
-   *   type キーにイベント種類が設定されています、dispatch 時に target プロパティを追加し this を設定します
+   * @param {Events|*} events 送信される Event Object.type キーにイベント種類が設定されています、dispatch 時に target プロパティを追加し this を設定します
    * @returns {boolean} 成功・不成功の真偽値を返します
    */
   dispatch(events) {
@@ -221,12 +199,7 @@ export default class EventDispatcher {
     // @type {string} - event type
     const { type } = events;
 
-    // if (!Type.has(listeners, type)) {
-    //   // listener.type が存在しない
-    //   // 処理しない
-    //   return false;
-    // }
-    if (!Object.keys(listeners).includes(type)) {
+    if (!Type.has(listeners, type)) {
       // listener.type が存在しない - 処理しない
       return false;
     }
@@ -256,8 +229,8 @@ export default class EventDispatcher {
 
   /**
    * **alias on**
-   * <p>event type に リスナー関数を bind します</p>
-   * @deprecated instead use on
+   * - event type に リスナー関数を bind します
+   * @deprecated instead use {@link EventDispatcher.on}
    * @param {string} type event type（種類）
    * @param {Function} listener callback関数
    * @returns {boolean} 成功・不成功の真偽値を返します
@@ -268,8 +241,8 @@ export default class EventDispatcher {
 
   /**
    * **alias off**
-   * <p>event type からリスナー関数を remove します</p>
-   * @deprecated instead use off
+   * - event type からリスナー関数を remove します
+   * @deprecated instead use {@link EventDispatcher.off}
    * @param {string} type event type（種類）
    * @param {Function} listener リスナー関数
    * @returns {boolean} 成功・不成功の真偽値を返します
@@ -280,8 +253,8 @@ export default class EventDispatcher {
 
   /**
    * **alias has**
-   * <p>event type にリスナー関数が登録されているかを調べます</p>
-   * @deprecated instead use has
+   * - event type にリスナー関数が登録されているかを調べます
+   * @deprecated instead use {@link EventDispatcher.has}
    * @param {string} type event type（種類）
    * @param {Function} listener リスナー関数
    * @returns {boolean} event type にリスナー関数が登録されているかの真偽値を返します
@@ -292,8 +265,8 @@ export default class EventDispatcher {
 
   /**
    * **alias dispatch**
-   * <p>イベントを発生させリスナー関数を call します</p>
-   * @deprecated instead use dispatch
+   * - イベントを発生させリスナー関数を call します
+   * @deprecated instead use {@link EventDispatcher.dispatch}
    * @param {Events} events typeキー が必須です
    * @returns {boolean} 成功・不成功の真偽値を返します
    */

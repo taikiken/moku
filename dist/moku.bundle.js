@@ -1124,52 +1124,6 @@ var meta = module.exports = {
 
 /***/ }),
 
-/***/ "./node_modules/core-js/modules/_object-assign.js":
-/*!********************************************************!*\
-  !*** ./node_modules/core-js/modules/_object-assign.js ***!
-  \********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-// 19.1.2.1 Object.assign(target, source, ...)
-var getKeys = __webpack_require__(/*! ./_object-keys */ "./node_modules/core-js/modules/_object-keys.js");
-var gOPS = __webpack_require__(/*! ./_object-gops */ "./node_modules/core-js/modules/_object-gops.js");
-var pIE = __webpack_require__(/*! ./_object-pie */ "./node_modules/core-js/modules/_object-pie.js");
-var toObject = __webpack_require__(/*! ./_to-object */ "./node_modules/core-js/modules/_to-object.js");
-var IObject = __webpack_require__(/*! ./_iobject */ "./node_modules/core-js/modules/_iobject.js");
-var $assign = Object.assign;
-
-// should work with symbols and should have deterministic property order (V8 bug)
-module.exports = !$assign || __webpack_require__(/*! ./_fails */ "./node_modules/core-js/modules/_fails.js")(function () {
-  var A = {};
-  var B = {};
-  // eslint-disable-next-line no-undef
-  var S = Symbol();
-  var K = 'abcdefghijklmnopqrst';
-  A[S] = 7;
-  K.split('').forEach(function (k) { B[k] = k; });
-  return $assign({}, A)[S] != 7 || Object.keys($assign({}, B)).join('') != K;
-}) ? function assign(target, source) { // eslint-disable-line no-unused-vars
-  var T = toObject(target);
-  var aLen = arguments.length;
-  var index = 1;
-  var getSymbols = gOPS.f;
-  var isEnum = pIE.f;
-  while (aLen > index) {
-    var S = IObject(arguments[index++]);
-    var keys = getSymbols ? getKeys(S).concat(getSymbols(S)) : getKeys(S);
-    var length = keys.length;
-    var j = 0;
-    var key;
-    while (length > j) if (isEnum.call(S, key = keys[j++])) T[key] = S[key];
-  } return T;
-} : $assign;
-
-
-/***/ }),
-
 /***/ "./node_modules/core-js/modules/_object-create.js":
 /*!********************************************************!*\
   !*** ./node_modules/core-js/modules/_object-create.js ***!
@@ -2307,21 +2261,6 @@ $export($export.S, 'Number', {
 
 /***/ }),
 
-/***/ "./node_modules/core-js/modules/es6.object.assign.js":
-/*!***********************************************************!*\
-  !*** ./node_modules/core-js/modules/es6.object.assign.js ***!
-  \***********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-// 19.1.3.1 Object.assign(target, source)
-var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
-
-$export($export.S + $export.F, 'Object', { assign: __webpack_require__(/*! ./_object-assign */ "./node_modules/core-js/modules/_object-assign.js") });
-
-
-/***/ }),
-
 /***/ "./node_modules/core-js/modules/es6.object.keys.js":
 /*!*********************************************************!*\
   !*** ./node_modules/core-js/modules/es6.object.keys.js ***!
@@ -3259,793 +3198,6 @@ for (var collections = getKeys(DOMIterables), i = 0; i < collections.length; i++
 
 /***/ }),
 
-/***/ "./node_modules/process/browser.js":
-/*!*****************************************!*\
-  !*** ./node_modules/process/browser.js ***!
-  \*****************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-process.prependListener = noop;
-process.prependOnceListener = noop;
-
-process.listeners = function (name) { return [] }
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
-
-/***/ }),
-
-/***/ "./node_modules/promise-polyfill/src/finally.js":
-/*!******************************************************!*\
-  !*** ./node_modules/promise-polyfill/src/finally.js ***!
-  \******************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/**
- * @this {Promise}
- */
-function finallyConstructor(callback) {
-  var constructor = this.constructor;
-  return this.then(
-    function(value) {
-      return constructor.resolve(callback()).then(function() {
-        return value;
-      });
-    },
-    function(reason) {
-      return constructor.resolve(callback()).then(function() {
-        return constructor.reject(reason);
-      });
-    }
-  );
-}
-
-/* harmony default export */ __webpack_exports__["default"] = (finallyConstructor);
-
-
-/***/ }),
-
-/***/ "./node_modules/promise-polyfill/src/index.js":
-/*!****************************************************!*\
-  !*** ./node_modules/promise-polyfill/src/index.js ***!
-  \****************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* WEBPACK VAR INJECTION */(function(setImmediate) {/* harmony import */ var _finally__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./finally */ "./node_modules/promise-polyfill/src/finally.js");
-
-
-// Store setTimeout reference so promise-polyfill will be unaffected by
-// other code modifying setTimeout (like sinon.useFakeTimers())
-var setTimeoutFunc = setTimeout;
-
-function noop() {}
-
-// Polyfill for Function.prototype.bind
-function bind(fn, thisArg) {
-  return function() {
-    fn.apply(thisArg, arguments);
-  };
-}
-
-/**
- * @constructor
- * @param {Function} fn
- */
-function Promise(fn) {
-  if (!(this instanceof Promise))
-    throw new TypeError('Promises must be constructed via new');
-  if (typeof fn !== 'function') throw new TypeError('not a function');
-  /** @type {!number} */
-  this._state = 0;
-  /** @type {!boolean} */
-  this._handled = false;
-  /** @type {Promise|undefined} */
-  this._value = undefined;
-  /** @type {!Array<!Function>} */
-  this._deferreds = [];
-
-  doResolve(fn, this);
-}
-
-function handle(self, deferred) {
-  while (self._state === 3) {
-    self = self._value;
-  }
-  if (self._state === 0) {
-    self._deferreds.push(deferred);
-    return;
-  }
-  self._handled = true;
-  Promise._immediateFn(function() {
-    var cb = self._state === 1 ? deferred.onFulfilled : deferred.onRejected;
-    if (cb === null) {
-      (self._state === 1 ? resolve : reject)(deferred.promise, self._value);
-      return;
-    }
-    var ret;
-    try {
-      ret = cb(self._value);
-    } catch (e) {
-      reject(deferred.promise, e);
-      return;
-    }
-    resolve(deferred.promise, ret);
-  });
-}
-
-function resolve(self, newValue) {
-  try {
-    // Promise Resolution Procedure: https://github.com/promises-aplus/promises-spec#the-promise-resolution-procedure
-    if (newValue === self)
-      throw new TypeError('A promise cannot be resolved with itself.');
-    if (
-      newValue &&
-      (typeof newValue === 'object' || typeof newValue === 'function')
-    ) {
-      var then = newValue.then;
-      if (newValue instanceof Promise) {
-        self._state = 3;
-        self._value = newValue;
-        finale(self);
-        return;
-      } else if (typeof then === 'function') {
-        doResolve(bind(then, newValue), self);
-        return;
-      }
-    }
-    self._state = 1;
-    self._value = newValue;
-    finale(self);
-  } catch (e) {
-    reject(self, e);
-  }
-}
-
-function reject(self, newValue) {
-  self._state = 2;
-  self._value = newValue;
-  finale(self);
-}
-
-function finale(self) {
-  if (self._state === 2 && self._deferreds.length === 0) {
-    Promise._immediateFn(function() {
-      if (!self._handled) {
-        Promise._unhandledRejectionFn(self._value);
-      }
-    });
-  }
-
-  for (var i = 0, len = self._deferreds.length; i < len; i++) {
-    handle(self, self._deferreds[i]);
-  }
-  self._deferreds = null;
-}
-
-/**
- * @constructor
- */
-function Handler(onFulfilled, onRejected, promise) {
-  this.onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : null;
-  this.onRejected = typeof onRejected === 'function' ? onRejected : null;
-  this.promise = promise;
-}
-
-/**
- * Take a potentially misbehaving resolver function and make sure
- * onFulfilled and onRejected are only called once.
- *
- * Makes no guarantees about asynchrony.
- */
-function doResolve(fn, self) {
-  var done = false;
-  try {
-    fn(
-      function(value) {
-        if (done) return;
-        done = true;
-        resolve(self, value);
-      },
-      function(reason) {
-        if (done) return;
-        done = true;
-        reject(self, reason);
-      }
-    );
-  } catch (ex) {
-    if (done) return;
-    done = true;
-    reject(self, ex);
-  }
-}
-
-Promise.prototype['catch'] = function(onRejected) {
-  return this.then(null, onRejected);
-};
-
-Promise.prototype.then = function(onFulfilled, onRejected) {
-  // @ts-ignore
-  var prom = new this.constructor(noop);
-
-  handle(this, new Handler(onFulfilled, onRejected, prom));
-  return prom;
-};
-
-Promise.prototype['finally'] = _finally__WEBPACK_IMPORTED_MODULE_0__["default"];
-
-Promise.all = function(arr) {
-  return new Promise(function(resolve, reject) {
-    if (!arr || typeof arr.length === 'undefined')
-      throw new TypeError('Promise.all accepts an array');
-    var args = Array.prototype.slice.call(arr);
-    if (args.length === 0) return resolve([]);
-    var remaining = args.length;
-
-    function res(i, val) {
-      try {
-        if (val && (typeof val === 'object' || typeof val === 'function')) {
-          var then = val.then;
-          if (typeof then === 'function') {
-            then.call(
-              val,
-              function(val) {
-                res(i, val);
-              },
-              reject
-            );
-            return;
-          }
-        }
-        args[i] = val;
-        if (--remaining === 0) {
-          resolve(args);
-        }
-      } catch (ex) {
-        reject(ex);
-      }
-    }
-
-    for (var i = 0; i < args.length; i++) {
-      res(i, args[i]);
-    }
-  });
-};
-
-Promise.resolve = function(value) {
-  if (value && typeof value === 'object' && value.constructor === Promise) {
-    return value;
-  }
-
-  return new Promise(function(resolve) {
-    resolve(value);
-  });
-};
-
-Promise.reject = function(value) {
-  return new Promise(function(resolve, reject) {
-    reject(value);
-  });
-};
-
-Promise.race = function(values) {
-  return new Promise(function(resolve, reject) {
-    for (var i = 0, len = values.length; i < len; i++) {
-      values[i].then(resolve, reject);
-    }
-  });
-};
-
-// Use polyfill for setImmediate for performance gains
-Promise._immediateFn =
-  (typeof setImmediate === 'function' &&
-    function(fn) {
-      setImmediate(fn);
-    }) ||
-  function(fn) {
-    setTimeoutFunc(fn, 0);
-  };
-
-Promise._unhandledRejectionFn = function _unhandledRejectionFn(err) {
-  if (typeof console !== 'undefined' && console) {
-    console.warn('Possible Unhandled Promise Rejection:', err); // eslint-disable-line no-console
-  }
-};
-
-/* harmony default export */ __webpack_exports__["default"] = (Promise);
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../timers-browserify/main.js */ "./node_modules/timers-browserify/main.js").setImmediate))
-
-/***/ }),
-
-/***/ "./node_modules/setimmediate/setImmediate.js":
-/*!***************************************************!*\
-  !*** ./node_modules/setimmediate/setImmediate.js ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
-    "use strict";
-
-    if (global.setImmediate) {
-        return;
-    }
-
-    var nextHandle = 1; // Spec says greater than zero
-    var tasksByHandle = {};
-    var currentlyRunningATask = false;
-    var doc = global.document;
-    var registerImmediate;
-
-    function setImmediate(callback) {
-      // Callback can either be a function or a string
-      if (typeof callback !== "function") {
-        callback = new Function("" + callback);
-      }
-      // Copy function arguments
-      var args = new Array(arguments.length - 1);
-      for (var i = 0; i < args.length; i++) {
-          args[i] = arguments[i + 1];
-      }
-      // Store and register the task
-      var task = { callback: callback, args: args };
-      tasksByHandle[nextHandle] = task;
-      registerImmediate(nextHandle);
-      return nextHandle++;
-    }
-
-    function clearImmediate(handle) {
-        delete tasksByHandle[handle];
-    }
-
-    function run(task) {
-        var callback = task.callback;
-        var args = task.args;
-        switch (args.length) {
-        case 0:
-            callback();
-            break;
-        case 1:
-            callback(args[0]);
-            break;
-        case 2:
-            callback(args[0], args[1]);
-            break;
-        case 3:
-            callback(args[0], args[1], args[2]);
-            break;
-        default:
-            callback.apply(undefined, args);
-            break;
-        }
-    }
-
-    function runIfPresent(handle) {
-        // From the spec: "Wait until any invocations of this algorithm started before this one have completed."
-        // So if we're currently running a task, we'll need to delay this invocation.
-        if (currentlyRunningATask) {
-            // Delay by doing a setTimeout. setImmediate was tried instead, but in Firefox 7 it generated a
-            // "too much recursion" error.
-            setTimeout(runIfPresent, 0, handle);
-        } else {
-            var task = tasksByHandle[handle];
-            if (task) {
-                currentlyRunningATask = true;
-                try {
-                    run(task);
-                } finally {
-                    clearImmediate(handle);
-                    currentlyRunningATask = false;
-                }
-            }
-        }
-    }
-
-    function installNextTickImplementation() {
-        registerImmediate = function(handle) {
-            process.nextTick(function () { runIfPresent(handle); });
-        };
-    }
-
-    function canUsePostMessage() {
-        // The test against `importScripts` prevents this implementation from being installed inside a web worker,
-        // where `global.postMessage` means something completely different and can't be used for this purpose.
-        if (global.postMessage && !global.importScripts) {
-            var postMessageIsAsynchronous = true;
-            var oldOnMessage = global.onmessage;
-            global.onmessage = function() {
-                postMessageIsAsynchronous = false;
-            };
-            global.postMessage("", "*");
-            global.onmessage = oldOnMessage;
-            return postMessageIsAsynchronous;
-        }
-    }
-
-    function installPostMessageImplementation() {
-        // Installs an event handler on `global` for the `message` event: see
-        // * https://developer.mozilla.org/en/DOM/window.postMessage
-        // * http://www.whatwg.org/specs/web-apps/current-work/multipage/comms.html#crossDocumentMessages
-
-        var messagePrefix = "setImmediate$" + Math.random() + "$";
-        var onGlobalMessage = function(event) {
-            if (event.source === global &&
-                typeof event.data === "string" &&
-                event.data.indexOf(messagePrefix) === 0) {
-                runIfPresent(+event.data.slice(messagePrefix.length));
-            }
-        };
-
-        if (global.addEventListener) {
-            global.addEventListener("message", onGlobalMessage, false);
-        } else {
-            global.attachEvent("onmessage", onGlobalMessage);
-        }
-
-        registerImmediate = function(handle) {
-            global.postMessage(messagePrefix + handle, "*");
-        };
-    }
-
-    function installMessageChannelImplementation() {
-        var channel = new MessageChannel();
-        channel.port1.onmessage = function(event) {
-            var handle = event.data;
-            runIfPresent(handle);
-        };
-
-        registerImmediate = function(handle) {
-            channel.port2.postMessage(handle);
-        };
-    }
-
-    function installReadyStateChangeImplementation() {
-        var html = doc.documentElement;
-        registerImmediate = function(handle) {
-            // Create a <script> element; its readystatechange event will be fired asynchronously once it is inserted
-            // into the document. Do so, thus queuing up the task. Remember to clean up once it's been called.
-            var script = doc.createElement("script");
-            script.onreadystatechange = function () {
-                runIfPresent(handle);
-                script.onreadystatechange = null;
-                html.removeChild(script);
-                script = null;
-            };
-            html.appendChild(script);
-        };
-    }
-
-    function installSetTimeoutImplementation() {
-        registerImmediate = function(handle) {
-            setTimeout(runIfPresent, 0, handle);
-        };
-    }
-
-    // If supported, we should attach to the prototype of global, since that is where setTimeout et al. live.
-    var attachTo = Object.getPrototypeOf && Object.getPrototypeOf(global);
-    attachTo = attachTo && attachTo.setTimeout ? attachTo : global;
-
-    // Don't get fooled by e.g. browserify environments.
-    if ({}.toString.call(global.process) === "[object process]") {
-        // For Node.js before 0.9
-        installNextTickImplementation();
-
-    } else if (canUsePostMessage()) {
-        // For non-IE10 modern browsers
-        installPostMessageImplementation();
-
-    } else if (global.MessageChannel) {
-        // For web workers, where supported
-        installMessageChannelImplementation();
-
-    } else if (doc && "onreadystatechange" in doc.createElement("script")) {
-        // For IE 6–8
-        installReadyStateChangeImplementation();
-
-    } else {
-        // For older browsers
-        installSetTimeoutImplementation();
-    }
-
-    attachTo.setImmediate = setImmediate;
-    attachTo.clearImmediate = clearImmediate;
-}(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js"), __webpack_require__(/*! ./../process/browser.js */ "./node_modules/process/browser.js")))
-
-/***/ }),
-
-/***/ "./node_modules/timers-browserify/main.js":
-/*!************************************************!*\
-  !*** ./node_modules/timers-browserify/main.js ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
-            (typeof self !== "undefined" && self) ||
-            window;
-var apply = Function.prototype.apply;
-
-// DOM APIs, for completeness
-
-exports.setTimeout = function() {
-  return new Timeout(apply.call(setTimeout, scope, arguments), clearTimeout);
-};
-exports.setInterval = function() {
-  return new Timeout(apply.call(setInterval, scope, arguments), clearInterval);
-};
-exports.clearTimeout =
-exports.clearInterval = function(timeout) {
-  if (timeout) {
-    timeout.close();
-  }
-};
-
-function Timeout(id, clearFn) {
-  this._id = id;
-  this._clearFn = clearFn;
-}
-Timeout.prototype.unref = Timeout.prototype.ref = function() {};
-Timeout.prototype.close = function() {
-  this._clearFn.call(scope, this._id);
-};
-
-// Does not start the time, just sets up the members needed.
-exports.enroll = function(item, msecs) {
-  clearTimeout(item._idleTimeoutId);
-  item._idleTimeout = msecs;
-};
-
-exports.unenroll = function(item) {
-  clearTimeout(item._idleTimeoutId);
-  item._idleTimeout = -1;
-};
-
-exports._unrefActive = exports.active = function(item) {
-  clearTimeout(item._idleTimeoutId);
-
-  var msecs = item._idleTimeout;
-  if (msecs >= 0) {
-    item._idleTimeoutId = setTimeout(function onTimeout() {
-      if (item._onTimeout)
-        item._onTimeout();
-    }, msecs);
-  }
-};
-
-// setimmediate attaches itself to the global object
-__webpack_require__(/*! setimmediate */ "./node_modules/setimmediate/setImmediate.js");
-// On some exotic environments, it's not clear which object `setimmediate` was
-// able to install onto.  Search each possibility in the same order as the
-// `setimmediate` library.
-exports.setImmediate = (typeof self !== "undefined" && self.setImmediate) ||
-                       (typeof global !== "undefined" && global.setImmediate) ||
-                       (this && this.setImmediate);
-exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
-                         (typeof global !== "undefined" && global.clearImmediate) ||
-                         (this && this.clearImmediate);
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
-
-/***/ }),
-
-/***/ "./node_modules/webpack/buildin/global.js":
-/*!***********************************!*\
-  !*** (webpack)/buildin/global.js ***!
-  \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || new Function("return this")();
-} catch (e) {
-	// This works if the window reference is available
-	if (typeof window === "object") g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-
 /***/ "./node_modules/whatwg-fetch/fetch.js":
 /*!********************************************!*\
   !*** ./node_modules/whatwg-fetch/fetch.js ***!
@@ -4785,7 +3937,7 @@ function () {
      * @param {Object|Window} view Document.defaultView
      * @param {Element} element 操作対象 Element
      * @param {Array<string>} patterns 調査対象 CSS property name の配列
-     * @returns {CssStyle|string|undefined} style value を返します
+     * @returns {*|string|undefined} style value を返します
      * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/defaultView
      */
 
@@ -4871,15 +4023,7 @@ function () {
      * @type {string}
      */
 
-    this.original = css; // /**
-    //  * インスタンス作成時の inline CSS を上書きします
-    //  * @param {string} style 上書き用 CSS 設定
-    //  * @returns {string} 上書きされた CSS
-    //  */
-    // this.update = (style) => {
-    //   css = style;
-    //   return style;
-    // };
+    this.original = css;
   } // ----------------------------------------
   // METHOD
   // ----------------------------------------
@@ -5026,107 +4170,6 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  * This notice shall be included in all copies or substantial portions of the Software.
  *
  */
-// /**
-//  * [native code] - document
-//  * @type {HTMLDocument}
-//  * @private
-//  * @static
-//  */
-// const document = self.document;
-// /**
-//  * CSS detector に使用する virtual CSSStyleDeclaration
-//  * ```
-//  * document.createElement('p').style
-//  * ```
-//  * @type {CSSStyleDeclaration}
-//  * @private
-//  * @static
-//  * @see https://developer.mozilla.org/en-US/docs/Web/API/CSSStyleDeclaration
-//  * @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style
-//  */
-// const style = document.createElement('p').style;
-// /**
-//  * vendor prefix list, CSS detector に使用します
-//  * - '-webkit-',
-//  * - '-moz-',
-//  * - '-ms-',
-//  * - '-o-',
-//  * - ''
-//  * @type {[string]}
-//  * @private
-//  * @static
-//  */
-// const vendors = [
-//   '-webkit-',
-//   '-moz-',
-//   '-ms-',
-//   '-o-',
-//   '',
-// ];
-// /**
-//  * CSS3 transition 可能フラッグ
-//  * @type {boolean}
-//  * @private
-//  * @static
-//  */
-// const transition = vendors.some(prefix => typeof style[`${prefix}transition`] !== 'undefined');
-// /**
-//  * CSS3 transform 可能フラッグ
-//  * @type {boolean}
-//  * @private
-//  * @static
-//  */
-// const transform = vendors.some(prefix => typeof style[`${prefix}transform`] !== 'undefined');
-// /**
-//  * touch event 使用可能フラッグ
-//  * @type {boolean}
-//  */
-// const touch = 'ontouchstart' in document.documentElement;
-// /**
-//  * canvas detect flag
-//  * @type {boolean}
-//  */
-// const canvas = !!window.CanvasRenderingContext2D;
-// /**
-//  * webgl detect flag
-//  * @type {boolean}
-//  */
-// let webgl = false;
-// if (canvas) {
-//   try {
-//     webgl = !!window.WebGLRenderingContext &&
-//       !!document.createElement('canvas').getContext('experimental-webgl');
-//   } catch (e) {
-//     webgl = false;
-//   }
-// }
-// /**
-//  * addEventListener 第三引数 - { passive: true } : false するためのブラウザテスト・フラッグ
-//  *
-//  * TouchEvent#Using with addEventListener() and preventDefault()
-//  * <pre>
-//  * It's important to note that in many cases, both touch and mouse events get sent (in order to let non-touch-specific code still interact with the user). If you use touch events, you should call preventDefault() to keep the mouse event from being sent as well.
-//  * The exception to this is Chrome, starting with version 56 (desktop, Chrome for android, and android webview), where the default value for touchstart and touchmove is true and calls to preventDefault() are not needed. To override this behavior, you simply set the passive option to false as shown in the example below. This change prevents the listener from blocking page rendering while a user is scrolling. A demo is available on the Google Developer site.
-//  * </pre>
-//  * @private
-//  * @type {boolean}
-//  * @see https://developer.mozilla.org/en-US/docs/Web/API/TouchEvent
-//  * @see https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md
-//  * @see https://blog.jxck.io/entries/2016-06-09/passive-event-listeners.html
-//  * @since 0.3.2
-//  */
-// let supportsPassive = false;
-// try {
-//   const opts = Object.defineProperty({}, 'passive', {
-//     get() {
-//       supportsPassive = true;
-//     },
-//   });
-//   window.addEventListener('test', null, opts);
-// } catch (e) {
-//   supportsPassive = false;
-//   // console.warn('passive test', e);
-// }
 
 /**
  * 判定結果を保持します
@@ -5179,8 +4222,7 @@ function () {
     value: function transition() {
       if (can.transition === null) {
         var _document$createEleme = document.createElement('p'),
-            style = _document$createEleme.style; // eslint-disable-next-line max-len
-
+            style = _document$createEleme.style;
 
         can.transition = Can.vendors.some(function (prefix) {
           return typeof style["".concat(prefix, "transition")] !== 'undefined';
@@ -5199,8 +4241,7 @@ function () {
     value: function transform() {
       if (can.transform === null) {
         var _document$createEleme2 = document.createElement('p'),
-            style = _document$createEleme2.style; // eslint-disable-next-line max-len
-
+            style = _document$createEleme2.style;
 
         can.transform = Can.vendors.some(function (prefix) {
           return typeof style["".concat(prefix, "transform")] !== 'undefined';
@@ -5328,17 +4369,23 @@ Can.vendors = ['-webkit-', '-moz-', '-ms-', '-o-', ''];
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Chrome; });
-/* harmony import */ var core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.object.assign */ "./node_modules/core-js/modules/es6.object.assign.js");
-/* harmony import */ var core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.number.constructor */ "./node_modules/core-js/modules/es6.number.constructor.js");
-/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.number.is-nan */ "./node_modules/core-js/modules/es6.number.is-nan.js");
-/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.regexp.match */ "./node_modules/core-js/modules/es6.regexp.match.js");
-/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _devices__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../devices */ "./src/device/devices.js");
-/* harmony import */ var _CriOS__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./CriOS */ "./src/device/browser/CriOS.js");
-/* harmony import */ var _Edge__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Edge */ "./src/device/browser/Edge.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.array.iterator */ "./node_modules/core-js/modules/es6.array.iterator.js");
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.object.keys */ "./node_modules/core-js/modules/es6.object.keys.js");
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.number.constructor */ "./node_modules/core-js/modules/es6.number.constructor.js");
+/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es6.number.is-nan */ "./node_modules/core-js/modules/es6.number.is-nan.js");
+/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es6.regexp.match */ "./node_modules/core-js/modules/es6.regexp.match.js");
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _devices__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../devices */ "./src/device/devices.js");
+/* harmony import */ var _CriOS__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./CriOS */ "./src/device/browser/CriOS.js");
+/* harmony import */ var _Edge__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./Edge */ "./src/device/browser/Edge.js");
+
+
 
 
 
@@ -5349,6 +4396,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /**
  * Copyright (c) 2011-2017 inazumatv.com, inc.
@@ -5379,7 +4430,7 @@ var _browsers = null;
  */
 
 var version = function version() {
-  var app = _devices__WEBPACK_IMPORTED_MODULE_4__["default"].app;
+  var app = _devices__WEBPACK_IMPORTED_MODULE_6__["default"].app;
   var numbers = app.match(/chrome\/(\d+)\.(\d+)\.(\d+)\.?(\d+)?/i);
 
   if (!Array.isArray(numbers)) {
@@ -5435,11 +4486,12 @@ var version = function version() {
 var init = function init() {
   if (_browsers) {
     return;
-  }
+  } // browsers = Object.assign({}, devices.browsers);
 
-  _browsers = Object.assign({}, _devices__WEBPACK_IMPORTED_MODULE_4__["default"].browsers);
-  var crios = _CriOS__WEBPACK_IMPORTED_MODULE_5__["default"].is();
-  var edge = _Edge__WEBPACK_IMPORTED_MODULE_6__["default"].is();
+
+  _browsers = _objectSpread({}, {});
+  var crios = _CriOS__WEBPACK_IMPORTED_MODULE_7__["default"].is();
+  var edge = _Edge__WEBPACK_IMPORTED_MODULE_8__["default"].is();
   var chrome = false;
 
   if (!edge) {
@@ -5447,7 +4499,7 @@ var init = function init() {
       // iOS chrome
       chrome = true;
     } else {
-      var ua = _devices__WEBPACK_IMPORTED_MODULE_4__["default"].ua;
+      var ua = _devices__WEBPACK_IMPORTED_MODULE_6__["default"].ua;
       chrome = !!ua.match(/chrome/i);
     }
   }
@@ -5556,15 +4608,21 @@ function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return CriOS; });
-/* harmony import */ var core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.object.assign */ "./node_modules/core-js/modules/es6.object.assign.js");
-/* harmony import */ var core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.number.constructor */ "./node_modules/core-js/modules/es6.number.constructor.js");
-/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.number.is-nan */ "./node_modules/core-js/modules/es6.number.is-nan.js");
-/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.regexp.match */ "./node_modules/core-js/modules/es6.regexp.match.js");
-/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _devices__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../devices */ "./src/device/devices.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.array.iterator */ "./node_modules/core-js/modules/es6.array.iterator.js");
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.object.keys */ "./node_modules/core-js/modules/es6.object.keys.js");
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.number.constructor */ "./node_modules/core-js/modules/es6.number.constructor.js");
+/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es6.number.is-nan */ "./node_modules/core-js/modules/es6.number.is-nan.js");
+/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es6.regexp.match */ "./node_modules/core-js/modules/es6.regexp.match.js");
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _devices__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../devices */ "./src/device/devices.js");
+
+
 
 
 
@@ -5575,6 +4633,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /**
  * Copyright (c) 2011-2017 inazumatv.com, inc.
@@ -5603,7 +4665,7 @@ var _browsers = null;
  */
 
 var version = function version() {
-  var app = _devices__WEBPACK_IMPORTED_MODULE_4__["default"].app;
+  var app = _devices__WEBPACK_IMPORTED_MODULE_6__["default"].app;
   var numbers = app.match(/crios\/(\d+)\.(\d+)\.(\d+)\.?(\d+)?/i);
 
   if (!Array.isArray(numbers)) {
@@ -5657,10 +4719,11 @@ var version = function version() {
 var init = function init() {
   if (_browsers) {
     return;
-  }
+  } // browsers = Object.assign({}, devices.browsers);
 
-  _browsers = Object.assign({}, _devices__WEBPACK_IMPORTED_MODULE_4__["default"].browsers);
-  var ua = _devices__WEBPACK_IMPORTED_MODULE_4__["default"].ua;
+
+  _browsers = _objectSpread({}, {});
+  var ua = _devices__WEBPACK_IMPORTED_MODULE_6__["default"].ua;
   var crios = !!ua.match(/crios/i);
   _browsers.crios = crios;
 
@@ -5766,15 +4829,21 @@ function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Edge; });
-/* harmony import */ var core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.object.assign */ "./node_modules/core-js/modules/es6.object.assign.js");
-/* harmony import */ var core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.number.constructor */ "./node_modules/core-js/modules/es6.number.constructor.js");
-/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.number.is-nan */ "./node_modules/core-js/modules/es6.number.is-nan.js");
-/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.regexp.match */ "./node_modules/core-js/modules/es6.regexp.match.js");
-/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _devices__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../devices */ "./src/device/devices.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.array.iterator */ "./node_modules/core-js/modules/es6.array.iterator.js");
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.object.keys */ "./node_modules/core-js/modules/es6.object.keys.js");
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.number.constructor */ "./node_modules/core-js/modules/es6.number.constructor.js");
+/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es6.number.is-nan */ "./node_modules/core-js/modules/es6.number.is-nan.js");
+/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es6.regexp.match */ "./node_modules/core-js/modules/es6.regexp.match.js");
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _devices__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../devices */ "./src/device/devices.js");
+
+
 
 
 
@@ -5785,6 +4854,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /**
  * Copyright (c) 2011-2017 inazumatv.com, inc.
@@ -5813,7 +4886,7 @@ var _browsers = null;
  */
 
 var version = function version() {
-  var app = _devices__WEBPACK_IMPORTED_MODULE_4__["default"].app;
+  var app = _devices__WEBPACK_IMPORTED_MODULE_6__["default"].app;
   var numbers = app.match(/edge\/(\d+)\.(\d+)\.?(\d+)?/i);
 
   if (!Array.isArray(numbers)) {
@@ -5869,10 +4942,11 @@ var version = function version() {
 var init = function init() {
   if (_browsers) {
     return;
-  }
+  } // browsers = Object.assign({}, devices.browsers);
 
-  _browsers = Object.assign({}, _devices__WEBPACK_IMPORTED_MODULE_4__["default"].browsers);
-  var ua = _devices__WEBPACK_IMPORTED_MODULE_4__["default"].ua;
+
+  _browsers = _objectSpread({}, {});
+  var ua = _devices__WEBPACK_IMPORTED_MODULE_6__["default"].ua;
   var edge = !!ua.match(/edge/i);
   _browsers.edge = edge;
 
@@ -5978,15 +5052,21 @@ function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Firefox; });
-/* harmony import */ var core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.object.assign */ "./node_modules/core-js/modules/es6.object.assign.js");
-/* harmony import */ var core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.number.constructor */ "./node_modules/core-js/modules/es6.number.constructor.js");
-/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.number.is-nan */ "./node_modules/core-js/modules/es6.number.is-nan.js");
-/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.regexp.match */ "./node_modules/core-js/modules/es6.regexp.match.js");
-/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _devices__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../devices */ "./src/device/devices.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.array.iterator */ "./node_modules/core-js/modules/es6.array.iterator.js");
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.object.keys */ "./node_modules/core-js/modules/es6.object.keys.js");
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.number.constructor */ "./node_modules/core-js/modules/es6.number.constructor.js");
+/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es6.number.is-nan */ "./node_modules/core-js/modules/es6.number.is-nan.js");
+/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es6.regexp.match */ "./node_modules/core-js/modules/es6.regexp.match.js");
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _devices__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../devices */ "./src/device/devices.js");
+
+
 
 
 
@@ -5997,6 +5077,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /**
  * Copyright (c) 2011-2017 inazumatv.com, inc.
@@ -6025,7 +5109,7 @@ var _browsers = null;
  */
 
 var version = function version() {
-  var ua = _devices__WEBPACK_IMPORTED_MODULE_4__["default"].ua;
+  var ua = _devices__WEBPACK_IMPORTED_MODULE_6__["default"].ua;
   var numbers = ua.match(/firefox\/(\d+)\.?(\d+)?/i);
 
   if (!Array.isArray(numbers)) {
@@ -6079,10 +5163,11 @@ var version = function version() {
 var init = function init() {
   if (_browsers) {
     return;
-  }
+  } // browsers = Object.assign({}, devices.browsers);
 
-  _browsers = Object.assign({}, _devices__WEBPACK_IMPORTED_MODULE_4__["default"].browsers);
-  var ua = _devices__WEBPACK_IMPORTED_MODULE_4__["default"].ua;
+
+  _browsers = _objectSpread({}, {});
+  var ua = _devices__WEBPACK_IMPORTED_MODULE_6__["default"].ua;
   var firefox = !!ua.match(/firefox/i);
   _browsers.firefox = firefox;
 
@@ -6188,15 +5273,21 @@ function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return FxiOS; });
-/* harmony import */ var core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.object.assign */ "./node_modules/core-js/modules/es6.object.assign.js");
-/* harmony import */ var core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.number.constructor */ "./node_modules/core-js/modules/es6.number.constructor.js");
-/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.number.is-nan */ "./node_modules/core-js/modules/es6.number.is-nan.js");
-/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.regexp.match */ "./node_modules/core-js/modules/es6.regexp.match.js");
-/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _devices__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../devices */ "./src/device/devices.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.array.iterator */ "./node_modules/core-js/modules/es6.array.iterator.js");
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.object.keys */ "./node_modules/core-js/modules/es6.object.keys.js");
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.number.constructor */ "./node_modules/core-js/modules/es6.number.constructor.js");
+/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es6.number.is-nan */ "./node_modules/core-js/modules/es6.number.is-nan.js");
+/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es6.regexp.match */ "./node_modules/core-js/modules/es6.regexp.match.js");
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _devices__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../devices */ "./src/device/devices.js");
+
+
 
 
 
@@ -6207,6 +5298,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /**
  * Copyright (c) 2011-2017 inazumatv.com, inc.
@@ -6235,7 +5330,7 @@ var _browsers = null;
  */
 
 var version = function version() {
-  var app = _devices__WEBPACK_IMPORTED_MODULE_4__["default"].app;
+  var app = _devices__WEBPACK_IMPORTED_MODULE_6__["default"].app;
   var numbers = app.match(/fxios\/(\d+)\.?(\d+)?/i);
 
   if (!Array.isArray(numbers)) {
@@ -6289,10 +5384,11 @@ var version = function version() {
 var init = function init() {
   if (_browsers) {
     return;
-  }
+  } // browsers = Object.assign({}, devices.browsers);
 
-  _browsers = Object.assign({}, _devices__WEBPACK_IMPORTED_MODULE_4__["default"].browsers);
-  var ua = _devices__WEBPACK_IMPORTED_MODULE_4__["default"].ua;
+
+  _browsers = _objectSpread({}, {});
+  var ua = _devices__WEBPACK_IMPORTED_MODULE_6__["default"].ua;
   var fxios = !!ua.match(/fxios/i);
   _browsers.fxios = fxios;
 
@@ -6398,11 +5494,17 @@ function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return IE; });
-/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.regexp.match */ "./node_modules/core-js/modules/es6.regexp.match.js");
-/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.object.assign */ "./node_modules/core-js/modules/es6.object.assign.js");
-/* harmony import */ var core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _devices__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../devices */ "./src/device/devices.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.array.iterator */ "./node_modules/core-js/modules/es6.array.iterator.js");
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.object.keys */ "./node_modules/core-js/modules/es6.object.keys.js");
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.regexp.match */ "./node_modules/core-js/modules/es6.regexp.match.js");
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _devices__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../devices */ "./src/device/devices.js");
+
+
 
 
 
@@ -6411,6 +5513,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /**
  * Copyright (c) 2011-2017 inazumatv.com, inc.
@@ -6475,10 +5581,11 @@ var version = function version() {
 var init = function init() {
   if (_browsers) {
     return;
-  }
+  } // browsers = Object.assign({}, devices.browsers);
 
-  _browsers = Object.assign({}, _devices__WEBPACK_IMPORTED_MODULE_2__["default"].browsers);
-  var ua = _devices__WEBPACK_IMPORTED_MODULE_2__["default"].ua;
+
+  _browsers = _objectSpread({}, {});
+  var ua = _devices__WEBPACK_IMPORTED_MODULE_4__["default"].ua;
   var ie = !!ua.match(/msie/i);
   _browsers.ie = ie;
 
@@ -6663,20 +5770,26 @@ function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Safari; });
-/* harmony import */ var core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.object.assign */ "./node_modules/core-js/modules/es6.object.assign.js");
-/* harmony import */ var core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.number.constructor */ "./node_modules/core-js/modules/es6.number.constructor.js");
-/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.number.is-nan */ "./node_modules/core-js/modules/es6.number.is-nan.js");
-/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.regexp.match */ "./node_modules/core-js/modules/es6.regexp.match.js");
-/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _devices__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../devices */ "./src/device/devices.js");
-/* harmony import */ var _CriOS__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./CriOS */ "./src/device/browser/CriOS.js");
-/* harmony import */ var _Edge__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Edge */ "./src/device/browser/Edge.js");
-/* harmony import */ var _Chrome__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Chrome */ "./src/device/browser/Chrome.js");
-/* harmony import */ var _FxiOS__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./FxiOS */ "./src/device/browser/FxiOS.js");
-/* harmony import */ var _os_Android__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../os/Android */ "./src/device/os/Android.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.array.iterator */ "./node_modules/core-js/modules/es6.array.iterator.js");
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.object.keys */ "./node_modules/core-js/modules/es6.object.keys.js");
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.number.constructor */ "./node_modules/core-js/modules/es6.number.constructor.js");
+/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es6.number.is-nan */ "./node_modules/core-js/modules/es6.number.is-nan.js");
+/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es6.regexp.match */ "./node_modules/core-js/modules/es6.regexp.match.js");
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _devices__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../devices */ "./src/device/devices.js");
+/* harmony import */ var _CriOS__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./CriOS */ "./src/device/browser/CriOS.js");
+/* harmony import */ var _Edge__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./Edge */ "./src/device/browser/Edge.js");
+/* harmony import */ var _Chrome__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./Chrome */ "./src/device/browser/Chrome.js");
+/* harmony import */ var _FxiOS__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./FxiOS */ "./src/device/browser/FxiOS.js");
+/* harmony import */ var _os_Android__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../os/Android */ "./src/device/os/Android.js");
+
+
 
 
 
@@ -6687,6 +5800,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /**
  * Copyright (c) 2011-2017 inazumatv.com, inc.
@@ -6720,7 +5837,7 @@ var _browsers = null;
  */
 
 var version = function version() {
-  var app = _devices__WEBPACK_IMPORTED_MODULE_4__["default"].app;
+  var app = _devices__WEBPACK_IMPORTED_MODULE_6__["default"].app;
   var numbers = app.match(/version\/(\d+)\.(\d+)\.?(\d+)?/i);
 
   if (!Array.isArray(numbers)) {
@@ -6774,12 +5891,13 @@ var version = function version() {
 var init = function init() {
   if (_browsers) {
     return;
-  }
+  } // browsers = Object.assign({}, devices.browsers);
 
-  _browsers = Object.assign({}, _devices__WEBPACK_IMPORTED_MODULE_4__["default"].browsers);
-  var safari = _devices__WEBPACK_IMPORTED_MODULE_4__["default"].safari;
 
-  if (_CriOS__WEBPACK_IMPORTED_MODULE_5__["default"].is() || _Edge__WEBPACK_IMPORTED_MODULE_6__["default"].is() || _Chrome__WEBPACK_IMPORTED_MODULE_7__["default"].is() || _FxiOS__WEBPACK_IMPORTED_MODULE_8__["default"].is() || _os_Android__WEBPACK_IMPORTED_MODULE_9__["default"].standard()) {
+  _browsers = _objectSpread({}, {});
+  var safari = _devices__WEBPACK_IMPORTED_MODULE_6__["default"].safari;
+
+  if (_CriOS__WEBPACK_IMPORTED_MODULE_7__["default"].is() || _Edge__WEBPACK_IMPORTED_MODULE_8__["default"].is() || _Chrome__WEBPACK_IMPORTED_MODULE_9__["default"].is() || _FxiOS__WEBPACK_IMPORTED_MODULE_10__["default"].is() || _os_Android__WEBPACK_IMPORTED_MODULE_11__["default"].standard()) {
     safari = false;
   }
 
@@ -7079,16 +6197,22 @@ var devices = {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Android; });
-/* harmony import */ var core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.object.assign */ "./node_modules/core-js/modules/es6.object.assign.js");
-/* harmony import */ var core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.number.constructor */ "./node_modules/core-js/modules/es6.number.constructor.js");
-/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.number.is-nan */ "./node_modules/core-js/modules/es6.number.is-nan.js");
-/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.regexp.match */ "./node_modules/core-js/modules/es6.regexp.match.js");
-/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _devices__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../devices */ "./src/device/devices.js");
-/* harmony import */ var _Windows__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Windows */ "./src/device/os/Windows.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.array.iterator */ "./node_modules/core-js/modules/es6.array.iterator.js");
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.object.keys */ "./node_modules/core-js/modules/es6.object.keys.js");
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.number.constructor */ "./node_modules/core-js/modules/es6.number.constructor.js");
+/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es6.number.is-nan */ "./node_modules/core-js/modules/es6.number.is-nan.js");
+/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es6.regexp.match */ "./node_modules/core-js/modules/es6.regexp.match.js");
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _devices__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../devices */ "./src/device/devices.js");
+/* harmony import */ var _Windows__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Windows */ "./src/device/os/Windows.js");
+
+
 
 
 
@@ -7099,6 +6223,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /**
  * Copyright (c) 2011-2017 inazumatv.com, inc.
@@ -7126,7 +6254,7 @@ var props = null;
  */
 
 var version = function version() {
-  var app = _devices__WEBPACK_IMPORTED_MODULE_4__["default"].app;
+  var app = _devices__WEBPACK_IMPORTED_MODULE_6__["default"].app;
   var numbers = app.match(/android (\d+)\.(\d+)\.?(\d+)?/i);
 
   if (!Array.isArray(numbers)) {
@@ -7180,12 +6308,13 @@ var version = function version() {
 var init = function init() {
   if (props) {
     return;
-  }
+  } // props = Object.assign({}, devices.props);
 
-  props = Object.assign({}, _devices__WEBPACK_IMPORTED_MODULE_4__["default"].props);
-  var ua = _devices__WEBPACK_IMPORTED_MODULE_4__["default"].ua; // windows phone ua に `Android` が入っている
 
-  var android = !_Windows__WEBPACK_IMPORTED_MODULE_5__["default"].phone() && !!ua.match(/android/i);
+  props = _objectSpread({}, _devices__WEBPACK_IMPORTED_MODULE_6__["default"].props);
+  var ua = _devices__WEBPACK_IMPORTED_MODULE_6__["default"].ua; // windows phone ua に `Android` が入っている
+
+  var android = !_Windows__WEBPACK_IMPORTED_MODULE_7__["default"].phone() && !!ua.match(/android/i);
 
   if (android) {
     props.android = true;
@@ -7196,7 +6325,7 @@ var init = function init() {
     } // Android 標準 browser
 
 
-    props.standard = _devices__WEBPACK_IMPORTED_MODULE_4__["default"].safari && (!!ua.match(/version/i) || !!ua.match(/samsungbrowser/i)); // hd
+    props.standard = _devices__WEBPACK_IMPORTED_MODULE_6__["default"].safari && (!!ua.match(/version/i) || !!ua.match(/samsungbrowser/i)); // hd
 
     props.hd = Math.max(window.innerWidth, window.innerHeight) > 1024; // version check
 
@@ -7346,11 +6475,17 @@ function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Windows; });
-/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.regexp.match */ "./node_modules/core-js/modules/es6.regexp.match.js");
-/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.object.assign */ "./node_modules/core-js/modules/es6.object.assign.js");
-/* harmony import */ var core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _devices__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../devices */ "./src/device/devices.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.array.iterator */ "./node_modules/core-js/modules/es6.array.iterator.js");
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.object.keys */ "./node_modules/core-js/modules/es6.object.keys.js");
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.regexp.match */ "./node_modules/core-js/modules/es6.regexp.match.js");
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _devices__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../devices */ "./src/device/devices.js");
+
+
 
 
 
@@ -7359,6 +6494,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /**
  * Copyright (c) 2011-2017 inazumatv.com, inc.
@@ -7388,10 +6527,11 @@ var props = null;
 var init = function init() {
   if (props) {
     return;
-  }
+  } // props = Object.assign({}, devices.props);
 
-  props = Object.assign({}, _devices__WEBPACK_IMPORTED_MODULE_2__["default"].props);
-  var ua = _devices__WEBPACK_IMPORTED_MODULE_2__["default"].ua;
+
+  props = _objectSpread({}, _devices__WEBPACK_IMPORTED_MODULE_4__["default"].props);
+  var ua = _devices__WEBPACK_IMPORTED_MODULE_4__["default"].ua;
   var windows = !!ua.match(/windows/i);
 
   if (windows) {
@@ -7452,15 +6592,21 @@ function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return iOS; });
-/* harmony import */ var core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.object.assign */ "./node_modules/core-js/modules/es6.object.assign.js");
-/* harmony import */ var core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.number.constructor */ "./node_modules/core-js/modules/es6.number.constructor.js");
-/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.number.is-nan */ "./node_modules/core-js/modules/es6.number.is-nan.js");
-/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.regexp.match */ "./node_modules/core-js/modules/es6.regexp.match.js");
-/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _devices__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../devices */ "./src/device/devices.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.array.iterator */ "./node_modules/core-js/modules/es6.array.iterator.js");
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.object.keys */ "./node_modules/core-js/modules/es6.object.keys.js");
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.number.constructor */ "./node_modules/core-js/modules/es6.number.constructor.js");
+/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es6.number.is-nan */ "./node_modules/core-js/modules/es6.number.is-nan.js");
+/* harmony import */ var core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_is_nan__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es6.regexp.match */ "./node_modules/core-js/modules/es6.regexp.match.js");
+/* harmony import */ var core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_match__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _devices__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../devices */ "./src/device/devices.js");
+
+
 
 
 
@@ -7471,6 +6617,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /**
  * Copyright (c) 2011-2017 inazumatv.com, inc.
@@ -7497,7 +6647,7 @@ var props = null;
  */
 
 var version = function version() {
-  var app = _devices__WEBPACK_IMPORTED_MODULE_4__["default"].app;
+  var app = _devices__WEBPACK_IMPORTED_MODULE_6__["default"].app;
   var numbers = app.match(/os (\d+)_(\d+)_?(\d+)?/i);
 
   if (!Array.isArray(numbers)) {
@@ -7540,10 +6690,11 @@ var version = function version() {
 var init = function init() {
   if (props) {
     return;
-  }
+  } // props = Object.assign({}, devices.props);
 
-  props = Object.assign({}, _devices__WEBPACK_IMPORTED_MODULE_4__["default"].props);
-  var ua = _devices__WEBPACK_IMPORTED_MODULE_4__["default"].ua;
+
+  props = _objectSpread({}, _devices__WEBPACK_IMPORTED_MODULE_6__["default"].props);
+  var ua = _devices__WEBPACK_IMPORTED_MODULE_6__["default"].ua;
   var ipad = !!ua.match(/ipad/i);
   var ipod = !!ua.match(/ipod/i);
   var iphone = !!ua.match(/iphone/i) && !ipad && !ipod;
@@ -7562,7 +6713,7 @@ var init = function init() {
   props.phone = iphone || ipod;
   props.tablet = ipad; // アプリ内コンテンツ
 
-  props.webView = ios && !standalone && !_devices__WEBPACK_IMPORTED_MODULE_4__["default"].safari; // version check
+  props.webView = ios && !standalone && !_devices__WEBPACK_IMPORTED_MODULE_6__["default"].safari; // version check
 
   version();
 };
@@ -7879,12 +7030,18 @@ function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Classes; });
-/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.regexp.split */ "./node_modules/core-js/modules/es6.regexp.split.js");
-/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es6_string_iterator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.string.iterator */ "./node_modules/core-js/modules/es6.string.iterator.js");
-/* harmony import */ var core_js_modules_es6_string_iterator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_string_iterator__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var core_js_modules_es6_array_from__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.array.from */ "./node_modules/core-js/modules/es6.array.from.js");
-/* harmony import */ var core_js_modules_es6_array_from__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_from__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es7.array.includes */ "./node_modules/core-js/modules/es7.array.includes.js");
+/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_string_includes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.string.includes */ "./node_modules/core-js/modules/es6.string.includes.js");
+/* harmony import */ var core_js_modules_es6_string_includes__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_string_includes__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es6_string_iterator__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.string.iterator */ "./node_modules/core-js/modules/es6.string.iterator.js");
+/* harmony import */ var core_js_modules_es6_string_iterator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_string_iterator__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es6_array_from__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.array.from */ "./node_modules/core-js/modules/es6.array.from.js");
+/* harmony import */ var core_js_modules_es6_array_from__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_from__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es6.regexp.split */ "./node_modules/core-js/modules/es6.regexp.split.js");
+/* harmony import */ var core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_regexp_split__WEBPACK_IMPORTED_MODULE_4__);
+
+
 
 
 
@@ -7914,17 +7071,42 @@ var Classes =
 /*#__PURE__*/
 function () {
   _createClass(Classes, null, [{
-    key: "get",
+    key: "convert",
     // ----------------------------------------
     // STATIC METHOD
     // ----------------------------------------
 
     /**
+     * 可哀相な IE のための配列コンバーター, `.classList` 代用します
+     * @param {Element} element 操作対象 NodeList
+     * @returns {Array} 配列にコンバートして返します
+     */
+    value: function convert(element) {
+      var arr = element.className.split(' ');
+      var i = 0;
+      var limit = arr.length;
+      var empty = [];
+
+      for (; i < limit; i += 1) {
+        var className = arr[i];
+
+        if (!!className && className !== ' ') {
+          empty.push(className);
+        }
+      }
+
+      return empty;
+    }
+    /**
+     * 引数 `element` の class name list を取得します
      * 1. `classList` && `Array.from` - `Array.from(element.classList)`
      * 2. {@link Classes.convert}
      * @param {Element} element 操作対象 Element
      * @returns {Array.<string>} 引数 `element` の class を配列変換し返します
      */
+
+  }, {
+    key: "get",
     value: function get(element) {
       return element.classList && Array.from ? Array.from(element.classList) : Classes.convert(element);
     }
@@ -7938,8 +7120,8 @@ function () {
   }, {
     key: "has",
     value: function has(element, className) {
-      var elementClasses = Classes.get(element);
-      return elementClasses.indexOf(className) !== -1;
+      return element.classList ? element.classList.contains(className) : Classes.get(element).includes(className); // const elementClasses = Classes.get(element);
+      // return elementClasses.indexOf(className) !== -1;
     }
     /**
      * Element へ引数 className を追加します
@@ -7953,7 +7135,12 @@ function () {
   }, {
     key: "add",
     value: function add(node, className) {
-      // CSS class の存在チェック
+      if (node.classList) {
+        node.classList.add(className);
+        return true;
+      } // CSS class の存在チェック
+
+
       if (Classes.has(node, className)) {
         return false;
       } // argument copy
@@ -7978,6 +7165,11 @@ function () {
   }, {
     key: "remove",
     value: function remove(node, className) {
+      if (node.classList) {
+        node.classList.remove(className);
+        return true;
+      }
+
       if (!Classes.has(node, className)) {
         return false;
       } // argument copy
@@ -7993,30 +7185,6 @@ function () {
 
       element.className = elementClasses.join(' ');
       return true;
-    }
-    /**
-     * 可哀相な IE のための配列コンバーター, `.classList` 代用します
-     * @param {Element} element 操作対象 NodeList
-     * @returns {Array} 配列にコンバートして返します
-     */
-
-  }, {
-    key: "convert",
-    value: function convert(element) {
-      var arr = element.className.split(' ');
-      var i = 0;
-      var limit = arr.length;
-      var empty = [];
-
-      for (; i < limit; i += 1) {
-        var className = arr[i];
-
-        if (!!className && className !== ' ') {
-          empty.push(className);
-        }
-      }
-
-      return empty;
     } // ----------------------------------------
     // CONSTRUCTOR
     // ----------------------------------------
@@ -8096,7 +7264,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _css_Style__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../css/Style */ "./src/css/Style.js");
 /* harmony import */ var _Bounding__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Bounding */ "./src/dom/Bounding.js");
 /* harmony import */ var _Classes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Classes */ "./src/dom/Classes.js");
-/* harmony import */ var _util_Type__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../util/Type */ "./src/util/Type.js");
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -8119,7 +7286,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
  // util
-
+// import Type from '../util/Type';
 
 /**
  * HTMLElement の操作を行います。
@@ -8144,9 +7311,10 @@ function () {
      * @return {?Element} Element を返します, 取得できない時は null を返します
      */
     value: function id(idName) {
-      var element = document.getElementById(idName); // 存在チェックを行います
-
-      return _util_Type__WEBPACK_IMPORTED_MODULE_3__["default"].exist(element) ? element : null;
+      // const element = document.getElementById(idName);
+      // // 存在チェックを行います
+      // return Type.exist(element) ? element : null;
+      return document.getElementById(idName);
     }
     /**
      * querySelector を使用し Element を探します
@@ -8305,6 +7473,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -8331,7 +7503,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 // const listenersKey = Symbol('event listeners object');
 
 /**
- * <p>Custom Event を作成し Event 通知を行います</p>
+ * Custom Event を作成し Event 通知を行います
  *
  * ```
  * const callback = (event) => {
@@ -8361,28 +7533,12 @@ function () {
   function EventDispatcher() {
     _classCallCheck(this, EventDispatcher);
 
-    // // @type {Object}
-    // let listeners = {};
-    // /**
-    //  * リスナーリストを取得します
-    //  * @returns {Object} リスナーリストを返します
-    //  */
-    // this.listeners = () => listeners;
-    // /**
-    //  * 全てのリスナーを破棄します
-    //  * @returns {boolean} 成功・不成功の真偽値を返します
-    //  */
-    // this.destroy = () => {
-    //   listeners = Object.create({});
-    //   return true;
-    // };
-
     /**
      * リスナーリスト object,
      * event type {string} を key, 値は Array.<function> になります
      * @type {Object}
      */
-    this.listeners = Object.create({});
+    this.listeners = _objectSpread({}, {}); // this.listeners = Object.create({});
   } // ----------------------------------------
   // METHOD
   // ----------------------------------------
@@ -8395,7 +7551,8 @@ function () {
   _createClass(EventDispatcher, [{
     key: "destroy",
     value: function destroy() {
-      this.listeners = Object.create({});
+      // this.listeners = Object.create({});
+      this.listeners = _objectSpread({}, {});
     }
     /**
      * event type に リスナー関数を bind します
@@ -8432,8 +7589,9 @@ function () {
       return true;
     }
     /**
-     * <p>event type からリスナー関数を remove します<br>
-     * 内部処理は一時的に null 設定にします</p>
+     * event type からリスナー関数を remove します
+     * - 一時的に null 設定にします
+     * - {@link EventDispatcher.clean} で all null の時に空にします
      * @param {string} type event type（種類）
      * @param {Function} listener リスナー関数
      * @returns {boolean} 成功・不成功の真偽値を返します
@@ -8448,13 +7606,9 @@ function () {
       } // @type {Object} - events.type:String: [listener:Function...]
 
 
-      var listeners = this.listeners; // if (!Type.has(listeners, type)) {
-      //   // listener.type が存在しない
-      //   // 処理しない
-      //   return false;
-      // }
+      var listeners = this.listeners;
 
-      if (!Object.keys(listeners).includes(type)) {
+      if (!_util_Type__WEBPACK_IMPORTED_MODULE_5__["default"].has(listeners, type)) {
         // listener.type が存在しない - 処理しない
         return false;
       } // @type {Array} - listener list
@@ -8478,8 +7632,8 @@ function () {
       return true;
     }
     /**
-     * <p>リスナー配列を調べ可能なら空にします<br>
-     * リスナーリストが全て null の時に 空配列にします</p>
+     * リスナー配列を調べ可能なら空にします
+     * - リスナーリストが全て null の時に 空配列にします
      * @param {string} type event type（種類）
      * @param {Array<Function>} types event type に登録されている配列（関数）
      * @returns {boolean} 成功・不成功の真偽値を返します, true: 空にした
@@ -8498,7 +7652,8 @@ function () {
 
       if (!hasFunction) {
         // null 以外が無いので空にする
-        this.listeners[type] = [].slice(0);
+        // this.listeners[type] = [].slice(0);
+        this.listeners[type] = [].concat();
       } // 空配列にしたかを hasFunction flag を反転させることで知らせます
 
 
@@ -8520,13 +7675,9 @@ function () {
       } // @type {Object} - events.type:String: [listener:Function...]
 
 
-      var listeners = this.listeners; // if (!Type.has(listeners, type)) {
-      //   // listener.type が存在しない
-      //   // 処理しない
-      //   return false;
-      // }
+      var listeners = this.listeners;
 
-      if (!Object.keys(listeners).includes(type)) {
+      if (!_util_Type__WEBPACK_IMPORTED_MODULE_5__["default"].has(listeners, type)) {
         // listener.type が存在しない - 処理しない
         return false;
       } // @type {boolean} - 存在チェック
@@ -8537,8 +7688,7 @@ function () {
     }
     /**
      * イベントを発生させリスナー関数を call します
-     * @param {Events|*} events 送信される Event Object.<br>
-     *   type キーにイベント種類が設定されています、dispatch 時に target プロパティを追加し this を設定します
+     * @param {Events|*} events 送信される Event Object.type キーにイベント種類が設定されています、dispatch 時に target プロパティを追加し this を設定します
      * @returns {boolean} 成功・不成功の真偽値を返します
      */
 
@@ -8550,13 +7700,9 @@ function () {
       // @type {Object} - events.type:string: [listener:Function...]
       var listeners = this.listeners; // @type {string} - event type
 
-      var type = events.type; // if (!Type.has(listeners, type)) {
-      //   // listener.type が存在しない
-      //   // 処理しない
-      //   return false;
-      // }
+      var type = events.type;
 
-      if (!Object.keys(listeners).includes(type)) {
+      if (!_util_Type__WEBPACK_IMPORTED_MODULE_5__["default"].has(listeners, type)) {
         // listener.type が存在しない - 処理しない
         return false;
       } // event.target = this しようとすると
@@ -8581,8 +7727,8 @@ function () {
     }
     /**
      * **alias on**
-     * <p>event type に リスナー関数を bind します</p>
-     * @deprecated instead use on
+     * - event type に リスナー関数を bind します
+     * @deprecated instead use {@link EventDispatcher.on}
      * @param {string} type event type（種類）
      * @param {Function} listener callback関数
      * @returns {boolean} 成功・不成功の真偽値を返します
@@ -8595,8 +7741,8 @@ function () {
     }
     /**
      * **alias off**
-     * <p>event type からリスナー関数を remove します</p>
-     * @deprecated instead use off
+     * - event type からリスナー関数を remove します
+     * @deprecated instead use {@link EventDispatcher.off}
      * @param {string} type event type（種類）
      * @param {Function} listener リスナー関数
      * @returns {boolean} 成功・不成功の真偽値を返します
@@ -8609,8 +7755,8 @@ function () {
     }
     /**
      * **alias has**
-     * <p>event type にリスナー関数が登録されているかを調べます</p>
-     * @deprecated instead use has
+     * - event type にリスナー関数が登録されているかを調べます
+     * @deprecated instead use {@link EventDispatcher.has}
      * @param {string} type event type（種類）
      * @param {Function} listener リスナー関数
      * @returns {boolean} event type にリスナー関数が登録されているかの真偽値を返します
@@ -8623,8 +7769,8 @@ function () {
     }
     /**
      * **alias dispatch**
-     * <p>イベントを発生させリスナー関数を call します</p>
-     * @deprecated instead use dispatch
+     * - イベントを発生させリスナー関数を call します
+     * @deprecated instead use {@link EventDispatcher.dispatch}
      * @param {Events} events typeキー が必須です
      * @returns {boolean} 成功・不成功の真偽値を返します
      */
@@ -8653,9 +7799,19 @@ function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Events; });
-/* harmony import */ var core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.object.assign */ "./node_modules/core-js/modules/es6.object.assign.js");
-/* harmony import */ var core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.array.iterator */ "./node_modules/core-js/modules/es6.array.iterator.js");
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.object.keys */ "./node_modules/core-js/modules/es6.object.keys.js");
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__);
 
+
+
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -8736,7 +7892,8 @@ function () {
     key: "clone",
     value: function clone() {
       // return new Events(this.type, this.currentTarget, this.target);
-      return Object.assign({}, this);
+      // return Object.assign({}, this);
+      return _objectSpread({}, this);
     }
   }]);
 
@@ -8817,6 +7974,23 @@ function (_EventDispatcher) {
   _inherits(NativeResizing, _EventDispatcher);
 
   // ----------------------------------------
+  // CALLBACK
+  // ----------------------------------------
+
+  /**
+   * 下記のプロパティをイベント・インスタンスに追加します
+   * - original {Events} - Rate Events instance
+   * - y {number} - scroll top
+   * - height {number} - window height
+   * - width {number} - window width
+   * - bottom {number} - window bottom 位置 (y + height)
+   * - previous {number} - 前回の scroll top
+   * - moving {number} - 前回からの移動量, 正: scroll down, 負: scroll up
+   * - wide {boolean} - width が 768 以上の時に true
+   * - changed {boolean} - scroll top が前回と変わっていたら true
+   * @param {?Event} [event] scroll / resize Event
+   */
+  // ----------------------------------------
   // CONSTRUCTOR
   // ----------------------------------------
 
@@ -8834,6 +8008,60 @@ function (_EventDispatcher) {
      * Resizing event を準備します
      * @type {ScrollEvents}
      */
+
+    _this.onUpdate = function (event) {
+      // @type {number} - scroll top
+      var y = _Scroll__WEBPACK_IMPORTED_MODULE_3__["default"].y(); // @type {number} - previous scroll top
+
+      var _assertThisInitialize = _assertThisInitialized(_assertThisInitialized(_this)),
+          previous = _assertThisInitialize.previous; // --- [window]
+      // @type {number} - window width
+
+
+      var width = window.innerWidth; // @type {number} - window height
+
+      var height = window.innerHeight; // --- [body]
+
+      var bodyWidth = document.body.clientWidth;
+      var bodyHeight = document.body.clientHeight; // @type {boolean} - 移動したかを表します,
+
+      var changed = event === null || previous !== y || height !== _this.window.height || width !== _this.window.width || bodyWidth !== _this.body.width || bodyHeight !== _this.body.height; // ----------------------------------------------
+      // @type {ScrollEvents} - events
+
+      var events = _this.events.clone(); // @type {Event} - Rate Events instance
+
+
+      events.original = event; // @type {number} - scroll top
+
+      events.y = y; // @type {number} - window height
+
+      events.height = height; // @type {number} - window width
+
+      events.width = width; // -- body
+
+      events.bodyWidth = bodyWidth;
+      events.bodyHeight = bodyHeight; // @type {number} - window bottom(y + height)
+
+      events.bottom = y + height; // @type {boolean} - 移動したかを表します,
+      // event が null の時は強制発火なので移動量 0 （scroll top 位置に変更がない）でも changed を true にします
+
+      events.changed = changed; // @type {number} - 前回の y 位置
+
+      events.previous = previous; // @type {number} - 移動量 +: down, -: up
+
+      events.moving = y - previous; // event fire
+      // console.log('Resizing.onUpdate', events);
+
+      _this.dispatch(events); // ----------------------------------------------
+
+
+      _this.window.width = width;
+      _this.window.height = height;
+      _this.body.width = bodyWidth;
+      _this.body.height = bodyHeight; // save scroll top -> previous
+
+      _this.previous = y;
+    };
 
     _this.events = new _events_ResizingEvents__WEBPACK_IMPORTED_MODULE_6__["default"](_Resizing__WEBPACK_IMPORTED_MODULE_5__["default"].UPDATE, _assertThisInitialized(_assertThisInitialized(_this)), _assertThisInitialized(_assertThisInitialized(_this))); // console.log('Resizing events', this.events);
 
@@ -8866,13 +8094,12 @@ function (_EventDispatcher) {
      * @type {number}
      */
 
-    _this.timer = 0;
-    /**
-     * bind onUpdate - scroll / resize / timer handler
-     * @type {function}
-     */
+    _this.timer = 0; // /**
+    //  * bind onUpdate - scroll / resize / timer handler
+    //  * @type {function}
+    //  */
+    // this.onUpdate = this.onUpdate.bind(this);
 
-    _this.onUpdate = _this.onUpdate.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     return _this;
   } // ----------------------------------------
   // METHOD
@@ -8910,71 +8137,6 @@ function (_EventDispatcher) {
       window.removeEventListener('scroll', this.onUpdate);
       window.removeEventListener('resize', this.onUpdate);
       return this;
-    }
-    /**
-     * 下記のプロパティをイベント・インスタンスに追加します
-     * - original {Events} - Rate Events instance
-     * - y {number} - scroll top
-     * - height {number} - window height
-     * - width {number} - window width
-     * - bottom {number} - window bottom 位置 (y + height)
-     * - previous {number} - 前回の scroll top
-     * - moving {number} - 前回からの移動量, 正: scroll down, 負: scroll up
-     * - wide {boolean} - width が 768 以上の時に true
-     * - changed {boolean} - scroll top が前回と変わっていたら true
-     * @param {?Event} [event] scroll / resize Event
-     */
-
-  }, {
-    key: "onUpdate",
-    value: function onUpdate(event) {
-      // @type {number} - scroll top
-      var y = _Scroll__WEBPACK_IMPORTED_MODULE_3__["default"].y(); // @type {number} - previous scroll top
-
-      var previous = this.previous; // --- [window]
-      // @type {number} - window width
-
-      var width = window.innerWidth; // @type {number} - window height
-
-      var height = window.innerHeight; // --- [body]
-
-      var bodyWidth = document.body.clientWidth;
-      var bodyHeight = document.body.clientHeight; // @type {boolean} - 移動したかを表します,
-
-      var changed = event === null || previous !== y || height !== this.window.height || width !== this.window.width || bodyWidth !== this.body.width || bodyHeight !== this.body.height; // ----------------------------------------------
-      // @type {ScrollEvents} - events
-
-      var events = this.events.clone(); // @type {Event} - Rate Events instance
-
-      events.original = event; // @type {number} - scroll top
-
-      events.y = y; // @type {number} - window height
-
-      events.height = height; // @type {number} - window width
-
-      events.width = width; // -- body
-
-      events.bodyWidth = bodyWidth;
-      events.bodyHeight = bodyHeight; // @type {number} - window bottom(y + height)
-
-      events.bottom = y + height; // @type {boolean} - 移動したかを表します,
-      // event が null の時は強制発火なので移動量 0 （scroll top 位置に変更がない）でも changed を true にします
-
-      events.changed = changed; // @type {number} - 前回の y 位置
-
-      events.previous = previous; // @type {number} - 移動量 +: down, -: up
-
-      events.moving = y - previous; // event fire
-      // console.log('Resizing.onUpdate', events);
-
-      this.dispatch(events); // ----------------------------------------------
-
-      this.window.width = width;
-      this.window.height = height;
-      this.body.width = bodyWidth;
-      this.body.height = bodyHeight; // save scroll top -> previous
-
-      this.previous = y;
     }
     /**
      * 強制 update
@@ -9141,6 +8303,24 @@ function (_Scrolling) {
    * @event UPDATE
    * @type {string}
    */
+
+  /**
+   * 指定 rate(fps) 毎にスクロール位置を scroll top 位置をもたせた Scrolling.UPDATE custom event を発火します
+   *
+   * 下記のプロパティをイベント・インスタンスに追加します
+   *
+   * - original {Events} - Rate Events instance
+   * - y {number} - scroll top
+   * - height {number} - window height
+   * - width {number} - window width
+   * - bottom {number} - window bottom 位置 (y + height)
+   * - previous {number} - 前回の scroll top
+   * - moving {number} - 前回からの移動量, 正: scroll down, 負: scroll up
+   * - wide {boolean} - width が 768 以上の時に true
+   * - changed {boolean} - scroll top が前回と変わっていたら true
+   *
+   * @param {?Events} event {@link Rate.UPDATE} Events instance
+   */
   // ----------------------------------------
   // CONSTRUCTOR
   // ----------------------------------------
@@ -9154,17 +8334,73 @@ function (_Scrolling) {
     _classCallCheck(this, Resizing);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Resizing).call(this)); // ------
+    // /**
+    //  * bound onUpdate, Rate.UPDATE event handler
+    //  * @type {function}
+    //  */
+    // this.onUpdate = this.onUpdate.bind(this);
 
-    /**
-     * bound onUpdate, Rate.UPDATE event handler
-     * @type {function}
-     */
-
-    _this.onUpdate = _this.onUpdate.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     /**
      * Resizing event を準備します
      * @type {ScrollEvents}
      */
+
+    _this.onUpdate = function (event) {
+      // @type {number} - scroll top
+      var y = _Scroll__WEBPACK_IMPORTED_MODULE_4__["default"].y(); // @type {number} - previous scroll top
+
+      var _assertThisInitialize = _assertThisInitialized(_assertThisInitialized(_this)),
+          previous = _assertThisInitialize.previous; // --- [window]
+      // @type {number} - window width
+
+
+      var width = window.innerWidth; // @type {number} - window height
+
+      var height = window.innerHeight; // --- [body]
+
+      var bodyWidth = document.body.clientWidth;
+      var bodyHeight = document.body.clientHeight; // @type {boolean} - 移動したかを表します,
+
+      var changed = event === null || previous !== y || height !== _this.window.height || width !== _this.window.width || bodyWidth !== _this.body.width || bodyHeight !== _this.body.height; // ----------------------------------------------
+      // @type {ScrollEvents} - events
+
+      var events = _this.events.clone(); // @type {Event} - Rate Events instance
+
+
+      events.original = event; // @type {number} - scroll top
+
+      events.y = y; // @type {number} - window height
+
+      events.height = height; // @type {number} - window width
+
+      events.width = width; // -- body
+
+      events.bodyWidth = bodyWidth;
+      events.bodyHeight = bodyHeight; // @type {number} - window bottom(y + height)
+
+      events.bottom = y + height; // @type {boolean} - 移動したかを表します,
+      // event が null の時は強制発火なので移動量 0 （scroll top 位置に変更がない）でも changed を true にします
+
+      events.changed = changed; // @type {number} - 前回の y 位置
+
+      events.previous = previous; // @type {number} - 移動量 +: down, -: up
+
+      events.moving = y - previous; // event fire
+      // console.log('Resizing.onUpdate', events);
+
+      _this.dispatch(events); // ----------------------------------------------
+
+
+      _this.window.width = width;
+      _this.window.height = height;
+      _this.body.width = bodyWidth;
+      _this.body.height = bodyHeight; // save scroll top -> previous
+
+      _this.previous = y; // // 移動量 0 の時は rate 監視を停止する
+      // if (!changed) {
+      //   this.unwatch();
+      // }
+    };
 
     _this.events = new _events_ResizingEvents__WEBPACK_IMPORTED_MODULE_5__["default"](Resizing.UPDATE, _assertThisInitialized(_assertThisInitialized(_this)), _assertThisInitialized(_assertThisInitialized(_this))); // console.log('Resizing events', this.events);
 
@@ -9220,78 +8456,6 @@ function (_Scrolling) {
     value: function stop() {
       this.unwatch();
       return this;
-    }
-    /**
-     * 指定 rate(fps) 毎にスクロール位置を scroll top 位置をもたせた Scrolling.UPDATE custom event を発火します
-     *
-     * 下記のプロパティをイベント・インスタンスに追加します
-     *
-     * - original {Events} - Rate Events instance
-     * - y {number} - scroll top
-     * - height {number} - window height
-     * - width {number} - window width
-     * - bottom {number} - window bottom 位置 (y + height)
-     * - previous {number} - 前回の scroll top
-     * - moving {number} - 前回からの移動量, 正: scroll down, 負: scroll up
-     * - wide {boolean} - width が 768 以上の時に true
-     * - changed {boolean} - scroll top が前回と変わっていたら true
-     *
-     * @param {?Events} event {@link Rate.UPDATE} Events instance
-     */
-
-  }, {
-    key: "onUpdate",
-    value: function onUpdate(event) {
-      // @type {number} - scroll top
-      var y = _Scroll__WEBPACK_IMPORTED_MODULE_4__["default"].y(); // @type {number} - previous scroll top
-
-      var previous = this.previous; // --- [window]
-      // @type {number} - window width
-
-      var width = window.innerWidth; // @type {number} - window height
-
-      var height = window.innerHeight; // --- [body]
-
-      var bodyWidth = document.body.clientWidth;
-      var bodyHeight = document.body.clientHeight; // @type {boolean} - 移動したかを表します,
-
-      var changed = event === null || previous !== y || height !== this.window.height || width !== this.window.width || bodyWidth !== this.body.width || bodyHeight !== this.body.height; // ----------------------------------------------
-      // @type {ScrollEvents} - events
-
-      var events = this.events.clone(); // @type {Event} - Rate Events instance
-
-      events.original = event; // @type {number} - scroll top
-
-      events.y = y; // @type {number} - window height
-
-      events.height = height; // @type {number} - window width
-
-      events.width = width; // -- body
-
-      events.bodyWidth = bodyWidth;
-      events.bodyHeight = bodyHeight; // @type {number} - window bottom(y + height)
-
-      events.bottom = y + height; // @type {boolean} - 移動したかを表します,
-      // event が null の時は強制発火なので移動量 0 （scroll top 位置に変更がない）でも changed を true にします
-
-      events.changed = changed; // @type {number} - 前回の y 位置
-
-      events.previous = previous; // @type {number} - 移動量 +: down, -: up
-
-      events.moving = y - previous; // event fire
-      // console.log('Resizing.onUpdate', events);
-
-      this.dispatch(events); // ----------------------------------------------
-
-      this.window.width = width;
-      this.window.height = height;
-      this.body.width = bodyWidth;
-      this.body.height = bodyHeight; // save scroll top -> previous
-
-      this.previous = y; // // 移動量 0 の時は rate 監視を停止する
-      // if (!changed) {
-      //   this.unwatch();
-      // }
     }
   }]);
 
@@ -9460,6 +8624,15 @@ function (_EventDispatcher) {
    * @type {string}
    */
   // ----------------------------------------
+  // CALLBACK
+  // ----------------------------------------
+
+  /**
+   * Scrolling.UPDATE event handler - {link Hit.test} 衝突判定を行います
+   * @param {ScrollEvents} scrollEvents scroll events object
+   * @return {boolean} 衝突時に true を返します
+   */
+  // ----------------------------------------
   // CONSTRUCTOR
   // ----------------------------------------
 
@@ -9481,6 +8654,31 @@ function (_EventDispatcher) {
      * @type {elements}
      */
 
+    _this.onUpdate = function (scrollEvents) {
+      if (!scrollEvents.changed) {
+        return false;
+      } // element offset
+
+
+      var offset = _this.elements.offset(); // hit result
+
+
+      var hit = _util_Hit__WEBPACK_IMPORTED_MODULE_6__["default"].test(scrollEvents.height, offset);
+
+      var _assertThisInitialize = _assertThisInitialized(_assertThisInitialized(_this)),
+          events = _assertThisInitialize.events;
+
+      events.type = hit.result ? Rising.COLLISION : Rising.ALIEN; // hit / original / offset を追加します
+
+      events.hit = hit;
+      events.original = scrollEvents;
+      events.offset = offset; // 発火
+
+      _this.dispatch(events);
+
+      return hit.result;
+    };
+
     _this.elements = elements;
     /**
      * スクロールトップ監視インスタンス
@@ -9488,13 +8686,12 @@ function (_EventDispatcher) {
      */
 
     _this.scrolling = scrolling; // const boundScroll = this.scroll.bind(this);
+    // /**
+    //  * bound onUpdate, Rate.UPDATE event handler
+    //  * @type {function}
+    //  */
+    // this.onUpdate = this.onUpdate.bind(this);
 
-    /**
-     * bound onUpdate, Rate.UPDATE event handler
-     * @type {function}
-     */
-
-    _this.onUpdate = _this.onUpdate.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     /**
      * Rising.[COLLISION|ALIEN] event instance
      * @type {RisingEvents}
@@ -9502,26 +8699,7 @@ function (_EventDispatcher) {
 
     _this.events = new _events_RisingEvents__WEBPACK_IMPORTED_MODULE_5__["default"](Rising.COLLISION, _assertThisInitialized(_assertThisInitialized(_this)), _assertThisInitialized(_assertThisInitialized(_this)));
     return _this;
-  } // // ----------------------------------------
-  // // EVENT
-  // // ----------------------------------------
-  // /**
-  //  * 衝突イベント
-  //  * @event COLLISION
-  //  * @return {string} risingCollision を返します
-  //  */
-  // static get COLLISION() {
-  //   return 'risingCollision';
-  // }
-  // /**
-  //  * 衝突「していない」イベント
-  //  * @event ALIEN
-  //  * @return {string} risingAlien を返します
-  //  */
-  // static get ALIEN() {
-  //   return 'risingAlien';
-  // }
-  // ----------------------------------------
+  } // ----------------------------------------
   // METHOD
   // ----------------------------------------
 
@@ -9548,33 +8726,6 @@ function (_EventDispatcher) {
     value: function stop() {
       this.scrolling.off(_Scrolling__WEBPACK_IMPORTED_MODULE_3__["default"].UPDATE, this.onUpdate);
       return this;
-    }
-    /**
-     * Scrolling.UPDATE event handler - {link Hit.test} 衝突判定を行います
-     * @param {ScrollEvents} scrollEvents scroll events object
-     * @return {boolean} 衝突時に true を返します
-     */
-
-  }, {
-    key: "onUpdate",
-    value: function onUpdate(scrollEvents) {
-      if (!scrollEvents.changed) {
-        return false;
-      } // element offset
-
-
-      var offset = this.elements.offset(); // hit result
-
-      var hit = _util_Hit__WEBPACK_IMPORTED_MODULE_6__["default"].test(scrollEvents.height, offset);
-      var events = this.events;
-      events.type = hit.result ? Rising.COLLISION : Rising.ALIEN; // hit / original / offset を追加します
-
-      events.hit = hit;
-      events.original = scrollEvents;
-      events.offset = offset; // 発火
-
-      this.dispatch(events);
-      return hit.result;
     }
   }]);
 
@@ -9645,8 +8796,8 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 
 
 /**
- * new を許可しないための Symbol
- * @type {Symbol}
+ * new を許可しないための inner Symbol
+ * @type {symbol}
  * @private
  */
 
@@ -9660,11 +8811,10 @@ var singletonSymbol = Symbol('Scroll singleton symbol');
 var instance = null;
 /**
  * window scroll event を監視し通知を行います
- * <p>singleton なので new ではなく factory を使用し instance を作成します</p>
+ * - singleton です。 new ではなく factory を使用し instance を作成します
  *
- * ```
- * const instance = Scroll.factory();
- * ```
+ * @example
+ *  const instance = Scroll.factory();
  */
 
 var Scroll =
@@ -9673,17 +8823,40 @@ function (_EventDispatcher) {
   _inherits(Scroll, _EventDispatcher);
 
   _createClass(Scroll, null, [{
-    key: "jump",
+    key: "factory",
+    // ----------------------------------------
+    // STATIC CONST
+    // ----------------------------------------
+
+    /**
+     * scroll で発生するイベント - `scrollScroll`
+     * @event SCROLL
+     * @type {string}
+     */
     // ----------------------------------------
     // STATIC METHOD
     // ----------------------------------------
 
+    /**
+     * Scroll instance を singleton を保証し作成します
+     * @returns {Scroll} Scroll instance を返します
+     */
+    value: function factory() {
+      if (instance === null) {
+        instance = new Scroll(singletonSymbol);
+      }
+
+      return instance;
+    }
     /**
      * y 位置に scroll top を即座に移動させます
      * @param {number} [y=0] scroll top 目標値
      * @param {number} [delay=0] time out 遅延 ms
      * @returns {number} time out id
      */
+
+  }, {
+    key: "jump",
     value: function jump() {
       var y = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
       var delay = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
@@ -9712,49 +8885,28 @@ function (_EventDispatcher) {
     key: "y",
     value: function y() {
       return typeof window.pageYOffset !== 'undefined' ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
-    } // ----------------------------------------
-
-    /**
-     * Scroll instance を singleton を保証し作成します
-     * @returns {Scroll} Scroll instance を返します
-     */
-
-  }, {
-    key: "factory",
-    value: function factory() {
-      if (instance === null) {
-        instance = new Scroll(singletonSymbol);
-      }
-
-      return instance;
-    } // ----------------------------------------
-    // EVENT
-    // ----------------------------------------
-
-    /**
-     * scroll で発生するイベントを取得します
-     * @event SCROLL
-     * @returns {string} event, scrollScroll を返します
-     * @default scrollScroll
-     */
-
-  }, {
-    key: "SCROLL",
-    get: function get() {
-      return 'scrollScroll';
     } // ---------------------------------------------------
-    //  CONSTRUCTOR
+    //  CALLBACK
     // ---------------------------------------------------
 
     /**
-    /**
-     * singleton です
-     * @param {Symbol} checkSymbol singleton を保証するための private instance
-     * @returns {Scroll} singleton instance を返します
+     * window scroll event handler
+     * - window scroll event 発生後に scroll top 位置をもたせた Scroll.SCROLL custom event を発火します
+     * @param {?Event} event window scroll event, nullable
      */
 
   }]);
 
+  // ---------------------------------------------------
+  //  CONSTRUCTOR
+  // ---------------------------------------------------
+
+  /**
+  /**
+   * singleton です
+   * @param {symbol} checkSymbol singleton を保証するための private instance
+   * @returns {Scroll} singleton instance を返します
+   */
   function Scroll(checkSymbol) {
     var _this;
 
@@ -9773,38 +8925,56 @@ function (_EventDispatcher) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Scroll).call(this)); // instance = this;
     // event handler
-    // const boundScroll = this.scroll.bind(this);
-
-    /**
-     * bound onScroll, window.onscroll event handler
-     * @type {function}
-     */
-    // this.boundScroll = this.scroll.bind(this);
-
-    _this.onScroll = _this.onScroll.bind(_assertThisInitialized(_assertThisInitialized(_this))); // this.boundScroll = () => boundScroll;
-    // @type {Events} - events instance
-    // const events = new ScrollEvents(Scroll.SCROLL, this, this);
+    // /**
+    //  * bound onScroll, window.onscroll event handler
+    //  * @type {function}
+    //  */
+    // this.onScroll = this.onScroll.bind(this);
 
     /**
      * ScrollEvents instance, 発火時に使用します
      * @type {ScrollEvents}
      */
 
-    _this.events = new _events_ScrollEvents__WEBPACK_IMPORTED_MODULE_4__["default"](Scroll.SCROLL, _assertThisInitialized(_assertThisInitialized(_this)), _assertThisInitialized(_assertThisInitialized(_this))); // this.events = () => events;
+    _this.onScroll = function (event) {
+      // @type {number} - scroll top
+      var y = Scroll.y(); // @type {number} - window height
 
+      var _window = window,
+          innerHeight = _window.innerHeight; // @type {number} - 前回の scroll top
+      // @type {Events} - events
+
+      var _assertThisInitialize = _assertThisInitialized(_assertThisInitialized(_this)),
+          events = _assertThisInitialize.events,
+          previous = _assertThisInitialize.previous; // @type {Event} - scroll event
+
+
+      events.original = event; // @type {number} - scroll top
+
+      events.y = y; // @type {number} - window height
+
+      events.height = innerHeight; // @type {number} - window bottom(y + height)
+
+      events.bottom = y + innerHeight;
+      events.previous = previous; // @type {boolean} - 前回の scroll top と比較し移動したかを真偽値で取得します, true: 移動した
+
+      events.changed = previous !== y; // @type {number} - 移動量 +（正）: down, -（負）: up
+
+      events.moving = y - previous; // event fire
+
+      _this.dispatch(events);
+
+      _this.previous = y;
+    };
+
+    _this.events = new _events_ScrollEvents__WEBPACK_IMPORTED_MODULE_4__["default"](Scroll.SCROLL, _assertThisInitialized(_assertThisInitialized(_this)), _assertThisInitialized(_assertThisInitialized(_this)));
     /**
      * 前回 scroll top 位置
      * @type {number}
      * @default -1
      */
 
-    _this.previous = -1; // /**
-    //  * start 済みフラッグ
-    //  * @type {boolean}
-    //  * @default false
-    //  */
-    // this.started = false;
-    // 設定済み instance を返します
+    _this.previous = -1; // 設定済み instance を返します
 
     return _possibleConstructorReturn(_this, _assertThisInitialized(_assertThisInitialized(_this)));
   } // ----------------------------------------
@@ -9820,10 +8990,6 @@ function (_EventDispatcher) {
   _createClass(Scroll, [{
     key: "start",
     value: function start() {
-      // if (this.started) {
-      //   return this;
-      // }
-      // this.started = true;
       this.stop();
       window.addEventListener('scroll', this.onScroll, false);
       return this;
@@ -9836,54 +9002,15 @@ function (_EventDispatcher) {
   }, {
     key: "stop",
     value: function stop() {
-      // if (!this.started) {
-      //   return this;
-      // }
-      // this.started = false;
       window.removeEventListener('scroll', this.onScroll);
       return this;
-    }
-    /**
-     * window scroll event handler<br>
-     * window scroll event 発生後に scroll top 位置をもたせた Scroll.SCROLL custom event を発火します
-     * @param {?Event} event window scroll event, nullable
-     * @returns {void}
-     */
-
-  }, {
-    key: "onScroll",
-    value: function onScroll(event) {
-      // @type {number} - scroll top
-      var y = Scroll.y(); // @type {number} - window height
-
-      var _window = window,
-          innerHeight = _window.innerHeight; // @type {number} - 前回の scroll top
-      // @type {Events} - events
-
-      var events = this.events,
-          previous = this.previous; // @type {Event} - scroll event
-
-      events.original = event; // @type {number} - scroll top
-
-      events.y = y; // @type {number} - window height
-
-      events.height = innerHeight; // @type {number} - window bottom(y + height)
-
-      events.bottom = y + innerHeight;
-      events.previous = previous; // @type {boolean} - 前回の scroll top と比較し移動したかを真偽値で取得します, true: 移動した
-
-      events.changed = previous !== y; // @type {number} - 移動量 +（正）: down, -（負）: up
-
-      events.moving = y - previous; // event fire
-
-      this.dispatch(events);
-      this.previous = y;
     }
   }]);
 
   return Scroll;
 }(_EventDispatcher__WEBPACK_IMPORTED_MODULE_3__["default"]);
 
+Scroll.SCROLL = 'scrollScroll';
 
 
 /***/ }),
@@ -9973,6 +9100,27 @@ function (_EventDispatcher) {
    * @event UPDATE
    */
   // ---------------------------------------------------
+  //  CALLBACK
+  // ---------------------------------------------------
+
+  /**
+   * 指定 rate(fps) 毎 scroll top 位置をもたせた Scrolling.UPDATE custom event を発火します
+   *
+   * 下記のプロパティをイベント・インスタンスに追加します
+   *
+   * - original {Events} - Rate Events instance
+   * - y {number} - scroll top
+   * - height {number} - window height
+   * - width {number} - window width
+   * - bottom {number} - window bottom 位置 (y + height)
+   * - previous {number} - 前回の scroll top
+   * - moving {number} - 前回からの移動量, 正: scroll down, 負: scroll up
+   * - wide {boolean} - width が 768 以上の時に true
+   * - changed {boolean} - scroll top が前回と変わっていたら true
+   *
+   * @param {?Events} event {@link Rate.UPDATE} Events instance
+   */
+  // ---------------------------------------------------
   //  CONSTRUCTOR
   // ---------------------------------------------------
 
@@ -9988,13 +9136,12 @@ function (_EventDispatcher) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Scrolling).call(this)); // @type {function}
     // const onUpdate = this.scroll.bind(this);
-
-    /**
-     * bound onUpdate, Rate.UPDATE event handler
-     * @type {function}
-     */
-
-    _this.onUpdate = _this.onUpdate.bind(_assertThisInitialized(_assertThisInitialized(_this))); // this.onUpdate = onUpdate;
+    // /**
+    //  * bound onUpdate, Rate.UPDATE event handler
+    //  * @type {function}
+    //  */
+    // this.onUpdate = this.onUpdate.bind(this);
+    // this.onUpdate = onUpdate;
     // @type {ScrollEvents}
     // const events = new ScrollEvents(Scrolling.UPDATE, this, this);
 
@@ -10002,6 +9149,52 @@ function (_EventDispatcher) {
      * ScrollEvents instance, 発火時に使用します
      * @type {ScrollEvents}
      */
+
+    _this.onUpdate = function (event) {
+      // @type {number} - scroll top
+      var y = _Scroll__WEBPACK_IMPORTED_MODULE_3__["default"].y(); // @type {ScrollEvents} - events
+      // const { events } = this;
+      // @type {number} - previous scroll top
+
+      var _assertThisInitialize = _assertThisInitialized(_assertThisInitialized(_this)),
+          previous = _assertThisInitialize.previous,
+          events = _assertThisInitialize.events; // @type {boolean} - 移動したかを表します,
+
+
+      var changed = event === null || previous !== y; // 移動量 0 の時は rate 監視を停止する
+
+      if (!changed) {
+        _this.unwatch();
+      } // @type {number} - window height
+
+
+      var height = window.innerHeight; // @type {number} - window width
+
+      var width = window.innerWidth; // @type {Event} - Rate Events instance
+
+      events.original = event; // @type {number} - scroll top
+
+      events.y = y; // @type {number} - window height
+
+      events.height = height; // @type {number} - window width
+
+      events.width = width; // @type {number} - window bottom(y + height)
+
+      events.bottom = y + height; // @type {boolean} - 移動したかを表します,
+      // event が null の時は強制発火なので移動量 0 （scroll top 位置に変更がない）でも changed を true にします
+
+      events.changed = changed; // @type {number} - 前回の y 位置
+
+      events.previous = previous; // @type {number} - 移動量 +: down, -: up
+
+      events.moving = y - previous; // event fire
+      // console.log('Scrolling.scroll', events);
+
+      _this.dispatch(events); // save scroll top -> previous
+
+
+      _this.previous = y;
+    };
 
     _this.events = new _events_ScrollEvents__WEBPACK_IMPORTED_MODULE_5__["default"](Scrolling.UPDATE, _assertThisInitialized(_assertThisInitialized(_this)), _assertThisInitialized(_assertThisInitialized(_this))); // this.events = events;
 
@@ -10039,18 +9232,6 @@ function (_EventDispatcher) {
     _this.onNativeEvent = _this.onNativeEvent.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     return _this;
   } // ----------------------------------------
-  // EVENT
-  // ----------------------------------------
-  // /**
-  //  * fps で発生するイベントを取得します
-  //  * @event SCROLL
-  //  * @returns {string} event, scrollingScroll を返します
-  //  * @default scrollingScroll
-  //  */
-  // static get UPDATE() {
-  //   return 'scrollingUpdate';
-  // }
-  // ----------------------------------------
   // METHOD
   // ----------------------------------------
 
@@ -10120,69 +9301,6 @@ function (_EventDispatcher) {
       this.rate.off(_tick_Rate__WEBPACK_IMPORTED_MODULE_6__["default"].UPDATE, this.onUpdate);
       this.watching = false;
       return this;
-    }
-    /**
-     * 指定 rate(fps) 毎にスクロール位置を<br>
-     * scroll top 位置をもたせた Scrolling.UPDATE custom event を発火します
-     *
-     * 下記のプロパティをイベント・インスタンスに追加します
-     *
-     * - original {Events} - Rate Events instance
-     * - y {number} - scroll top
-     * - height {number} - window height
-     * - width {number} - window width
-     * - bottom {number} - window bottom 位置 (y + height)
-     * - previous {number} - 前回の scroll top
-     * - moving {number} - 前回からの移動量, 正: scroll down, 負: scroll up
-     * - wide {boolean} - width が 768 以上の時に true
-     * - changed {boolean} - scroll top が前回と変わっていたら true
-     *
-     * @param {?Events} event {@link Rate.UPDATE} Events instance
-     */
-
-  }, {
-    key: "onUpdate",
-    value: function onUpdate(event) {
-      // @type {number} - scroll top
-      var y = _Scroll__WEBPACK_IMPORTED_MODULE_3__["default"].y(); // @type {ScrollEvents} - events
-      // const { events } = this;
-      // @type {number} - previous scroll top
-
-      var previous = this.previous,
-          events = this.events; // @type {boolean} - 移動したかを表します,
-
-      var changed = event === null || previous !== y; // 移動量 0 の時は rate 監視を停止する
-
-      if (!changed) {
-        this.unwatch();
-      } // @type {number} - window height
-
-
-      var height = window.innerHeight; // @type {number} - window width
-
-      var width = window.innerWidth; // @type {Event} - Rate Events instance
-
-      events.original = event; // @type {number} - scroll top
-
-      events.y = y; // @type {number} - window height
-
-      events.height = height; // @type {number} - window width
-
-      events.width = width; // @type {number} - window bottom(y + height)
-
-      events.bottom = y + height; // @type {boolean} - 移動したかを表します,
-      // event が null の時は強制発火なので移動量 0 （scroll top 位置に変更がない）でも changed を true にします
-
-      events.changed = changed; // @type {number} - 前回の y 位置
-
-      events.previous = previous; // @type {number} - 移動量 +: down, -: up
-
-      events.moving = y - previous; // event fire
-      // console.log('Scrolling.scroll', events);
-
-      this.dispatch(events); // save scroll top -> previous
-
-      this.previous = y;
     }
     /**
      * 強制的に Scrolling.SCROLL event を発火させます
@@ -10296,6 +9414,28 @@ function (_EventDispatcher) {
    * @type {string}
    */
   // ----------------------------------------
+  // CALLBACK
+  // ----------------------------------------
+
+  /**
+   * touchstart - event handler
+   */
+
+  /**
+   * touchmove {@link Touching}.MOVE - event handler
+   * @param {TouchingEvents} events events.between.y で移動量を計算します
+   */
+
+  /**
+   * touchend {@link Touching}.END - event handler
+   * @param {TouchingEvents} events events.between.y で移動量を計算します
+   */
+
+  /**
+   * touchend {@link Touching}.CANCEL - event handler
+   * - 処理を中止します
+   */
+  // ----------------------------------------
   // CONSTRUCTOR
   // ----------------------------------------
 
@@ -10319,6 +9459,8 @@ function (_EventDispatcher) {
      * @type {Element}
      */
 
+    _initialiseProps.call(_assertThisInitialized(_assertThisInitialized(_this)));
+
     _this.element = element;
     /**
      * touch event 管理
@@ -10331,31 +9473,27 @@ function (_EventDispatcher) {
      * @type {number}
      */
 
-    _this.marginal = marginal;
-    /**
-     * bound onStart - touchstart event handler
-     * @type {function}
-     */
+    _this.marginal = marginal; // /**
+    //  * bound onStart - touchstart event handler
+    //  * @type {function}
+    //  */
+    // this.onStart = this.onStart.bind(this);
+    // /**
+    //  * bound onMove - touchmove event handler
+    //  * @type {function}
+    //  */
+    // this.onMove = this.onMove.bind(this);
+    // /**
+    //  * bound onEnd - touchend event handler
+    //  * @type {function}
+    //  */
+    // this.onEnd = this.onEnd.bind(this);
+    // /**
+    //  * bound onCancel - touchcancel event handler
+    //  * @type {function}
+    //  */
+    // this.onCancel = this.onCancel.bind(this);
 
-    _this.onStart = _this.onStart.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    /**
-     * bound onMove - touchmove event handler
-     * @type {function}
-     */
-
-    _this.onMove = _this.onMove.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    /**
-     * bound onEnd - touchend event handler
-     * @type {function}
-     */
-
-    _this.onEnd = _this.onEnd.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    /**
-     * bound onCancel - touchcancel event handler
-     * @type {function}
-     */
-
-    _this.onCancel = _this.onCancel.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     /**
      * X 移動量を累積加算します
      * @type {number}
@@ -10383,81 +9521,15 @@ function (_EventDispatcher) {
   // ----------------------------------------
 
   /**
-   * touchstart - event handler
+   * x 方向閾値(`marginal`)超えているかをチェックします
+   * - 超えているときは swipe 方向を check し `swipe` event を発火します
+   *   - 負数 - swipe left
+   *   - 正数 - swipe right
+   * @return {boolean} true: 超えている
    */
 
 
   _createClass(Swipe, [{
-    key: "onStart",
-    value: function onStart() {
-      this.dispose();
-      this.reset(); // ----
-
-      var touching = this.touching;
-      touching.on(_Touching__WEBPACK_IMPORTED_MODULE_6__["default"].MOVE, this.onMove);
-      touching.on(_Touching__WEBPACK_IMPORTED_MODULE_6__["default"].END, this.onEnd);
-      touching.on(_Touching__WEBPACK_IMPORTED_MODULE_6__["default"].CANCEL, this.onCancel);
-    }
-    /**
-     * touchmove {@link Touching}.MOVE - event handler
-     * @param {TouchingEvents} events events.between.y で移動量を計算します
-     */
-
-  }, {
-    key: "onMove",
-    value: function onMove(events) {
-      // 移動量を累積する
-      this.dragging += events.between.x;
-      this.drag(this.dragging);
-
-      if (this.swipeCheck()) {
-        this.dispose();
-        this.reset();
-      }
-    }
-    /**
-     * touchend {@link Touching}.END - event handler
-     * @param {TouchingEvents} events events.between.y で移動量を計算します
-     */
-
-  }, {
-    key: "onEnd",
-    value: function onEnd(events) {
-      // 移動量を累積する
-      this.dragging += events.between.x;
-      this.drag(this.dragging); // ---
-
-      var move = this.swipeCheck();
-
-      if (!move) {
-        this.dispatch(this.events.end);
-      } // ---
-
-
-      this.dispose();
-      this.reset();
-    }
-    /**
-     * touchend {@link Touching}.CANCEL - event handler
-     * - 処理を中止します
-     */
-
-  }, {
-    key: "onCancel",
-    value: function onCancel() {
-      this.dispose();
-      this.reset();
-      this.dispatch(this.events.end);
-    }
-    /**
-     * x 方向閾値(`marginal`)超えているかをチェックします
-     * - 超えているときは swipe 方向を check し `swipe` event を発火します
-     *   - 負数 - swipe left
-     *   - 正数 - swipe right
-     * @return {boolean} true: 超えている
-     */
-
-  }, {
     key: "swipeCheck",
     value: function swipeCheck() {
       var move = Math.abs(this.dragging) > this.marginal;
@@ -10538,6 +9610,63 @@ Swipe.LEFT = 'left';
 Swipe.RIGHT = 'right';
 Swipe.END = 'end';
 Swipe.DRAG = 'drag';
+
+var _initialiseProps = function _initialiseProps() {
+  var _this2 = this;
+
+  this.onStart = function () {
+    _this2.dispose();
+
+    _this2.reset(); // ----
+
+
+    var touching = _this2.touching;
+    touching.on(_Touching__WEBPACK_IMPORTED_MODULE_6__["default"].MOVE, _this2.onMove);
+    touching.on(_Touching__WEBPACK_IMPORTED_MODULE_6__["default"].END, _this2.onEnd);
+    touching.on(_Touching__WEBPACK_IMPORTED_MODULE_6__["default"].CANCEL, _this2.onCancel);
+  };
+
+  this.onMove = function (events) {
+    // 移動量を累積する
+    _this2.dragging += events.between.x;
+
+    _this2.drag(_this2.dragging);
+
+    if (_this2.swipeCheck()) {
+      _this2.dispose();
+
+      _this2.reset();
+    }
+  };
+
+  this.onEnd = function (events) {
+    // 移動量を累積する
+    _this2.dragging += events.between.x;
+
+    _this2.drag(_this2.dragging); // ---
+
+
+    var move = _this2.swipeCheck();
+
+    if (!move) {
+      _this2.dispatch(_this2.events.end);
+    } // ---
+
+
+    _this2.dispose();
+
+    _this2.reset();
+  };
+
+  this.onCancel = function () {
+    _this2.dispose();
+
+    _this2.reset();
+
+    _this2.dispatch(_this2.events.end);
+  };
+};
+
 
 
 /***/ }),
@@ -10729,19 +9858,28 @@ function (_EventDispatcher) {
         y: touch.pageY
       };
     } // ---------------------------------------------------
-    //  CONSTRUCTOR
+    //  CALLBACK
     // ---------------------------------------------------
 
     /**
-     * 処理対象 element などを保存します
-     * @param {Element} element 処理対象 Element
-     * @param {boolean} [canceling=false] touchmove 中に `preventDefault` を行うフラッグ
-     * false の時は {@link Can.passive} を調べ可能なら `{ passive: true }` します - since 0.3.2
-     * @param {number} [threshold=10] y 方向閾値
+     * touchstart event handler
+     * @param {Event|TouchEvent} event touchstart event
+     * @returns {void}
      */
 
   }]);
 
+  // ---------------------------------------------------
+  //  CONSTRUCTOR
+  // ---------------------------------------------------
+
+  /**
+   * 処理対象 element などを保存します
+   * @param {Element} element 処理対象 Element
+   * @param {boolean} [canceling=false] touchmove 中に `preventDefault` を行うフラッグ
+   * false の時は {@link Can.passive} を調べ可能なら `{ passive: true }` します - since 0.3.2
+   * @param {number} [threshold=10] y 方向閾値
+   */
   function Touching(element) {
     var _this;
 
@@ -10755,6 +9893,103 @@ function (_EventDispatcher) {
      * 処理対象 Element
      * @type {Element}
      */
+
+    _this.onStart = function (event) {
+      // event unbind <- 二重 bind にならないように
+      _this.dispose(); // vectors を初期化
+
+
+      _this.reset(); // 現在 position を保存
+
+
+      var _assertThisInitialize = _assertThisInitialized(_assertThisInitialized(_this)),
+          vectors = _assertThisInitialize.vectors,
+          body = _assertThisInitialize.body,
+          eventOption = _assertThisInitialize.eventOption;
+
+      var point = Touching.point(event);
+      vectors.start.update(point.x, point.y);
+      vectors.moving.push(vectors.start); // キャンセル event 監視を開始
+      // const eventOption = this.eventOption;
+      // const body = this.body;
+
+      body.addEventListener('touchend', _this.onEnd, eventOption);
+      body.addEventListener('touchmove', _this.onMove, eventOption);
+      body.addEventListener('touchcancel', _this.onCancel, eventOption); // Touching.START 発火
+
+      _this.dispatch(new _events_TouchingEvents__WEBPACK_IMPORTED_MODULE_4__["default"](Touching.START, _assertThisInitialized(_assertThisInitialized(_this)), event, vectors.start));
+    };
+
+    _this.onMove = function (event) {
+      // console.log('Touching.onMove', event);
+      var _assertThisInitialize2 = _assertThisInitialized(_assertThisInitialized(_this)),
+          vectors = _assertThisInitialize2.vectors;
+
+      var movingArray = vectors.moving; // 現在 position
+
+      var point = Touching.point(event);
+      var position = new _util_Vectors__WEBPACK_IMPORTED_MODULE_5__["default"](point.x, point.y, Date.now()); // 前回 position <- moving 配列最後
+
+      var previous = movingArray.pop(); // 戻す
+
+      movingArray.push(previous); // scroll checked
+
+      var scrolling = Touching.scrolling(position, previous, _this.threshold);
+      position.scrolling = scrolling; // 現在 position を配列後ろにセット
+
+      movingArray.push(position); // global cancel と 閾値チェックで `preventDefault` を実行し scroll を止める
+
+      if (_this.canceling && !scrolling) {
+        event.preventDefault();
+      } // 移動量
+
+
+      var between = position.between(previous); // Touching.MOVE 発火
+
+      _this.dispatch(new _events_TouchingEvents__WEBPACK_IMPORTED_MODULE_4__["default"](Touching.MOVE, _assertThisInitialized(_assertThisInitialized(_this)), event, position, between, scrolling)); // kitkat(Android 4.3 ~ 4.4 && standard browser) - touchend 発火しないので check
+
+
+      if (_this.kitkat) {
+        _this.kitkatEnd(event);
+      }
+    };
+
+    _this.onEnd = function (event) {
+      // console.log('Touching.onEnd', event);
+      var _assertThisInitialize3 = _assertThisInitialized(_assertThisInitialized(_this)),
+          vectors = _assertThisInitialize3.vectors; // 現在 position
+
+
+      var point = Touching.point(event);
+      var position = new _util_Vectors__WEBPACK_IMPORTED_MODULE_5__["default"](point.x, point.y, Date.now()); // 前回 position を touchstart 位置としチェックします
+
+      var previous = vectors.start;
+      var scrolling = Touching.scrolling(position, previous, _this.threshold);
+      position.scrolling = scrolling; // global cancel と 閾値チェックで `preventDefault` を実行し scroll を止める
+
+      if (_this.canceling && !scrolling) {
+        event.preventDefault();
+      } // 移動量
+
+
+      var between = position.between(previous); // Touching.END 発火
+
+      _this.dispatch(new _events_TouchingEvents__WEBPACK_IMPORTED_MODULE_4__["default"](Touching.END, _assertThisInitialized(_assertThisInitialized(_this)), event, position, between, scrolling)); // Touching.Touch 発火
+
+
+      _this.dispatch(new _events_TouchingEvents__WEBPACK_IMPORTED_MODULE_4__["default"](Touching.TOUCH, _assertThisInitialized(_assertThisInitialized(_this)), event, position, between, scrolling)); // ---
+
+
+      _this.dispose();
+    };
+
+    _this.onCancel = function (event) {
+      return _this.abort(event);
+    };
+
+    _this.onBlur = function (event) {
+      return _this.abort(event);
+    };
 
     _this.element = element;
     /**
@@ -10770,37 +10005,32 @@ function (_EventDispatcher) {
      * @default 10
      */
 
-    _this.threshold = threshold;
-    /**
-     * bound onStart
-     * @type {function}
-     */
+    _this.threshold = threshold; // /**
+    //  * bound onStart
+    //  * @type {function}
+    //  */
+    // this.onStart = this.onStart.bind(this);
+    // /**
+    //  * bound onMove
+    //  * @type {function}
+    //  */
+    // this.onMove = this.onMove.bind(this);
+    // /**
+    //  * bound onEnd
+    //  * @type {function}
+    //  */
+    // this.onEnd = this.onEnd.bind(this);
+    // /**
+    //  * bound onCancel
+    //  * @type {function}
+    //  */
+    // this.onCancel = this.onCancel.bind(this);
+    // /**
+    //  * bound onBlur
+    //  * @type {function}
+    //  */
+    // this.onBlur = this.onBlur.bind(this);
 
-    _this.onStart = _this.onStart.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    /**
-     * bound onMove
-     * @type {function}
-     */
-
-    _this.onMove = _this.onMove.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    /**
-     * bound onEnd
-     * @type {function}
-     */
-
-    _this.onEnd = _this.onEnd.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    /**
-     * bound onCancel
-     * @type {function}
-     */
-
-    _this.onCancel = _this.onCancel.bind(_assertThisInitialized(_assertThisInitialized(_this)));
-    /**
-     * bound onBlur
-     * @type {function}
-     */
-
-    _this.onBlur = _this.onBlur.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     /**
      * 位置管理を行う Vectors instance を含む object
      * @type {{start: Vectors, end: Vectors, moving: Array.<Vectors>}}
@@ -10844,87 +10074,17 @@ function (_EventDispatcher) {
   } // ---------------------------------------------------
   //  METHOD
   // ---------------------------------------------------
-  // event handlers
-  // ---------------------------------------------------
 
   /**
-   * touchstart event handler
-   * @param {Event|TouchEvent} event touchstart event
-   * @returns {void}
+   * Android 4.3 ~ 4.4 && standard browser - browser bug のため `touchend` が発火しません
+   * - `touchmove` も 1 回だけ発火します - touchmove の後に本 method `kitkatEnd` を実行します
+   * - `onEnd` を強制実行し `touchend` させます
+   * @param {Event} event touch event
+   * @since v0.4.4
    */
 
 
   _createClass(Touching, [{
-    key: "onStart",
-    value: function onStart(event) {
-      // event unbind <- 二重 bind にならないように
-      this.dispose(); // vectors を初期化
-
-      this.reset(); // 現在 position を保存
-
-      var vectors = this.vectors,
-          body = this.body,
-          eventOption = this.eventOption;
-      var point = Touching.point(event);
-      vectors.start.update(point.x, point.y);
-      vectors.moving.push(vectors.start); // キャンセル event 監視を開始
-      // const eventOption = this.eventOption;
-      // const body = this.body;
-
-      body.addEventListener('touchend', this.onEnd, eventOption);
-      body.addEventListener('touchmove', this.onMove, eventOption);
-      body.addEventListener('touchcancel', this.onCancel, eventOption); // Touching.START 発火
-
-      this.dispatch(new _events_TouchingEvents__WEBPACK_IMPORTED_MODULE_4__["default"](Touching.START, this, event, vectors.start));
-    }
-    /**
-     * touchmove event handler
-     * - Android 4.3 ~ 4.4 && standard browser のために `kitkatEnd` を実行します
-     * @param {Event} event touchmove event
-     * @returns {void}
-     */
-
-  }, {
-    key: "onMove",
-    value: function onMove(event) {
-      // console.log('Touching.onMove', event);
-      var vectors = this.vectors;
-      var movingArray = vectors.moving; // 現在 position
-
-      var point = Touching.point(event);
-      var position = new _util_Vectors__WEBPACK_IMPORTED_MODULE_5__["default"](point.x, point.y, Date.now()); // 前回 position <- moving 配列最後
-
-      var previous = movingArray.pop(); // 戻す
-
-      movingArray.push(previous); // scroll checked
-
-      var scrolling = Touching.scrolling(position, previous, this.threshold);
-      position.scrolling = scrolling; // 現在 position を配列後ろにセット
-
-      movingArray.push(position); // global cancel と 閾値チェックで `preventDefault` を実行し scroll を止める
-
-      if (this.canceling && !scrolling) {
-        event.preventDefault();
-      } // 移動量
-
-
-      var between = position.between(previous); // Touching.MOVE 発火
-
-      this.dispatch(new _events_TouchingEvents__WEBPACK_IMPORTED_MODULE_4__["default"](Touching.MOVE, this, event, position, between, scrolling)); // kitkat(Android 4.3 ~ 4.4 && standard browser) - touchend 発火しないので check
-
-      if (this.kitkat) {
-        this.kitkatEnd(event);
-      }
-    }
-    /**
-     * Android 4.3 ~ 4.4 && standard browser - browser bug のため `touchend` が発火しません
-     * - `touchmove` も 1 回だけ発火します - touchmove の後に本 method `kitkatEnd` を実行します
-     * - `onEnd` を強制実行し `touchend` させます
-     * @param {Event} event touch event
-     * @since v0.4.4
-     */
-
-  }, {
     key: "kitkatEnd",
     value: function kitkatEnd(event) {
       var _this2 = this;
@@ -10933,62 +10093,6 @@ function (_EventDispatcher) {
       this.timer.kitkat = setTimeout(function () {
         _this2.onEnd(event);
       }, 32);
-    }
-    /**
-     * touchend event handler
-     * - {@link Touching}.[END|TOUCH] を発火します
-     * @param {Event} event touchend event
-     */
-
-  }, {
-    key: "onEnd",
-    value: function onEnd(event) {
-      // console.log('Touching.onEnd', event);
-      var vectors = this.vectors; // 現在 position
-
-      var point = Touching.point(event);
-      var position = new _util_Vectors__WEBPACK_IMPORTED_MODULE_5__["default"](point.x, point.y, Date.now()); // 前回 position を touchstart 位置としチェックします
-
-      var previous = vectors.start;
-      var scrolling = Touching.scrolling(position, previous, this.threshold);
-      position.scrolling = scrolling; // global cancel と 閾値チェックで `preventDefault` を実行し scroll を止める
-
-      if (this.canceling && !scrolling) {
-        event.preventDefault();
-      } // 移動量
-
-
-      var between = position.between(previous); // Touching.END 発火
-
-      this.dispatch(new _events_TouchingEvents__WEBPACK_IMPORTED_MODULE_4__["default"](Touching.END, this, event, position, between, scrolling)); // Touching.Touch 発火
-
-      this.dispatch(new _events_TouchingEvents__WEBPACK_IMPORTED_MODULE_4__["default"](Touching.TOUCH, this, event, position, between, scrolling)); // ---
-
-      this.dispose();
-    }
-    /**
-     * touchcancel event handler<br>
-     * 処理をキャンセルします
-     * @param {Event} event touchend event
-     * @returns {boolean} 正常終了時に true を返します
-     */
-
-  }, {
-    key: "onCancel",
-    value: function onCancel(event) {
-      return this.abort(event);
-    }
-    /**
-     * window.blur event handler<br>
-     * 処理をキャンセルします
-     * @param {Event} event window blur event
-     * @returns {boolean} 正常終了時に true を返します
-     */
-
-  }, {
-    key: "onBlur",
-    value: function onBlur(event) {
-      return this.abort(event);
     } // 処理
     // ---------------------------------------------------
 
@@ -11146,43 +10250,31 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
  */
 // event
 
- // /**
-//  * new を許可しないための Symbol
-//  * @type {Symbol}
-//  * @private
-//  */
-// const singletonSymbol = Symbol('Scroll singleton symbol');
-// /**
-//  * singleton instance, nullable
-//  * @type {?Wheel}
-//  * @private
-//  */
-// let instance = null;
 
 /**
  * mousewheel event を監視し通知を行います
- * <p>singleton なので new ではなく factory を使用し instance を作成します</p>
+ *
+ * singleton です new ではなく factory を使用し instance を作成します
  *
  * event handler 引数 `events` は {@link WheelEvents} instance です
  * - events.moved > 0 - wheel up
  *
- * ```
- * const up = (events) => {
- *  // wheel up
- * };
- * const down = (events) => {
- *  // wheel down
- * };
- * const update = (events) => {
- *  // wheel up / down
- * };
- * const wheel = new Wheel();
- * wheel.threshold = 500;
- * wheel.on(Wheel.UP, up);
- * wheel.on(Wheel.DOWN, down);
- * wheel.on(Wheel.UPDATE, update);
- * wheel.start();
- * ```
+ * @example
+ *  const up = (events) => {
+ *    // wheel up
+ *  };
+ *  const down = (events) => {
+ *    // wheel down
+ *  };
+ *  const update = (events) => {
+ *    // wheel up / down
+ *  };
+ *  const wheel = new Wheel();
+ *  wheel.threshold = 500;
+ *  wheel.on(Wheel.UP, up);
+ *  wheel.on(Wheel.DOWN, down);
+ *  wheel.on(Wheel.UPDATE, update);
+ *  wheel.start();
  */
 
 var Wheel =
@@ -11208,27 +10300,21 @@ function (_EventDispatcher) {
    * wheel move で発生するイベント - wheelUpdate
    * @type {string}
    */
-  // // ----------------------------------------
-  // // STATIC METHOD
-  // // ----------------------------------------
-  // /**
-  //  * Wheel instance を singleton を保証し作成します
-  //  * @returns {Wheel} Wheel instance を返します
-  //  */
-  // static factory() {
-  //   if (instance === null) {
-  //     instance = new Wheel(singletonSymbol);
-  //   }
-  //   return instance;
-  // }
+  // ---------------------------------------------------
+  //  CALLBACK
+  // ---------------------------------------------------
+
+  /**
+   * window mousewheel event handler
+   * <p>delta 値を取得し `this.moving` を実行します</p>
+   *
+   * @listens {WheelEvent} WheelEvent.wheel
+   * @param {WheelEvent} event window wheel event
+   * @returns {number} 前回移動量に delta 値 を加算した値を返します
+   */
   // ---------------------------------------------------
   //  CONSTRUCTOR
   // ---------------------------------------------------
-  // /**
-  //  * singleton です
-  //  * @param {Symbol} checkSymbol singleton を保証するための private instance
-  //  * @returns {Wheel} singleton instance を返します
-  //  */
 
   /**
    * wheel event を管理します
@@ -11241,31 +10327,22 @@ function (_EventDispatcher) {
 
     _classCallCheck(this, Wheel);
 
-    // // checkSymbol と singleton が等価かをチェックします
-    // if (checkSymbol !== singletonSymbol) {
-    //   throw new Error('don\'t use new, instead use static factory method.');
-    // }
-    // // instance 作成済みかをチェックし instance が null の時 this を設定します
-    // if (instance !== null) {
-    //   return instance;
-    // }
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Wheel).call(this)); // onetime setting
-    // instance = this;
-    // event handler
-    // const onMouseWheel = this.onMouseWheel.bind(this);
-
-    /**
-     * bound onMouseWheel
-     * @type {function}
-     */
-
-    _this.onMouseWheel = _this.onMouseWheel.bind(_assertThisInitialized(_assertThisInitialized(_this))); // this.onMouseWheel = () => onMouseWheel;
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Wheel).call(this)); // /**
+    //  * bound onMouseWheel
+    //  * @type {function}
+    //  */
+    // this.onMouseWheel = this.onMouseWheel.bind(this);
 
     /**
      * 閾値, wheel 移動量が閾値を超えたときにイベントを発生させます
      * @type {number}
      * @default 200
      */
+
+    _this.onMouseWheel = function (event) {
+      var deltaY = event.deltaY;
+      return _this.moving(deltaY);
+    };
 
     _this.threshold = threshold;
     /**
@@ -11296,28 +10373,7 @@ function (_EventDispatcher) {
     // return this;
 
     return _this;
-  } // // ----------------------------------------
-  // // EVENT
-  // // ----------------------------------------
-  // /**
-  //  * wheel up で発生するイベントを取得します
-  //  * @event UP
-  //  * @returns {string} event, wheelUp を返します
-  //  * @default wheelUp
-  //  */
-  // static get UP() {
-  //   return 'wheelUp';
-  // }
-  // /**
-  //  * wheel  で発生するイベントを取得します
-  //  * @event DOWN
-  //  * @returns {string} event, wheelUp を返します
-  //  * @default wheelUp
-  //  */
-  // static get DOWN() {
-  //   return 'wheelDown';
-  // }
-  // ----------------------------------------
+  } // ----------------------------------------
   // METHOD
   // ----------------------------------------
 
@@ -11363,21 +10419,6 @@ function (_EventDispatcher) {
       // this.started = false;
       window.removeEventListener('wheel', this.onMouseWheel);
       return this;
-    }
-    /**
-     * window mousewheel event handler
-     * <p>delta 値を取得し `this.moving` を実行します</p>
-     *
-     * @listens {WheelEvent} WheelEvent.wheel
-     * @param {WheelEvent} event window wheel event
-     * @returns {number} 前回移動量に delta 値 を加算した値を返します
-     */
-
-  }, {
-    key: "onMouseWheel",
-    value: function onMouseWheel(event) {
-      var deltaY = event.deltaY;
-      return this.moving(deltaY);
     }
     /**
      * mouse delta から移動量を計算します
@@ -12254,7 +11295,7 @@ MOKU.version = function () {
 
 
 MOKU.buildTime = function () {
-  return 1550144002860;
+  return 1550471937249;
 };
 /**
  * MOKU.event
@@ -12371,10 +11412,20 @@ window.MOKU = MOKU;
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Ajax; });
-/* harmony import */ var core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.object.assign */ "./node_modules/core-js/modules/es6.object.assign.js");
-/* harmony import */ var core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _util_Type__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../util/Type */ "./src/util/Type.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
+/* harmony import */ var core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_iterable__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es6.array.iterator */ "./node_modules/core-js/modules/es6.array.iterator.js");
+/* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es6.object.keys */ "./node_modules/core-js/modules/es6.object.keys.js");
+/* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _util_Type__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../util/Type */ "./src/util/Type.js");
 
+
+
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -12414,15 +11465,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 // const Request = self.Request;
 
 /**
- * <p>fetch API を使用し Ajax request を行います</p>
- * <p>Safari, IE はサポートしていないので polyfill ライブラリを使用します<br>
- * また、 fetch は Promise も必要としています。</p>
- *
- * ```
- * $ bower install fetch
- *
- * $ bower install es6-promise
- * ```
+ * fetch API を使用し Ajax request を行います、
+ * Safari, IE はサポートしていないので polyfill ライブラリを使用します。
+ * また、 fetch は Promise も必要としています。
  *
  * thunk friendly - ES2017 async / await するために
  * - fetch Promise を返すように変更
@@ -12430,6 +11475,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
  * - fetch.then から result / error を return
  *
  * [caution] resolve / reject を使用しない場合は {@link AjaxThunk} を使用する方が効率的です
+ *
  * @example
  * const ajax = new Ajax();
  * // async / await 1
@@ -12475,80 +11521,15 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var Ajax =
 /*#__PURE__*/
 function () {
-  _createClass(Ajax, [{
-    key: "option",
-    // ----------------------------------------
-    // STATIC METHOD
-    // ----------------------------------------
+  // ----------------------------------------
+  // CONSTRUCTOR
+  // ----------------------------------------
 
-    /**
-     * <p>fetch API へ送るオプションを作成します</p>
-     *
-     * 必ず設定します
-     * - method: GET, POST, PUT, DELETE...etc
-     * - cache: 'no-cache'
-     * - credentials: 'same-origin'
-     *
-     * headers, formData は存在すれば option に追加されます
-     *
-     * ```
-     * var myRequest = new Request(input, init);
-     * ```
-     * <blockquote>
-     * リクエストに適用するカスタム設定を含むオプションオブジェクト。設定可能なオプションは：
-     *   method：リクエストメソッド、たとえば GET、POST。
-     *   headers：Headers オブジェクトか ByteString を含む、リクエストに追加するヘッダー。
-     *   body： リクエストに追加するボディー：Blob か BufferSource、FormData、URLSearchParams、USVString オブジェクトが使用できる。リクエストが GET か HEAD メソッドを使用している場合、ボディーを持てないことに注意。
-     *   mode：リクエストで使用するモード。たとえば、cors か no-cors、same-origin。既定値は cors。Chrome では、47 以前は no-cors が既定値であり、 same-origin は 47 から使用できるようになった。
-     *   credentials：リクエストで使用するリクエスト credential：omit か same-origin、include が使用できる。 既定値は omit。Chrome では、47 以前は same-origin が既定値であり、include は 47 から使用できるようになった。
-     *   cache：リクエストで使用する cache モード：default か no-store、reload、no-cache、force-cache、only-if-cached が設定できる。
-     *   redirect：使用するリダイレクトモード：follow か error、manual が使用できる。Chrome では、47 以前は既定値が follow であり、manual は 47 から使用できるようになった。
-     *   referrer：no-referrer か client、URL を指定する USVString。既定値は client。
-     * </blockquote>
-     * @param {string|USVString|Request} path Ajax request path
-     * @param {string} method GET, POST, PUT, DELETE...etc request method
-     * @param {Headers|Object|null} headers Headers option
-     * @param {FormData|null} formData 送信フォームデータオプション
-     * @returns {*|Request} fetch API へ送る Request instance を返します
-     *
-     * @see https://developers.google.com/web/updates/2015/03/introduction-to-fetch
-     * @see https://developer.mozilla.org/ja/docs/Web/API/Request
-     * @see https://developer.mozilla.org/ja/docs/Web/API/Request/Request
-     */
-    value: function option(path, method, headers, formData) {
-      // request option
-      var option = Object.assign({}, this.props); // const option = Object.create({
-      //   method,
-      //   cache: 'no-cache',
-      //   // https://developers.google.com/web/updates/2015/03/introduction-to-fetch
-      //   credentials: 'same-origin',
-      // });
-
-      option.method = method; // headers option
-
-      if (_util_Type__WEBPACK_IMPORTED_MODULE_1__["default"].exist(headers)) {
-        option.headers = headers;
-      } // body へ FormData をセット
-
-
-      if (_util_Type__WEBPACK_IMPORTED_MODULE_1__["default"].exist(formData)) {
-        option.body = formData;
-      } // https://developer.mozilla.org/ja/docs/Web/API/Request
-
-
-      return new Request(path, option);
-    } // ----------------------------------------
-    // CONSTRUCTOR
-    // ----------------------------------------
-
-    /**
-     * request 可能 / 不可能 flag を true に設定します
-     * @param {?function} [resolve=null] Promise success callback
-     * @param {?function} [reject=null] Promise fail callback
-     */
-
-  }]);
-
+  /**
+   * request 可能 / 不可能 flag を true に設定します
+   * @param {?function} [resolve=null] Promise success callback
+   * @param {?function} [reject=null] Promise fail callback
+   */
   function Ajax() {
     var resolve = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
     var reject = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -12577,7 +11558,7 @@ function () {
      * - method: GET|POST|PUT|DELETE...
      * - cache: no-cache
      * - credentials: same-origin
-     * @type {{method: ?string, cache: string, credentials: string}}
+     * @type {RequestInit|undefined|{method: ?string, cache: string, credentials: string}}
      * @see https://developer.mozilla.org/ja/docs/Web/API/Request/Request
      */
 
@@ -12592,24 +11573,80 @@ function () {
   // ----------------------------------------
 
   /**
-   * <p>Ajax request 開始します</p>
-   * <p>request 可能 / 不可能 flag が false の時は実行しません<br>
-   * true の時は false にしリクエストを開始します</p>
+   * fetch API へ送るオプションを作成します
    *
-   * from v0.3.4
-   * - resolve, reject 関数確認後実行します
-   * - Promise instance を返します
-   * - json / error を返します
+   * 必ず設定します
+   * - method: GET, POST, PUT, DELETE...etc
+   * - cache: 'no-cache'
+   * - credentials: 'same-origin'
    *
-   * @param {string} path Ajax request path
-   * @param {string} [method=GET] GET, POST, PUT, DELETE...etc request method
-   * @param {?Headers} [headers=null] Headers option, token などを埋め込むのに使用します
-   * @param {?FormData} [formData=null] フォームデータを送信するのに使用します
-   * @return {Promise} ajax request を開始し fetch Promise 返します
+   * headers, formData は存在すれば option に追加されます
+   *
+   * ```
+   * var myRequest = new Request(input, init);
+   * ```
+   * <blockquote>
+   * リクエストに適用するカスタム設定を含むオプションオブジェクト。設定可能なオプションは：
+   *   method：リクエストメソッド、たとえば GET、POST。
+   *   headers：Headers オブジェクトか ByteString を含む、リクエストに追加するヘッダー。
+   *   body： リクエストに追加するボディー：Blob か BufferSource、FormData、URLSearchParams、USVString オブジェクトが使用できる。リクエストが GET か HEAD メソッドを使用している場合、ボディーを持てないことに注意。
+   *   mode：リクエストで使用するモード。たとえば、cors か no-cors、same-origin。既定値は cors。Chrome では、47 以前は no-cors が既定値であり、 same-origin は 47 から使用できるようになった。
+   *   credentials：リクエストで使用するリクエスト credential：omit か same-origin、include が使用できる。 既定値は omit。Chrome では、47 以前は same-origin が既定値であり、include は 47 から使用できるようになった。
+   *   cache：リクエストで使用する cache モード：default か no-store、reload、no-cache、force-cache、only-if-cached が設定できる。
+   *   redirect：使用するリダイレクトモード：follow か error、manual が使用できる。Chrome では、47 以前は既定値が follow であり、manual は 47 から使用できるようになった。
+   *   referrer：no-referrer か client、URL を指定する USVString。既定値は client。
+   * </blockquote>
+   * @param {string|*|RequestInfo} path Ajax request path
+   * @param {string} method GET, POST, PUT, DELETE...etc request method
+   * @param {Headers|Object|null} headers Headers option
+   * @param {FormData|null} formData 送信フォームデータオプション
+   * @returns {*|Request} fetch API へ送る Request instance を返します
+   *
+   * @see https://developers.google.com/web/updates/2015/03/introduction-to-fetch
+   * @see https://developer.mozilla.org/ja/docs/Web/API/Request
+   * @see https://developer.mozilla.org/ja/docs/Web/API/Request/Request
    */
 
 
   _createClass(Ajax, [{
+    key: "option",
+    value: function option(path, method, headers, formData) {
+      // request option
+      // const option = Object.assign({}, this.props);
+      var option = _objectSpread({}, this.props);
+
+      option.method = method; // headers option
+
+      if (_util_Type__WEBPACK_IMPORTED_MODULE_3__["default"].exist(headers)) {
+        option.headers = headers;
+      } // body へ FormData をセット
+
+
+      if (_util_Type__WEBPACK_IMPORTED_MODULE_3__["default"].exist(formData)) {
+        option.body = formData;
+      } // https://developer.mozilla.org/ja/docs/Web/API/Request
+
+
+      return new Request(path, option);
+    }
+    /**
+     * Ajax request 開始します、
+     * request 可能 / 不可能 flag が false の時は実行しません。
+     * true の時は false にしリクエストを開始します
+     *
+     * from v0.3.4
+     * - resolve, reject 関数確認後実行します
+     * - Promise instance を返します
+     * - json / error を返します
+     *
+     * @param {string} path Ajax request path
+     * @param {string} [method=GET] GET, POST, PUT, DELETE...etc request method
+     * @param {?Headers} [headers=null] Headers option, token などを埋め込むのに使用します
+     * @param {?FormData} [formData=null] フォームデータを送信するのに使用します
+     * @return {Promise} ajax request を開始し fetch Promise 返します
+     */
+
+  }, {
     key: "start",
     value: function start(path) {
       var _this = this;
@@ -12639,7 +11676,7 @@ function () {
       }) // @param {Object} - JSON パース済み Object
       .then(function (json) {
         // complete event fire
-        if (_util_Type__WEBPACK_IMPORTED_MODULE_1__["default"].method(_this.resolve)) {
+        if (_util_Type__WEBPACK_IMPORTED_MODULE_3__["default"].method(_this.resolve)) {
           _this.resolve(json);
         } // flag true
 
@@ -12650,7 +11687,7 @@ function () {
       }) // @param {Error} - Ajax something error
       .catch(function (error) {
         // error event fire
-        if (_util_Type__WEBPACK_IMPORTED_MODULE_1__["default"].method(_this.reject)) {
+        if (_util_Type__WEBPACK_IMPORTED_MODULE_3__["default"].method(_this.reject)) {
           _this.reject(error);
         } // flag true
 
@@ -13397,8 +12434,8 @@ function () {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _method_promise__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./method/promise */ "./src/polyfill/method/promise.js");
-/* harmony import */ var _method_fetch__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./method/fetch */ "./src/polyfill/method/fetch.js");
+/* harmony import */ var _method_fetch__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./method/fetch */ "./src/polyfill/method/fetch.js");
+/* harmony import */ var _method_animationFrame__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./method/animationFrame */ "./src/polyfill/method/animationFrame.js");
 /**
  * Copyright (c) 2011-2017 inazumatv.com, inc.
  * @author (at)taikiken / http://inazumatv.com
@@ -13410,15 +12447,11 @@ __webpack_require__.r(__webpack_exports__);
  * This notice shall be included in all copies or substantial portions of the Software.
  *
  */
-// babel polyfill
-// import './method/babel';
-// promise
- // fetch
+// fetch
 
- // import animationFrame from './method/animationFrame';
-// ------------------------------------------------
-// animationFrame();
-// /**
+ // ------------------------------------------------
+
+Object(_method_animationFrame__WEBPACK_IMPORTED_MODULE_1__["default"])(); // /**
 //  * 以下全てを読み込みます、一部だけ必要な時は個別に `import` します
 //  * - babel-polyfill - `./method/babel`
 //  *   - IE, Symbol 対応できない問題を解決するために...
@@ -13444,6 +12477,74 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./src/polyfill/method/animationFrame.js":
+/*!***********************************************!*\
+  !*** ./src/polyfill/method/animationFrame.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/**
+ * Copyright (c) 2011-2017 inazumatv.com, inc.
+ * @author (at)taikiken / http://inazumatv.com
+ * @date 2017/08/28 - 18:26
+ *
+ * Distributed under the terms of the MIT license.
+ * http://www.opensource.org/licenses/mit-license.html
+ *
+ * This notice shall be included in all copies or substantial portions of the Software.
+ *
+ */
+
+/**
+ * Android 4.3 以下
+ * requestAnimationFrame 未実装なので polyfill する
+ * babel-preset-env 補完しない？
+ */
+var animationFrame = function animationFrame() {
+  // native code check
+  if (window.requestAnimationFrame && window.cancelAnimationFrame) {
+    return;
+  } // vendor prefix
+
+
+  var vendors = ['ms', 'moz', 'webkit', 'o']; // add vendor prefix
+
+  vendors.some(function (prefix) {
+    window.requestAnimationFrame = window["".concat(prefix, "RequestAnimationFrame")];
+    window.cancelAnimationFrame = window["".concat(prefix, "CancelAnimationFrame")] || window["".concat(prefix, "CancelRequestAnimationFrame")]; // return false;
+
+    return !!window.requestAnimationFrame;
+  }); // ------------------------------------------------
+  // still check
+
+  if (!window.requestAnimationFrame) {
+    var lastTime = 0;
+
+    window.requestAnimationFrame = function (callback) {
+      var currentTime = new Date().getTime();
+      var timeToCall = Math.max(0, 16 - (currentTime - lastTime));
+      var id = setTimeout(function () {
+        callback(currentTime + timeToCall);
+      }, timeToCall);
+      lastTime = currentTime + timeToCall;
+      return id;
+    };
+  }
+
+  if (!window.cancelAnimationFrame) {
+    window.cancelAnimationFrame = function (id) {
+      clearTimeout(id);
+    };
+  }
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (animationFrame);
+
+/***/ }),
+
 /***/ "./src/polyfill/method/fetch.js":
 /*!**************************************!*\
   !*** ./src/polyfill/method/fetch.js ***!
@@ -13453,7 +12554,8 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var whatwg_fetch__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! whatwg-fetch */ "./node_modules/whatwg-fetch/fetch.js");
+/* harmony import */ var _fetch__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./fetch */ "./src/polyfill/method/fetch.js");
+/* harmony import */ var whatwg_fetch__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! whatwg-fetch */ "./node_modules/whatwg-fetch/fetch.js");
 /**
  * Copyright (c) 2011-2017 inazumatv.com, inc.
  * @author (at)taikiken / http://inazumatv.com
@@ -13465,54 +12567,11 @@ __webpack_require__.r(__webpack_exports__);
  * This notice shall be included in all copies or substantial portions of the Software.
  *
  */
-// @see https://github.com/whatwg/fetch
+ // @see https://github.com/whatwg/fetch
 // @see https://fetch.spec.whatwg.org/
 // @see https://github.github.io/fetch/
 
 
-/***/ }),
-
-/***/ "./src/polyfill/method/promise.js":
-/*!****************************************!*\
-  !*** ./src/polyfill/method/promise.js ***!
-  \****************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var promise_polyfill__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! promise-polyfill */ "./node_modules/promise-polyfill/src/index.js");
-/**
- * Copyright (c) 2011-2017 inazumatv.com, inc.
- * @author (at)taikiken / http://inazumatv.com
- * @date 2017/08/29 - 14:05
- *
- * Distributed under the terms of the MIT license.
- * http://www.opensource.org/licenses/mit-license.html
- *
- * This notice shall be included in all copies or substantial portions of the Software.
- *
- */
-// @see https://github.com/taylorhakes/promise-polyfill
-// @see https://developers.google.com/web/fundamentals/getting-started/primers/promises
-// > Chrome 32、Opera 19、Firefox 29、Safari 8、および Microsoft Edge - enabled
-
-/**
- * Promise 未実装ブラウザへ polyfill します
- * - Chrome 32、Opera 19、Firefox 29、Safari 8、および Microsoft Edge - enabled
- * @see https://github.com/taylorhakes/promise-polyfill
- * @see https://developers.google.com/web/fundamentals/getting-started/primers/promises
- */
-
-var activate = function activate() {
-  // Promise: To add to window
-  if (!window.Promise) {
-    window.Promise = promise_polyfill__WEBPACK_IMPORTED_MODULE_0__["default"];
-  }
-};
-
-activate();
-/* harmony default export */ __webpack_exports__["default"] = (activate);
 
 /***/ }),
 
@@ -13575,11 +12634,11 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 
 /**
  * new を許可しないための Symbol
- * @type {Symbol}
+ * @type {symbol}
  * @private
  */
 
-var singletonSymbol = Symbol('singleton instance');
+var singletonSymbol = Symbol('Cycle singleton instance');
 /**
  * singleton instance, nullable
  * @type {?Cycle}
@@ -13588,8 +12647,8 @@ var singletonSymbol = Symbol('singleton instance');
 
 var instance = null;
 /**
- * <p>requestAnimationFrame を使用しループイベントを発生させます</p>
- * <p>singleton なので new ではなく factory を使用し instance を作成します</p>
+ * requestAnimationFrame を使用しループイベントを発生させます
+ * singleton です。 new ではなく factory を使用し instance を作成します
  *
  * ```
  * const loop = Cycle.factory();
@@ -13600,9 +12659,9 @@ var instance = null;
  * ```
  *
  * Cycle は `requestAnimationFrame` を auto start させます
- * <p>【注意】requestAnimationFrame は tab が active(focus) な時のみ発生します<br>
- * `blur` 時にも動作させたい時は使用しないでください。<br>
- *   `setTimeout` の利用を検討してください</p>
+ *
+ * - 【注意】requestAnimationFrame は tab が active(focus) な時のみ発生します
+ * - `blur` 時にも動作させたい時は使用しないでください。`setTimeout` の利用を検討してください
  */
 
 var Cycle =
@@ -13636,17 +12695,27 @@ function (_EventDispatcher) {
 
       return instance;
     } // ----------------------------------------
-    //  CONSTRUCTOR
+    // CALLBACK
     // ----------------------------------------
 
     /**
-     * singleton です
-     * @param {Symbol} checkSymbol singleton を保証するための private instance
-     * @returns {Cycle} singleton instance を返します
+     * loop(requestAnimationFrame)コールバック関数
+     * - Cycle.UPDATE event を発火します
+     * @param {number} [time=0] animation time
+     * @returns {number} requestAnimationFrame ID
      */
 
   }]);
 
+  // ----------------------------------------
+  //  CONSTRUCTOR
+  // ----------------------------------------
+
+  /**
+   * singleton です
+   * @param {symbol} checkSymbol singleton を保証するための private instance
+   * @returns {Cycle} singleton instance を返します
+   */
   function Cycle(checkSymbol) {
     var _this;
 
@@ -13670,13 +12739,29 @@ function (_EventDispatcher) {
      * @type {Events}
      */
 
-    _this.events = new _events_CycleEvents__WEBPACK_IMPORTED_MODULE_4__["default"](Cycle.UPDATE, _assertThisInitialized(_assertThisInitialized(_this)), _assertThisInitialized(_assertThisInitialized(_this)));
-    /**
-     * bound update requestAnimationFrame callback
-     * @type {function}
-     */
+    _this.onUpdate = function () {
+      var time = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+      // @type {number} - requestAnimationFrame id
+      var id = requestAnimationFrame(_this.onUpdate);
+      _this.id = id; // @type {Events} - events
 
-    _this.onUpdate = _this.onUpdate.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+      var _assertThisInitialize = _assertThisInitialized(_assertThisInitialized(_this)),
+          events = _assertThisInitialize.events;
+
+      events.id = id;
+      events.time = time; // event fire
+
+      _this.dispatch(events);
+
+      return id;
+    };
+
+    _this.events = new _events_CycleEvents__WEBPACK_IMPORTED_MODULE_4__["default"](Cycle.UPDATE, _assertThisInitialized(_assertThisInitialized(_this)), _assertThisInitialized(_assertThisInitialized(_this))); // /**
+    //  * bound update requestAnimationFrame callback
+    //  * @type {function}
+    //  */
+    // this.onUpdate = this.onUpdate.bind(this);
+
     /**
      * requestAnimationFrame ID
      * @type {number}
@@ -13719,30 +12804,6 @@ function (_EventDispatcher) {
     value: function stop() {
       var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.id;
       cancelAnimationFrame(id);
-    } // ----------------------------------------
-    // PRIVATE METHOD
-    // ----------------------------------------
-
-    /**
-     * loop(requestAnimationFrame)コールバック関数
-     * - Cycle.UPDATE event を発火します
-     * @param {number} time animation time
-     * @returns {number} requestAnimationFrame ID
-     */
-
-  }, {
-    key: "onUpdate",
-    value: function onUpdate(time) {
-      // @type {number} - requestAnimationFrame id
-      var id = requestAnimationFrame(this.onUpdate);
-      this.id = id; // @type {Events} - events
-
-      var events = this.events;
-      events.id = id;
-      events.time = time; // event fire
-
-      this.dispatch(events);
-      return id;
     }
   }]);
 
@@ -13994,6 +13055,17 @@ function (_EventDispatcher) {
    * @type {string}
    */
   // ----------------------------------------
+  // CALLBACK
+  // ----------------------------------------
+
+  /**
+   * Cycle.UPDATE event handler, polling を計測しイベントを発火するかを判断します
+   *
+   * @param {CycleEvents} events Cycle event object
+   * @listens {Cycle.UPDATE} Cycle.UPDATE が発生すると実行されます
+   * @returns {boolean} Polling.UPDATE event が発生すると true を返します
+   */
+  // ----------------------------------------
   // CONSTRUCTOR
   // ----------------------------------------
 
@@ -14014,19 +13086,20 @@ function (_EventDispatcher) {
      * @ty[e {Cycle}
      */
 
+    _initialiseProps.call(_assertThisInitialized(_assertThisInitialized(_this)));
+
     _this.cycle = _Cycle__WEBPACK_IMPORTED_MODULE_4__["default"].factory();
     /**
      * 間隔(ms)
      * @type {number}
      */
 
-    _this.interval = interval;
-    /**
-     * bound onUpdate, Cycle.UPDATE event handler
-     * @returns {function}
-     */
+    _this.interval = interval; // /**
+    //  * bound onUpdate, Cycle.UPDATE event handler
+    //  * @returns {function}
+    //  */
+    // this.onUpdate = this.onUpdate.bind(this);
 
-    _this.onUpdate = _this.onUpdate.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     /**
      * Events instance - Polling.UPDATE Events object
      * @type {Events}
@@ -14084,37 +13157,6 @@ function (_EventDispatcher) {
     value: function stop() {
       this.cycle.off(_Cycle__WEBPACK_IMPORTED_MODULE_4__["default"].UPDATE, this.onUpdate);
       return true;
-    }
-    /**
-     * Cycle.UPDATE event handler, polling を計測しイベントを発火するかを判断します
-     *
-     * @param {CycleEvents} events Cycle event object
-     * @listens {Cycle.UPDATE} Cycle.UPDATE が発生すると実行されます
-     * @returns {boolean} Polling.UPDATE event が発生すると true を返します
-     */
-
-  }, {
-    key: "onUpdate",
-    value: function onUpdate(events) {
-      // 現在時間
-      // @type {number}
-      var present = Date.now(); // @type {number} - interval 間隔
-      // const interval = this.interval;
-      // @type {number} - 開始時間
-
-      var begin = this.begin,
-          interval = this.interval; // 現在時間 が interval より大きくなったか
-
-      if (present - begin >= interval) {
-        // event 発火
-        this.fire(this.updateEvents(begin, present, events)); // 開始時間を update
-
-        this.begin = present; // event 発生
-
-        return true;
-      }
-
-      return false;
     } // -----
     // event create & fire
 
@@ -14155,6 +13197,34 @@ function (_EventDispatcher) {
 }(_event_EventDispatcher__WEBPACK_IMPORTED_MODULE_3__["default"]);
 
 Polling.UPDATE = 'pollingUpdate';
+
+var _initialiseProps = function _initialiseProps() {
+  var _this2 = this;
+
+  this.onUpdate = function (events) {
+    // 現在時間
+    // @type {number}
+    var present = Date.now(); // @type {number} - interval 間隔
+    // const interval = this.interval;
+    // @type {number} - 開始時間
+
+    var begin = _this2.begin,
+        interval = _this2.interval; // 現在時間 が interval より大きくなったか
+
+    if (present - begin >= interval) {
+      // event 発火
+      _this2.fire(_this2.updateEvents(begin, present, events)); // 開始時間を update
+
+
+      _this2.begin = present; // event 発生
+
+      return true;
+    }
+
+    return false;
+  };
+};
+
 
 
 /***/ }),
@@ -14316,6 +13386,14 @@ function (_Polling) {
    * @event UPDATE
    * @type {string}
    */
+
+  /**
+   * {@link Cycle}.UPDATE event handler
+   *
+   * count property を `+1` 加算後設定 rate で割り算し余りが `0` の時にイベント Rate.UPDATE を発生させます
+   * @param {CycleEvents} events Polling event object
+   * @returns {boolean} Rate.UPDATE event が発生すると true を返します
+   */
   // ----------------------------------------
   // CONSTRUCTOR
   // ----------------------------------------
@@ -14333,6 +13411,8 @@ function (_Polling) {
 
     // 60fps で polling を行う
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Rate).call(this, 1000 / 60)); // @type {Events}
+
+    _initialiseProps.call(_assertThisInitialized(_assertThisInitialized(_this)));
 
     var events = new _event_Events__WEBPACK_IMPORTED_MODULE_3__["default"](Rate.UPDATE, _assertThisInitialized(_assertThisInitialized(_this)), _assertThisInitialized(_assertThisInitialized(_this))); // 設定可能な rate list
 
@@ -14414,29 +13494,6 @@ function (_Polling) {
       this.setRate(rate);
       return this.start();
     }
-    /**
-     * {@link Cycle}.UPDATE event handler
-     *
-     * count property を `+1` 加算後設定 rate で割り算し余りが `0` の時にイベント Rate.UPDATE を発生させます
-     * @param {CycleEvents} events Polling event object
-     * @returns {boolean} Rate.UPDATE event が発生すると true を返します
-     */
-
-  }, {
-    key: "onUpdate",
-    value: function onUpdate(events) {
-      // 余りが 0 の時にイベントを発火します
-      this.count += 1;
-      var reminder = this.count % this.rate;
-
-      if (reminder === 0) {
-        this.count = 0;
-        this.fire(this.updateEvents(0, 0, events));
-        return true;
-      }
-
-      return false;
-    }
   }]);
 
   return Rate;
@@ -14455,6 +13512,27 @@ Rate.RATE_3 = 20;
 Rate.RATE_2 = 30;
 Rate.RATE_1 = 60;
 Rate.UPDATE = 'rateUpdate';
+
+var _initialiseProps = function _initialiseProps() {
+  var _this2 = this;
+
+  this.onUpdate = function (events) {
+    // 余りが 0 の時にイベントを発火します
+    _this2.count += 1;
+    var reminder = _this2.count % _this2.rate;
+
+    if (reminder === 0) {
+      _this2.count = 0;
+
+      _this2.fire(_this2.updateEvents(0, 0, events));
+
+      return true;
+    }
+
+    return false;
+  };
+};
+
 
 
 /***/ }),
@@ -14815,9 +13893,9 @@ function () {
      * @returns {void}
      */
     value: function start() {
-      window.addEventListener('touchstart', Freeze.onScroll, false);
-      window.addEventListener('touchmove', Freeze.onScroll, false);
-      window.addEventListener('touchend', Freeze.onScroll, false);
+      // window.addEventListener('touchstart', Freeze.onScroll, false);
+      // window.addEventListener('touchmove', Freeze.onScroll, false);
+      // window.addEventListener('touchend', Freeze.onScroll, false);
       window.addEventListener('scroll', Freeze.onScroll, false);
       document.addEventListener('wheel', Freeze.onScroll, false);
       document.addEventListener('mousewheel', Freeze.onScroll, false);
@@ -14831,9 +13909,9 @@ function () {
   }, {
     key: "stop",
     value: function stop() {
-      window.removeEventListener('touchstart', Freeze.onScroll);
-      window.removeEventListener('touchmove', Freeze.onScroll);
-      window.removeEventListener('touchend', Freeze.onScroll);
+      // window.removeEventListener('touchstart', Freeze.onScroll);
+      // window.removeEventListener('touchmove', Freeze.onScroll);
+      // window.removeEventListener('touchend', Freeze.onScroll);
       window.removeEventListener('scroll', Freeze.onScroll);
       document.removeEventListener('wheel', Freeze.onScroll);
       document.removeEventListener('mousewheel', Freeze.onScroll);
@@ -14964,7 +14042,6 @@ function () {
       if (offset.top >= 0 && offset.top <= height && offset.bottom >= 0 && offset.bottom <= height) {
         hit.include = true;
       } // return
-      // return hit.top || hit.bottom || hit.contain || hit.include;
 
 
       hit.result = hit.top || hit.bottom || hit.contain || hit.include;
@@ -16026,10 +15103,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_array_iterator__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es6.object.keys */ "./node_modules/core-js/modules/es6.object.keys.js");
 /* harmony import */ var core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_keys__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es6.number.constructor */ "./node_modules/core-js/modules/es6.number.constructor.js");
-/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var core_js_modules_es6_number_is_integer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es6.number.is-integer */ "./node_modules/core-js/modules/es6.number.is-integer.js");
-/* harmony import */ var core_js_modules_es6_number_is_integer__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_is_integer__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es7.array.includes */ "./node_modules/core-js/modules/es7.array.includes.js");
+/* harmony import */ var core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es7_array_includes__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var core_js_modules_es6_string_includes__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es6.string.includes */ "./node_modules/core-js/modules/es6.string.includes.js");
+/* harmony import */ var core_js_modules_es6_string_includes__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_string_includes__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! core-js/modules/es6.number.constructor */ "./node_modules/core-js/modules/es6.number.constructor.js");
+/* harmony import */ var core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_constructor__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var core_js_modules_es6_number_is_integer__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! core-js/modules/es6.number.is-integer */ "./node_modules/core-js/modules/es6.number.is-integer.js");
+/* harmony import */ var core_js_modules_es6_number_is_integer__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_number_is_integer__WEBPACK_IMPORTED_MODULE_7__);
+
+
 
 
 
@@ -16090,7 +15173,7 @@ function () {
     }
     /**
      * 引数(target)が number かを調べます
-     * @param {*} target 調査対象
+     * @param {*|string} target 調査対象
      * @returns {boolean} 引数(target)が number かを調べ結果を返します、true: number
      */
 
@@ -16167,7 +15250,8 @@ function () {
   }, {
     key: "has",
     value: function has(target, key) {
-      return Object.keys(target).indexOf(key) !== -1;
+      // return Object.keys(target).indexOf(key) !== -1;
+      return Object.keys(target).includes(key);
     }
     /**
      * target が undefined かを調べます

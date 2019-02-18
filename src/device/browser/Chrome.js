@@ -77,7 +77,8 @@ const init = () => {
   if (browsers) {
     return;
   }
-  browsers = Object.assign({}, devices.browsers);
+  // browsers = Object.assign({}, devices.browsers);
+  browsers = {...{}};
   const crios = CriOS.is();
   const edge = Edge.is();
   let chrome = false;

@@ -63,7 +63,8 @@ const init = () => {
   if (props) {
     return;
   }
-  props = Object.assign({}, devices.props);
+  // props = Object.assign({}, devices.props);
+  props = {...devices.props};
   const { ua } = devices;
   const ipad = !!ua.match(/ipad/i);
   const ipod = !!ua.match(/ipod/i);

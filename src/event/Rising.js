@@ -41,6 +41,33 @@ export default class Rising extends EventDispatcher {
   static ALIEN = 'risingAlien';
 
   // ----------------------------------------
+  // CALLBACK
+  // ----------------------------------------
+  /**
+   * Scrolling.UPDATE event handler - {link Hit.test} 衝突判定を行います
+   * @param {ScrollEvents} scrollEvents scroll events object
+   * @return {boolean} 衝突時に true を返します
+   */
+  onUpdate = (scrollEvents) => {
+    if (!scrollEvents.changed) {
+      return false;
+    }
+    // element offset
+    const offset = this.elements.offset();
+    // hit result
+    const hit = Hit.test(scrollEvents.height, offset);
+    const { events } = this;
+    events.type = hit.result ? Rising.COLLISION : Rising.ALIEN;
+    // hit / original / offset を追加します
+    events.hit = hit;
+    events.original = scrollEvents;
+    events.offset = offset;
+    // 発火
+    this.dispatch(events);
+    return hit.result;
+  };
+
+  // ----------------------------------------
   // CONSTRUCTOR
   // ----------------------------------------
   /**
@@ -61,11 +88,11 @@ export default class Rising extends EventDispatcher {
      */
     this.scrolling = scrolling;
     // const boundScroll = this.scroll.bind(this);
-    /**
-     * bound onUpdate, Rate.UPDATE event handler
-     * @type {function}
-     */
-    this.onUpdate = this.onUpdate.bind(this);
+    // /**
+    //  * bound onUpdate, Rate.UPDATE event handler
+    //  * @type {function}
+    //  */
+    // this.onUpdate = this.onUpdate.bind(this);
     /**
      * Rising.[COLLISION|ALIEN] event instance
      * @type {RisingEvents}
@@ -73,25 +100,6 @@ export default class Rising extends EventDispatcher {
     this.events = new RisingEvents(Rising.COLLISION, this, this);
   }
 
-  // // ----------------------------------------
-  // // EVENT
-  // // ----------------------------------------
-  // /**
-  //  * 衝突イベント
-  //  * @event COLLISION
-  //  * @return {string} risingCollision を返します
-  //  */
-  // static get COLLISION() {
-  //   return 'risingCollision';
-  // }
-  // /**
-  //  * 衝突「していない」イベント
-  //  * @event ALIEN
-  //  * @return {string} risingAlien を返します
-  //  */
-  // static get ALIEN() {
-  //   return 'risingAlien';
-  // }
   // ----------------------------------------
   // METHOD
   // ----------------------------------------
@@ -112,29 +120,5 @@ export default class Rising extends EventDispatcher {
   stop() {
     this.scrolling.off(Scrolling.UPDATE, this.onUpdate);
     return this;
-  }
-
-  /**
-   * Scrolling.UPDATE event handler - {link Hit.test} 衝突判定を行います
-   * @param {ScrollEvents} scrollEvents scroll events object
-   * @return {boolean} 衝突時に true を返します
-   */
-  onUpdate(scrollEvents) {
-    if (!scrollEvents.changed) {
-      return false;
-    }
-    // element offset
-    const offset = this.elements.offset();
-    // hit result
-    const hit = Hit.test(scrollEvents.height, offset);
-    const { events } = this;
-    events.type = hit.result ? Rising.COLLISION : Rising.ALIEN;
-    // hit / original / offset を追加します
-    events.hit = hit;
-    events.original = scrollEvents;
-    events.offset = offset;
-    // 発火
-    this.dispatch(events);
-    return hit.result;
   }
 }

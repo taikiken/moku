@@ -20,10 +20,10 @@ import CycleEvents from './events/CycleEvents';
 
 /**
  * new を許可しないための Symbol
- * @type {Symbol}
+ * @type {symbol}
  * @private
  */
-const singletonSymbol = Symbol('singleton instance');
+const singletonSymbol = Symbol('Cycle singleton instance');
 /**
  * singleton instance, nullable
  * @type {?Cycle}
@@ -32,8 +32,8 @@ const singletonSymbol = Symbol('singleton instance');
 let instance = null;
 
 /**
- * <p>requestAnimationFrame を使用しループイベントを発生させます</p>
- * <p>singleton なので new ではなく factory を使用し instance を作成します</p>
+ * requestAnimationFrame を使用しループイベントを発生させます
+ * singleton です。 new ではなく factory を使用し instance を作成します
  *
  * ```
  * const loop = Cycle.factory();
@@ -44,9 +44,9 @@ let instance = null;
  * ```
  *
  * Cycle は `requestAnimationFrame` を auto start させます
- * <p>【注意】requestAnimationFrame は tab が active(focus) な時のみ発生します<br>
- * `blur` 時にも動作させたい時は使用しないでください。<br>
- *   `setTimeout` の利用を検討してください</p>
+ *
+ * - 【注意】requestAnimationFrame は tab が active(focus) な時のみ発生します
+ * - `blur` 時にも動作させたい時は使用しないでください。`setTimeout` の利用を検討してください
  */
 export default class Cycle extends EventDispatcher {
   // ----------------------------------------
@@ -73,12 +73,36 @@ export default class Cycle extends EventDispatcher {
     return instance;
   }
 
+
+  // ----------------------------------------
+  // CALLBACK
+  // ----------------------------------------
+  /**
+   * loop(requestAnimationFrame)コールバック関数
+   * - Cycle.UPDATE event を発火します
+   * @param {number} [time=0] animation time
+   * @returns {number} requestAnimationFrame ID
+   */
+  onUpdate = (time = 0) => {
+    // @type {number} - requestAnimationFrame id
+    const id = requestAnimationFrame(this.onUpdate);
+    this.id = id;
+
+    // @type {Events} - events
+    const { events } = this;
+    events.id = id;
+    events.time = time;
+    // event fire
+    this.dispatch(events);
+    return id;
+  };
+
   // ----------------------------------------
   //  CONSTRUCTOR
   // ----------------------------------------
   /**
    * singleton です
-   * @param {Symbol} checkSymbol singleton を保証するための private instance
+   * @param {symbol} checkSymbol singleton を保証するための private instance
    * @returns {Cycle} singleton instance を返します
    */
   constructor(checkSymbol) {
@@ -98,11 +122,11 @@ export default class Cycle extends EventDispatcher {
      * @type {Events}
      */
     this.events = new CycleEvents(Cycle.UPDATE, this, this);
-    /**
-     * bound update requestAnimationFrame callback
-     * @type {function}
-     */
-    this.onUpdate = this.onUpdate.bind(this);
+    // /**
+    //  * bound update requestAnimationFrame callback
+    //  * @type {function}
+    //  */
+    // this.onUpdate = this.onUpdate.bind(this);
     /**
      * requestAnimationFrame ID
      * @type {number}
@@ -136,28 +160,5 @@ export default class Cycle extends EventDispatcher {
    */
   stop(id = this.id) {
     cancelAnimationFrame(id);
-  }
-
-  // ----------------------------------------
-  // PRIVATE METHOD
-  // ----------------------------------------
-  /**
-   * loop(requestAnimationFrame)コールバック関数
-   * - Cycle.UPDATE event を発火します
-   * @param {number} time animation time
-   * @returns {number} requestAnimationFrame ID
-   */
-  onUpdate(time) {
-    // @type {number} - requestAnimationFrame id
-    const id = requestAnimationFrame(this.onUpdate);
-    this.id = id;
-
-    // @type {Events} - events
-    const { events } = this;
-    events.id = id;
-    events.time = time;
-    // event fire
-    this.dispatch(events);
-    return id;
   }
 }

@@ -24,82 +24,8 @@ import ResizingEvents from './events/ResizingEvents';
  */
 export default class NativeResizing extends EventDispatcher {
   // ----------------------------------------
-  // CONSTRUCTOR
+  // CALLBACK
   // ----------------------------------------
-  /**
-   * events instance を準備します
-   */
-  constructor() {
-    super();
-    // ------
-    /**
-     * Resizing event を準備します
-     * @type {ScrollEvents}
-     */
-    this.events = new ResizingEvents(Resizing.UPDATE, this, this);
-    // console.log('Resizing events', this.events);
-    /**
-     * document.body size - clientWidth / clientHeight
-     * @type {{width: number, height: number}}
-     */
-    this.body = {
-      width: -1,
-      height: -1,
-    };
-    /**
-     * window innerWidth / innerHeight
-     * @type {{width: number, height: number}}
-     */
-    this.window = {
-      width: -1,
-      height: -1,
-    };
-    /**
-     * 前回スクロールトップ値
-     * @type {number}
-     */
-    this.previous = -1;
-    /**
-     * 500ms timeout timer id
-     * @type {number}
-     */
-    this.timer = 0;
-    /**
-     * bind onUpdate - scroll / resize / timer handler
-     * @type {function}
-     */
-    this.onUpdate = this.onUpdate.bind(this);
-  }
-
-  // ----------------------------------------
-  // METHOD
-  // ----------------------------------------
-  /**
-   * 監視を開始します
-   * - 常時監視します - document.body.onresize が作動しないため
-   * @returns {*} method chain 可能なように instance を返します
-   */
-  start() {
-    this.stop();
-    window.addEventListener('scroll', this.onUpdate, false);
-    window.addEventListener('resize', this.onUpdate, false);
-    this.timer = setTimeout(() => {
-      this.onUpdate();
-    }, 500);
-    return this;
-  }
-
-  /**
-   * 監視を停止します
-   * @returns {*} method chain 可能なように instance を返します
-   */
-  stop() {
-    clearTimeout(this.timer);
-    window.removeEventListener('scroll', this.onUpdate);
-    window.removeEventListener('resize', this.onUpdate);
-    return this;
-  }
-
   /**
    * 下記のプロパティをイベント・インスタンスに追加します
    * - original {Events} - Rate Events instance
@@ -113,7 +39,7 @@ export default class NativeResizing extends EventDispatcher {
    * - changed {boolean} - scroll top が前回と変わっていたら true
    * @param {?Event} [event] scroll / resize Event
    */
-  onUpdate(event) {
+  onUpdate = (event) => {
     // @type {number} - scroll top
     const y = Scroll.y();
     // @type {number} - previous scroll top
@@ -166,6 +92,82 @@ export default class NativeResizing extends EventDispatcher {
     this.body.height = bodyHeight;
     // save scroll top -> previous
     this.previous = y;
+  };
+  // ----------------------------------------
+  // CONSTRUCTOR
+  // ----------------------------------------
+  /**
+   * events instance を準備します
+   */
+  constructor() {
+    super();
+    // ------
+    /**
+     * Resizing event を準備します
+     * @type {ScrollEvents}
+     */
+    this.events = new ResizingEvents(Resizing.UPDATE, this, this);
+    // console.log('Resizing events', this.events);
+    /**
+     * document.body size - clientWidth / clientHeight
+     * @type {{width: number, height: number}}
+     */
+    this.body = {
+      width: -1,
+      height: -1,
+    };
+    /**
+     * window innerWidth / innerHeight
+     * @type {{width: number, height: number}}
+     */
+    this.window = {
+      width: -1,
+      height: -1,
+    };
+    /**
+     * 前回スクロールトップ値
+     * @type {number}
+     */
+    this.previous = -1;
+    /**
+     * 500ms timeout timer id
+     * @type {number}
+     */
+    this.timer = 0;
+    // /**
+    //  * bind onUpdate - scroll / resize / timer handler
+    //  * @type {function}
+    //  */
+    // this.onUpdate = this.onUpdate.bind(this);
+  }
+
+  // ----------------------------------------
+  // METHOD
+  // ----------------------------------------
+  /**
+   * 監視を開始します
+   * - 常時監視します - document.body.onresize が作動しないため
+   * @returns {*} method chain 可能なように instance を返します
+   */
+  start() {
+    this.stop();
+    window.addEventListener('scroll', this.onUpdate, false);
+    window.addEventListener('resize', this.onUpdate, false);
+    this.timer = setTimeout(() => {
+      this.onUpdate();
+    }, 500);
+    return this;
+  }
+
+  /**
+   * 監視を停止します
+   * @returns {*} method chain 可能なように instance を返します
+   */
+  stop() {
+    clearTimeout(this.timer);
+    window.removeEventListener('scroll', this.onUpdate);
+    window.removeEventListener('resize', this.onUpdate);
+    return this;
   }
 
   /**

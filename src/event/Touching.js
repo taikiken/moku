@@ -138,106 +138,14 @@ export default class Touching extends EventDispatcher {
   }
 
   // ---------------------------------------------------
-  //  CONSTRUCTOR
-  // ---------------------------------------------------
-  /**
-   * 処理対象 element などを保存します
-   * @param {Element} element 処理対象 Element
-   * @param {boolean} [canceling=false] touchmove 中に `preventDefault` を行うフラッグ
-   * false の時は {@link Can.passive} を調べ可能なら `{ passive: true }` します - since 0.3.2
-   * @param {number} [threshold=10] y 方向閾値
-   */
-  constructor(element, canceling = false, threshold = 10) {
-    super();
-    /**
-     * 処理対象 Element
-     * @type {Element}
-     */
-    this.element = element;
-    /**
-     * touchmove 中に `preventDefault` を行うかのフラッグ
-     * @type {boolean}
-     * @default false
-     */
-    this.canceling = canceling;
-    /**
-     * y 方向閾値, default: 10px
-     * @type {number}
-     * @default 10
-     */
-    this.threshold = threshold;
-    /**
-     * bound onStart
-     * @type {function}
-     */
-    this.onStart = this.onStart.bind(this);
-    /**
-     * bound onMove
-     * @type {function}
-     */
-    this.onMove = this.onMove.bind(this);
-    /**
-     * bound onEnd
-     * @type {function}
-     */
-    this.onEnd = this.onEnd.bind(this);
-    /**
-     * bound onCancel
-     * @type {function}
-     */
-    this.onCancel = this.onCancel.bind(this);
-    /**
-     * bound onBlur
-     * @type {function}
-     */
-    this.onBlur = this.onBlur.bind(this);
-    /**
-     * 位置管理を行う Vectors instance を含む object
-     * @type {{start: Vectors, end: Vectors, moving: Array.<Vectors>}}
-     */
-    this.vectors = {
-      start: new Vectors(),
-      end: new Vectors(),
-      moving: [].slice(0),
-    };
-    /**
-     * TouchEvent listener 3rd argument, option | useCapture
-     * @type {boolean}
-     * @since 0.3.2
-     */
-    this.eventOption = canceling ? false : Touching.event3rd;
-    /**
-     * [native code] - document.body
-     * @type {HTMLElement}
-     */
-    this.body = document.body;
-    /**
-     * timer ID
-     * - kitkat - touchend 強制実行
-     * @type {{kitkat: number}}
-     * @since v0.4.4
-     */
-    this.timer = {
-      kitkat: 0,
-    };
-    /**
-     * Android 4.3 ~ 4.4 && standard browser (webview) flag
-     * @type {boolean}
-     */
-    this.kitkat = Android.kitKat();
-  }
-
-  // ---------------------------------------------------
-  //  METHOD
-  // ---------------------------------------------------
-  // event handlers
+  //  CALLBACK
   // ---------------------------------------------------
   /**
    * touchstart event handler
    * @param {Event|TouchEvent} event touchstart event
    * @returns {void}
    */
-  onStart(event) {
+  onStart = (event) => {
     // event unbind <- 二重 bind にならないように
     this.dispose();
     // vectors を初期化
@@ -262,7 +170,7 @@ export default class Touching extends EventDispatcher {
       event,
       vectors.start,
     ));
-  }
+  };
 
   /**
    * touchmove event handler
@@ -270,7 +178,7 @@ export default class Touching extends EventDispatcher {
    * @param {Event} event touchmove event
    * @returns {void}
    */
-  onMove(event) {
+  onMove = (event) => {
     // console.log('Touching.onMove', event);
     const { vectors } = this;
     const movingArray = vectors.moving;
@@ -311,28 +219,14 @@ export default class Touching extends EventDispatcher {
     if (this.kitkat) {
       this.kitkatEnd(event);
     }
-  }
-
-  /**
-   * Android 4.3 ~ 4.4 && standard browser - browser bug のため `touchend` が発火しません
-   * - `touchmove` も 1 回だけ発火します - touchmove の後に本 method `kitkatEnd` を実行します
-   * - `onEnd` を強制実行し `touchend` させます
-   * @param {Event} event touch event
-   * @since v0.4.4
-   */
-  kitkatEnd(event) {
-    clearTimeout(this.timer.kitkat);
-    this.timer.kitkat = setTimeout(() => {
-      this.onEnd(event);
-    }, 32);
-  }
+  };
 
   /**
    * touchend event handler
    * - {@link Touching}.[END|TOUCH] を発火します
    * @param {Event} event touchend event
    */
-  onEnd(event) {
+  onEnd = (event) => {
     // console.log('Touching.onEnd', event);
     const { vectors } = this;
 
@@ -374,7 +268,7 @@ export default class Touching extends EventDispatcher {
     ));
     // ---
     this.dispose();
-  }
+  };
 
   /**
    * touchcancel event handler<br>
@@ -382,7 +276,7 @@ export default class Touching extends EventDispatcher {
    * @param {Event} event touchend event
    * @returns {boolean} 正常終了時に true を返します
    */
-  onCancel(event) {
+  onCancel = (event) => {
     return this.abort(event);
   }
 
@@ -392,10 +286,116 @@ export default class Touching extends EventDispatcher {
    * @param {Event} event window blur event
    * @returns {boolean} 正常終了時に true を返します
    */
-  onBlur(event) {
+  onBlur = (event) => {
     return this.abort(event);
+  };
+
+  // ---------------------------------------------------
+  //  CONSTRUCTOR
+  // ---------------------------------------------------
+  /**
+   * 処理対象 element などを保存します
+   * @param {Element} element 処理対象 Element
+   * @param {boolean} [canceling=false] touchmove 中に `preventDefault` を行うフラッグ
+   * false の時は {@link Can.passive} を調べ可能なら `{ passive: true }` します - since 0.3.2
+   * @param {number} [threshold=10] y 方向閾値
+   */
+  constructor(element, canceling = false, threshold = 10) {
+    super();
+    /**
+     * 処理対象 Element
+     * @type {Element}
+     */
+    this.element = element;
+    /**
+     * touchmove 中に `preventDefault` を行うかのフラッグ
+     * @type {boolean}
+     * @default false
+     */
+    this.canceling = canceling;
+    /**
+     * y 方向閾値, default: 10px
+     * @type {number}
+     * @default 10
+     */
+    this.threshold = threshold;
+    // /**
+    //  * bound onStart
+    //  * @type {function}
+    //  */
+    // this.onStart = this.onStart.bind(this);
+    // /**
+    //  * bound onMove
+    //  * @type {function}
+    //  */
+    // this.onMove = this.onMove.bind(this);
+    // /**
+    //  * bound onEnd
+    //  * @type {function}
+    //  */
+    // this.onEnd = this.onEnd.bind(this);
+    // /**
+    //  * bound onCancel
+    //  * @type {function}
+    //  */
+    // this.onCancel = this.onCancel.bind(this);
+    // /**
+    //  * bound onBlur
+    //  * @type {function}
+    //  */
+    // this.onBlur = this.onBlur.bind(this);
+    /**
+     * 位置管理を行う Vectors instance を含む object
+     * @type {{start: Vectors, end: Vectors, moving: Array.<Vectors>}}
+     */
+    this.vectors = {
+      start: new Vectors(),
+      end: new Vectors(),
+      moving: [].slice(0),
+    };
+    /**
+     * TouchEvent listener 3rd argument, option | useCapture
+     * @type {boolean}
+     * @since 0.3.2
+     */
+    this.eventOption = canceling ? false : Touching.event3rd;
+    /**
+     * [native code] - document.body
+     * @type {HTMLElement}
+     */
+    this.body = document.body;
+    /**
+     * timer ID
+     * - kitkat - touchend 強制実行
+     * @type {{kitkat: number}}
+     * @since v0.4.4
+     */
+    this.timer = {
+      kitkat: 0,
+    };
+    /**
+     * Android 4.3 ~ 4.4 && standard browser (webview) flag
+     * @type {boolean}
+     */
+    this.kitkat = Android.kitKat();
   }
 
+  // ---------------------------------------------------
+  //  METHOD
+  // ---------------------------------------------------
+  /**
+   * Android 4.3 ~ 4.4 && standard browser - browser bug のため `touchend` が発火しません
+   * - `touchmove` も 1 回だけ発火します - touchmove の後に本 method `kitkatEnd` を実行します
+   * - `onEnd` を強制実行し `touchend` させます
+   * @param {Event} event touch event
+   * @since v0.4.4
+   */
+  kitkatEnd(event) {
+    clearTimeout(this.timer.kitkat);
+    this.timer.kitkat = setTimeout(() => {
+      this.onEnd(event);
+    }, 32);
+  }
   // 処理
   // ---------------------------------------------------
   /**

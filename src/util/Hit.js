@@ -59,7 +59,6 @@ export default class Hit {
       hit.include = true;
     }
     // return
-    // return hit.top || hit.bottom || hit.contain || hit.include;
     hit.result = hit.top || hit.bottom || hit.contain || hit.include;
     return hit;
   }
