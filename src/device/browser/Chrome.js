@@ -14,6 +14,8 @@
 import devices from '../devices';
 import CriOS from './CriOS';
 import Edge from './Edge';
+import EdgiOS from './EdgiOS';
+import EdgA from './EdgA';
 
 /**
  * {@link devices}.browsers
@@ -82,7 +84,11 @@ const init = () => {
   const crios = CriOS.is();
   const edge = Edge.is();
   let chrome = false;
-  if (!edge) {
+  if (
+    !edge
+    && !EdgiOS.is()
+    && !EdgA.is()
+  ) {
     if (crios) {
       // iOS chrome
       chrome = true;
