@@ -70,7 +70,8 @@ const init = () => {
   if (browsers) {
     return;
   }
-  browsers = Object.assign({}, devices.browsers);
+  // browsers = Object.assign({}, devices.browsers);
+  browsers = {...{}};
   const { ua } = devices;
   const firefox = !!ua.match(/firefox/i);
   browsers.firefox = firefox;

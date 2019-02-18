@@ -70,7 +70,8 @@ const init = () => {
   if (browsers) {
     return;
   }
-  browsers = Object.assign({}, devices.browsers);
+  // browsers = Object.assign({}, devices.browsers);
+  browsers = {...{}};
   const { ua } = devices;
   const crios = !!ua.match(/crios/i);
   browsers.crios = crios;
