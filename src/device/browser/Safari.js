@@ -16,6 +16,8 @@ import Edge from './Edge';
 import Chrome from './Chrome';
 import FxiOS from './FxiOS';
 import Android from '../os/Android';
+import EdgiOS from './EdgiOS';
+import EdgA from './EdgA';
 
 /**
  * {@link devices}.browsers
@@ -42,12 +44,12 @@ const version = () => {
   const intArr = numbers.map(number => (parseInt(number, 10)));
   const versions = intArr.filter(int => !Number.isNaN(int));
   browsers.build = versions.join('.');
-  const {
+  const [
     strMajor,
     strMinor,
     strBuild,
     strOption,
-  } = versions;
+  ] = versions;
   const major = parseInt(strMajor, 10);
   let minor = 0;
   if (versions.length >= 2) {
@@ -83,6 +85,8 @@ const init = () => {
     || Edge.is()
     || Chrome.is()
     || FxiOS.is()
+    || EdgiOS.is()
+    || EdgA.is()
     || Android.standard()
   ) {
     safari = false;

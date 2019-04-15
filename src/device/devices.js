@@ -16,12 +16,14 @@
  * @type {string}
  */
 const ua = navigator.userAgent;
+
 /**
  * [native code] appVersion
  * `device/index.js`
  * @type {string}
  */
 const app = navigator.appVersion;
+
 /**
  * Safari - userAgent に `Safari` が含まれる
  * - 【注意】Safari browser を保証しない
@@ -87,6 +89,8 @@ const props = {
  *   edge: boolean,
  *   crios: boolean,
  *   fxios: boolean,
+ *   edgios: boolean,
+ *   edga: boolean,
  *   standard: boolean,
  *   build: string,
  *   major: number,
@@ -106,6 +110,8 @@ const browsers = {
   ie10: false,
   ie11: false,
   edge: false,
+  edgios: false,
+  edga: false,
   crios: false,
   fxios: false,
   standard: false,
@@ -123,24 +129,25 @@ const browsers = {
  * const property = Object.assign({}, device);
  * ```
  * @type {{
- *  ua: string,
- *  app: string,
- *  props: {ios: boolean, ipad: boolean, ipod: boolean, iphone: boolean, windows: boolean, android: boolean, standard: boolean, phone: boolean, tablet: boolean, hd: boolean, webView: boolean, standalone: boolean, version: number, major: number, build: number, numbers: Array.<number>},
- *  safari: boolean
- * }}
- */
-
-/**
- * devices object
- * `device/index.js`
- * ```
- * @import device from './device';
- * const property = Object.assign({}, device);
- * ```
- * @type {{
  *    ua: string,
  *    app: string,
- *    props: {ios: boolean, ipad: boolean, ipod: boolean, iphone: boolean, windows: boolean, android: boolean, standard: boolean, phone: boolean, tablet: boolean, hd: boolean, webView: boolean, standalone: boolean, version: number, major: number, build: string, numbers: (number|number|number)[]},
+ *    props: {
+ *      ios: boolean,
+ *      ipad: boolean,
+ *      ipod: boolean,
+ *      iphone: boolean,
+ *      windows: boolean,
+ *      android: boolean,
+ *      standard: boolean,
+ *      phone: boolean,
+ *      tablet: boolean,
+ *      hd: boolean,
+ *      webView: boolean,
+ *      standalone: boolean,
+ *      version: number,
+ *      major: number,
+ *      build: string,
+ *      numbers: (number|number|number)[]},
  *    safari: boolean,
  *    browsers: {
  *      safari: boolean,
@@ -154,6 +161,7 @@ const browsers = {
  *      ie10: boolean,
  *      ie11: boolean,
  *      edge: boolean,
+ *      edgios: boolean,
  *      crios: boolean,
  *      fxios: boolean,
  *      standard: boolean,

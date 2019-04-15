@@ -28,7 +28,7 @@ let browsers = null;
  */
 const version = () => {
   const { app } = devices;
-  const numbers = app.match(/edge\/(\d+)\.(\d+)\.?(\d+)?/i);
+  const numbers = app.match(/edgios\/(\d+)\.(\d+)\.?(\d+)?/i);
   if (!Array.isArray(numbers)) {
     return;
   }
@@ -78,8 +78,8 @@ const init = () => {
   // browsers = Object.assign({}, devices.browsers);
   browsers = {...{}};
   const { ua } = devices;
-  const edge = !!ua.match(/edge/i);
-  browsers.edge = edge;
+  const edge = !!ua.match(/edgios/i);
+  browsers.edgios = edge;
   if (edge) {
     version();
   }
@@ -89,7 +89,7 @@ const init = () => {
  * Edge detector
  * @since 0.4.2
  */
-export default class Edge {
+export default class EdgiOS {
   /**
    * 書き換え済み `browsers` を取得します
    * @returns {Object} 書き換え済み `browsers` を返します
@@ -105,7 +105,7 @@ export default class Edge {
    */
   static is() {
     init();
-    return browsers.edge;
+    return browsers.edgios;
   }
 
   /**
