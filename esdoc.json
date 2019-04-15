@@ -1,7 +1,7 @@
 {
   "source": "./src",
   "includes": [".*\\.js", ".*\\.jsx"],
-  "destination": "../docs",
+  "destination": "./docs",
   "plugins": [
     {
       "name": "esdoc-standard-plugin",
@@ -13,7 +13,12 @@
         }
       }
     },
-    {"name": "esdoc-jsx-plugin", "option": {"enable": true}},
+    {
+      "name": "esdoc-jsx-plugin",
+      "option": {
+        "enable": true
+      }
+    },
     {
       "name": "esdoc-ecmascript-proposal-plugin",
       "option": {
@@ -28,6 +33,17 @@
         "dynamicImport": true
       }
     },
-    {"name": "esdoc-flow-type-plugin", "option": {"enable": true}}
+    {
+      "name": "esdoc-flow-type-plugin",
+      "option": {
+        "enable": true
+      }
+    },
+    {
+      "name": "esdoc-unexported-identifier-plugin",
+      "option": {
+        "enable": true
+      }
+    }
   ]
 }
