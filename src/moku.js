@@ -77,6 +77,8 @@ import iOS from './device/os/iOS';
 import Chrome from './device/browser/Chrome';
 import CriOS from './device/browser/CriOS';
 import Edge from './device/browser/Edge';
+import EdgiOS from './device/browser/EdgiOS';
+import EdgA from './device/browser/EdgA';
 import Firefox from './device/browser/Firefox';
 import FxiOS from './device/browser/FxiOS';
 import IE from './device/browser/IE';
@@ -193,6 +195,8 @@ MOKU.device = {
     Chrome,
     CriOS,
     Edge,
+    EdgiOS,
+    EdgA,
     Firefox,
     FxiOS,
     IE,
