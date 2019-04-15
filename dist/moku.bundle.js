@@ -1124,6 +1124,52 @@ var meta = module.exports = {
 
 /***/ }),
 
+/***/ "./node_modules/core-js/modules/_object-assign.js":
+/*!********************************************************!*\
+  !*** ./node_modules/core-js/modules/_object-assign.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+// 19.1.2.1 Object.assign(target, source, ...)
+var getKeys = __webpack_require__(/*! ./_object-keys */ "./node_modules/core-js/modules/_object-keys.js");
+var gOPS = __webpack_require__(/*! ./_object-gops */ "./node_modules/core-js/modules/_object-gops.js");
+var pIE = __webpack_require__(/*! ./_object-pie */ "./node_modules/core-js/modules/_object-pie.js");
+var toObject = __webpack_require__(/*! ./_to-object */ "./node_modules/core-js/modules/_to-object.js");
+var IObject = __webpack_require__(/*! ./_iobject */ "./node_modules/core-js/modules/_iobject.js");
+var $assign = Object.assign;
+
+// should work with symbols and should have deterministic property order (V8 bug)
+module.exports = !$assign || __webpack_require__(/*! ./_fails */ "./node_modules/core-js/modules/_fails.js")(function () {
+  var A = {};
+  var B = {};
+  // eslint-disable-next-line no-undef
+  var S = Symbol();
+  var K = 'abcdefghijklmnopqrst';
+  A[S] = 7;
+  K.split('').forEach(function (k) { B[k] = k; });
+  return $assign({}, A)[S] != 7 || Object.keys($assign({}, B)).join('') != K;
+}) ? function assign(target, source) { // eslint-disable-line no-unused-vars
+  var T = toObject(target);
+  var aLen = arguments.length;
+  var index = 1;
+  var getSymbols = gOPS.f;
+  var isEnum = pIE.f;
+  while (aLen > index) {
+    var S = IObject(arguments[index++]);
+    var keys = getSymbols ? getKeys(S).concat(getSymbols(S)) : getKeys(S);
+    var length = keys.length;
+    var j = 0;
+    var key;
+    while (length > j) if (isEnum.call(S, key = keys[j++])) T[key] = S[key];
+  } return T;
+} : $assign;
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/modules/_object-create.js":
 /*!********************************************************!*\
   !*** ./node_modules/core-js/modules/_object-create.js ***!
@@ -2261,6 +2307,21 @@ $export($export.S, 'Number', {
 
 /***/ }),
 
+/***/ "./node_modules/core-js/modules/es6.object.assign.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/core-js/modules/es6.object.assign.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// 19.1.3.1 Object.assign(target, source)
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+
+$export($export.S + $export.F, 'Object', { assign: __webpack_require__(/*! ./_object-assign */ "./node_modules/core-js/modules/_object-assign.js") });
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/modules/es6.object.keys.js":
 /*!*********************************************************!*\
   !*** ./node_modules/core-js/modules/es6.object.keys.js ***!
@@ -3194,6 +3255,895 @@ for (var collections = getKeys(DOMIterables), i = 0; i < collections.length; i++
     if (explicit) for (key in $iterators) if (!proto[key]) redefine(proto, key, $iterators[key], true);
   }
 }
+
+
+/***/ }),
+
+/***/ "./node_modules/object-assign/index.js":
+/*!*********************************************!*\
+  !*** ./node_modules/object-assign/index.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/*
+object-assign
+(c) Sindre Sorhus
+@license MIT
+*/
+
+
+/* eslint-disable no-unused-vars */
+var getOwnPropertySymbols = Object.getOwnPropertySymbols;
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+var propIsEnumerable = Object.prototype.propertyIsEnumerable;
+
+function toObject(val) {
+	if (val === null || val === undefined) {
+		throw new TypeError('Object.assign cannot be called with null or undefined');
+	}
+
+	return Object(val);
+}
+
+function shouldUseNative() {
+	try {
+		if (!Object.assign) {
+			return false;
+		}
+
+		// Detect buggy property enumeration order in older V8 versions.
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=4118
+		var test1 = new String('abc');  // eslint-disable-line no-new-wrappers
+		test1[5] = 'de';
+		if (Object.getOwnPropertyNames(test1)[0] === '5') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test2 = {};
+		for (var i = 0; i < 10; i++) {
+			test2['_' + String.fromCharCode(i)] = i;
+		}
+		var order2 = Object.getOwnPropertyNames(test2).map(function (n) {
+			return test2[n];
+		});
+		if (order2.join('') !== '0123456789') {
+			return false;
+		}
+
+		// https://bugs.chromium.org/p/v8/issues/detail?id=3056
+		var test3 = {};
+		'abcdefghijklmnopqrst'.split('').forEach(function (letter) {
+			test3[letter] = letter;
+		});
+		if (Object.keys(Object.assign({}, test3)).join('') !==
+				'abcdefghijklmnopqrst') {
+			return false;
+		}
+
+		return true;
+	} catch (err) {
+		// We don't expect any of the above to throw, but better to be safe.
+		return false;
+	}
+}
+
+module.exports = shouldUseNative() ? Object.assign : function (target, source) {
+	var from;
+	var to = toObject(target);
+	var symbols;
+
+	for (var s = 1; s < arguments.length; s++) {
+		from = Object(arguments[s]);
+
+		for (var key in from) {
+			if (hasOwnProperty.call(from, key)) {
+				to[key] = from[key];
+			}
+		}
+
+		if (getOwnPropertySymbols) {
+			symbols = getOwnPropertySymbols(from);
+			for (var i = 0; i < symbols.length; i++) {
+				if (propIsEnumerable.call(from, symbols[i])) {
+					to[symbols[i]] = from[symbols[i]];
+				}
+			}
+		}
+	}
+
+	return to;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/process/browser.js":
+/*!*****************************************!*\
+  !*** ./node_modules/process/browser.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+
+/***/ }),
+
+/***/ "./node_modules/promise-polyfill/src/finally.js":
+/*!******************************************************!*\
+  !*** ./node_modules/promise-polyfill/src/finally.js ***!
+  \******************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/**
+ * @this {Promise}
+ */
+function finallyConstructor(callback) {
+  var constructor = this.constructor;
+  return this.then(
+    function(value) {
+      return constructor.resolve(callback()).then(function() {
+        return value;
+      });
+    },
+    function(reason) {
+      return constructor.resolve(callback()).then(function() {
+        return constructor.reject(reason);
+      });
+    }
+  );
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (finallyConstructor);
+
+
+/***/ }),
+
+/***/ "./node_modules/promise-polyfill/src/index.js":
+/*!****************************************************!*\
+  !*** ./node_modules/promise-polyfill/src/index.js ***!
+  \****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* WEBPACK VAR INJECTION */(function(setImmediate) {/* harmony import */ var _finally__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./finally */ "./node_modules/promise-polyfill/src/finally.js");
+
+
+// Store setTimeout reference so promise-polyfill will be unaffected by
+// other code modifying setTimeout (like sinon.useFakeTimers())
+var setTimeoutFunc = setTimeout;
+
+function noop() {}
+
+// Polyfill for Function.prototype.bind
+function bind(fn, thisArg) {
+  return function() {
+    fn.apply(thisArg, arguments);
+  };
+}
+
+/**
+ * @constructor
+ * @param {Function} fn
+ */
+function Promise(fn) {
+  if (!(this instanceof Promise))
+    throw new TypeError('Promises must be constructed via new');
+  if (typeof fn !== 'function') throw new TypeError('not a function');
+  /** @type {!number} */
+  this._state = 0;
+  /** @type {!boolean} */
+  this._handled = false;
+  /** @type {Promise|undefined} */
+  this._value = undefined;
+  /** @type {!Array<!Function>} */
+  this._deferreds = [];
+
+  doResolve(fn, this);
+}
+
+function handle(self, deferred) {
+  while (self._state === 3) {
+    self = self._value;
+  }
+  if (self._state === 0) {
+    self._deferreds.push(deferred);
+    return;
+  }
+  self._handled = true;
+  Promise._immediateFn(function() {
+    var cb = self._state === 1 ? deferred.onFulfilled : deferred.onRejected;
+    if (cb === null) {
+      (self._state === 1 ? resolve : reject)(deferred.promise, self._value);
+      return;
+    }
+    var ret;
+    try {
+      ret = cb(self._value);
+    } catch (e) {
+      reject(deferred.promise, e);
+      return;
+    }
+    resolve(deferred.promise, ret);
+  });
+}
+
+function resolve(self, newValue) {
+  try {
+    // Promise Resolution Procedure: https://github.com/promises-aplus/promises-spec#the-promise-resolution-procedure
+    if (newValue === self)
+      throw new TypeError('A promise cannot be resolved with itself.');
+    if (
+      newValue &&
+      (typeof newValue === 'object' || typeof newValue === 'function')
+    ) {
+      var then = newValue.then;
+      if (newValue instanceof Promise) {
+        self._state = 3;
+        self._value = newValue;
+        finale(self);
+        return;
+      } else if (typeof then === 'function') {
+        doResolve(bind(then, newValue), self);
+        return;
+      }
+    }
+    self._state = 1;
+    self._value = newValue;
+    finale(self);
+  } catch (e) {
+    reject(self, e);
+  }
+}
+
+function reject(self, newValue) {
+  self._state = 2;
+  self._value = newValue;
+  finale(self);
+}
+
+function finale(self) {
+  if (self._state === 2 && self._deferreds.length === 0) {
+    Promise._immediateFn(function() {
+      if (!self._handled) {
+        Promise._unhandledRejectionFn(self._value);
+      }
+    });
+  }
+
+  for (var i = 0, len = self._deferreds.length; i < len; i++) {
+    handle(self, self._deferreds[i]);
+  }
+  self._deferreds = null;
+}
+
+/**
+ * @constructor
+ */
+function Handler(onFulfilled, onRejected, promise) {
+  this.onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : null;
+  this.onRejected = typeof onRejected === 'function' ? onRejected : null;
+  this.promise = promise;
+}
+
+/**
+ * Take a potentially misbehaving resolver function and make sure
+ * onFulfilled and onRejected are only called once.
+ *
+ * Makes no guarantees about asynchrony.
+ */
+function doResolve(fn, self) {
+  var done = false;
+  try {
+    fn(
+      function(value) {
+        if (done) return;
+        done = true;
+        resolve(self, value);
+      },
+      function(reason) {
+        if (done) return;
+        done = true;
+        reject(self, reason);
+      }
+    );
+  } catch (ex) {
+    if (done) return;
+    done = true;
+    reject(self, ex);
+  }
+}
+
+Promise.prototype['catch'] = function(onRejected) {
+  return this.then(null, onRejected);
+};
+
+Promise.prototype.then = function(onFulfilled, onRejected) {
+  // @ts-ignore
+  var prom = new this.constructor(noop);
+
+  handle(this, new Handler(onFulfilled, onRejected, prom));
+  return prom;
+};
+
+Promise.prototype['finally'] = _finally__WEBPACK_IMPORTED_MODULE_0__["default"];
+
+Promise.all = function(arr) {
+  return new Promise(function(resolve, reject) {
+    if (!arr || typeof arr.length === 'undefined')
+      throw new TypeError('Promise.all accepts an array');
+    var args = Array.prototype.slice.call(arr);
+    if (args.length === 0) return resolve([]);
+    var remaining = args.length;
+
+    function res(i, val) {
+      try {
+        if (val && (typeof val === 'object' || typeof val === 'function')) {
+          var then = val.then;
+          if (typeof then === 'function') {
+            then.call(
+              val,
+              function(val) {
+                res(i, val);
+              },
+              reject
+            );
+            return;
+          }
+        }
+        args[i] = val;
+        if (--remaining === 0) {
+          resolve(args);
+        }
+      } catch (ex) {
+        reject(ex);
+      }
+    }
+
+    for (var i = 0; i < args.length; i++) {
+      res(i, args[i]);
+    }
+  });
+};
+
+Promise.resolve = function(value) {
+  if (value && typeof value === 'object' && value.constructor === Promise) {
+    return value;
+  }
+
+  return new Promise(function(resolve) {
+    resolve(value);
+  });
+};
+
+Promise.reject = function(value) {
+  return new Promise(function(resolve, reject) {
+    reject(value);
+  });
+};
+
+Promise.race = function(values) {
+  return new Promise(function(resolve, reject) {
+    for (var i = 0, len = values.length; i < len; i++) {
+      values[i].then(resolve, reject);
+    }
+  });
+};
+
+// Use polyfill for setImmediate for performance gains
+Promise._immediateFn =
+  (typeof setImmediate === 'function' &&
+    function(fn) {
+      setImmediate(fn);
+    }) ||
+  function(fn) {
+    setTimeoutFunc(fn, 0);
+  };
+
+Promise._unhandledRejectionFn = function _unhandledRejectionFn(err) {
+  if (typeof console !== 'undefined' && console) {
+    console.warn('Possible Unhandled Promise Rejection:', err); // eslint-disable-line no-console
+  }
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Promise);
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../timers-browserify/main.js */ "./node_modules/timers-browserify/main.js").setImmediate))
+
+/***/ }),
+
+/***/ "./node_modules/setimmediate/setImmediate.js":
+/*!***************************************************!*\
+  !*** ./node_modules/setimmediate/setImmediate.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
+    "use strict";
+
+    if (global.setImmediate) {
+        return;
+    }
+
+    var nextHandle = 1; // Spec says greater than zero
+    var tasksByHandle = {};
+    var currentlyRunningATask = false;
+    var doc = global.document;
+    var registerImmediate;
+
+    function setImmediate(callback) {
+      // Callback can either be a function or a string
+      if (typeof callback !== "function") {
+        callback = new Function("" + callback);
+      }
+      // Copy function arguments
+      var args = new Array(arguments.length - 1);
+      for (var i = 0; i < args.length; i++) {
+          args[i] = arguments[i + 1];
+      }
+      // Store and register the task
+      var task = { callback: callback, args: args };
+      tasksByHandle[nextHandle] = task;
+      registerImmediate(nextHandle);
+      return nextHandle++;
+    }
+
+    function clearImmediate(handle) {
+        delete tasksByHandle[handle];
+    }
+
+    function run(task) {
+        var callback = task.callback;
+        var args = task.args;
+        switch (args.length) {
+        case 0:
+            callback();
+            break;
+        case 1:
+            callback(args[0]);
+            break;
+        case 2:
+            callback(args[0], args[1]);
+            break;
+        case 3:
+            callback(args[0], args[1], args[2]);
+            break;
+        default:
+            callback.apply(undefined, args);
+            break;
+        }
+    }
+
+    function runIfPresent(handle) {
+        // From the spec: "Wait until any invocations of this algorithm started before this one have completed."
+        // So if we're currently running a task, we'll need to delay this invocation.
+        if (currentlyRunningATask) {
+            // Delay by doing a setTimeout. setImmediate was tried instead, but in Firefox 7 it generated a
+            // "too much recursion" error.
+            setTimeout(runIfPresent, 0, handle);
+        } else {
+            var task = tasksByHandle[handle];
+            if (task) {
+                currentlyRunningATask = true;
+                try {
+                    run(task);
+                } finally {
+                    clearImmediate(handle);
+                    currentlyRunningATask = false;
+                }
+            }
+        }
+    }
+
+    function installNextTickImplementation() {
+        registerImmediate = function(handle) {
+            process.nextTick(function () { runIfPresent(handle); });
+        };
+    }
+
+    function canUsePostMessage() {
+        // The test against `importScripts` prevents this implementation from being installed inside a web worker,
+        // where `global.postMessage` means something completely different and can't be used for this purpose.
+        if (global.postMessage && !global.importScripts) {
+            var postMessageIsAsynchronous = true;
+            var oldOnMessage = global.onmessage;
+            global.onmessage = function() {
+                postMessageIsAsynchronous = false;
+            };
+            global.postMessage("", "*");
+            global.onmessage = oldOnMessage;
+            return postMessageIsAsynchronous;
+        }
+    }
+
+    function installPostMessageImplementation() {
+        // Installs an event handler on `global` for the `message` event: see
+        // * https://developer.mozilla.org/en/DOM/window.postMessage
+        // * http://www.whatwg.org/specs/web-apps/current-work/multipage/comms.html#crossDocumentMessages
+
+        var messagePrefix = "setImmediate$" + Math.random() + "$";
+        var onGlobalMessage = function(event) {
+            if (event.source === global &&
+                typeof event.data === "string" &&
+                event.data.indexOf(messagePrefix) === 0) {
+                runIfPresent(+event.data.slice(messagePrefix.length));
+            }
+        };
+
+        if (global.addEventListener) {
+            global.addEventListener("message", onGlobalMessage, false);
+        } else {
+            global.attachEvent("onmessage", onGlobalMessage);
+        }
+
+        registerImmediate = function(handle) {
+            global.postMessage(messagePrefix + handle, "*");
+        };
+    }
+
+    function installMessageChannelImplementation() {
+        var channel = new MessageChannel();
+        channel.port1.onmessage = function(event) {
+            var handle = event.data;
+            runIfPresent(handle);
+        };
+
+        registerImmediate = function(handle) {
+            channel.port2.postMessage(handle);
+        };
+    }
+
+    function installReadyStateChangeImplementation() {
+        var html = doc.documentElement;
+        registerImmediate = function(handle) {
+            // Create a <script> element; its readystatechange event will be fired asynchronously once it is inserted
+            // into the document. Do so, thus queuing up the task. Remember to clean up once it's been called.
+            var script = doc.createElement("script");
+            script.onreadystatechange = function () {
+                runIfPresent(handle);
+                script.onreadystatechange = null;
+                html.removeChild(script);
+                script = null;
+            };
+            html.appendChild(script);
+        };
+    }
+
+    function installSetTimeoutImplementation() {
+        registerImmediate = function(handle) {
+            setTimeout(runIfPresent, 0, handle);
+        };
+    }
+
+    // If supported, we should attach to the prototype of global, since that is where setTimeout et al. live.
+    var attachTo = Object.getPrototypeOf && Object.getPrototypeOf(global);
+    attachTo = attachTo && attachTo.setTimeout ? attachTo : global;
+
+    // Don't get fooled by e.g. browserify environments.
+    if ({}.toString.call(global.process) === "[object process]") {
+        // For Node.js before 0.9
+        installNextTickImplementation();
+
+    } else if (canUsePostMessage()) {
+        // For non-IE10 modern browsers
+        installPostMessageImplementation();
+
+    } else if (global.MessageChannel) {
+        // For web workers, where supported
+        installMessageChannelImplementation();
+
+    } else if (doc && "onreadystatechange" in doc.createElement("script")) {
+        // For IE 6–8
+        installReadyStateChangeImplementation();
+
+    } else {
+        // For older browsers
+        installSetTimeoutImplementation();
+    }
+
+    attachTo.setImmediate = setImmediate;
+    attachTo.clearImmediate = clearImmediate;
+}(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js"), __webpack_require__(/*! ./../process/browser.js */ "./node_modules/process/browser.js")))
+
+/***/ }),
+
+/***/ "./node_modules/timers-browserify/main.js":
+/*!************************************************!*\
+  !*** ./node_modules/timers-browserify/main.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
+            (typeof self !== "undefined" && self) ||
+            window;
+var apply = Function.prototype.apply;
+
+// DOM APIs, for completeness
+
+exports.setTimeout = function() {
+  return new Timeout(apply.call(setTimeout, scope, arguments), clearTimeout);
+};
+exports.setInterval = function() {
+  return new Timeout(apply.call(setInterval, scope, arguments), clearInterval);
+};
+exports.clearTimeout =
+exports.clearInterval = function(timeout) {
+  if (timeout) {
+    timeout.close();
+  }
+};
+
+function Timeout(id, clearFn) {
+  this._id = id;
+  this._clearFn = clearFn;
+}
+Timeout.prototype.unref = Timeout.prototype.ref = function() {};
+Timeout.prototype.close = function() {
+  this._clearFn.call(scope, this._id);
+};
+
+// Does not start the time, just sets up the members needed.
+exports.enroll = function(item, msecs) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = msecs;
+};
+
+exports.unenroll = function(item) {
+  clearTimeout(item._idleTimeoutId);
+  item._idleTimeout = -1;
+};
+
+exports._unrefActive = exports.active = function(item) {
+  clearTimeout(item._idleTimeoutId);
+
+  var msecs = item._idleTimeout;
+  if (msecs >= 0) {
+    item._idleTimeoutId = setTimeout(function onTimeout() {
+      if (item._onTimeout)
+        item._onTimeout();
+    }, msecs);
+  }
+};
+
+// setimmediate attaches itself to the global object
+__webpack_require__(/*! setimmediate */ "./node_modules/setimmediate/setImmediate.js");
+// On some exotic environments, it's not clear which object `setimmediate` was
+// able to install onto.  Search each possibility in the same order as the
+// `setimmediate` library.
+exports.setImmediate = (typeof self !== "undefined" && self.setImmediate) ||
+                       (typeof global !== "undefined" && global.setImmediate) ||
+                       (this && this.setImmediate);
+exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
+                         (typeof global !== "undefined" && global.clearImmediate) ||
+                         (this && this.clearImmediate);
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
+
+/***/ }),
+
+/***/ "./node_modules/webpack/buildin/global.js":
+/*!***********************************!*\
+  !*** (webpack)/buildin/global.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || new Function("return this")();
+} catch (e) {
+	// This works if the window reference is available
+	if (typeof window === "object") g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
 
 
 /***/ }),
@@ -4159,6 +5109,8 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 /**
  * Copyright (c) 2011-2016 inazumatv.com, inc.
  * @author (at)taikiken / http://inazumatv.com
@@ -4354,7 +5306,8 @@ function () {
   return Can;
 }();
 
-Can.vendors = ['-webkit-', '-moz-', '-ms-', '-o-', ''];
+_defineProperty(Can, "vendors", ['-webkit-', '-moz-', '-ms-', '-o-', '']);
+
 
 
 /***/ }),
@@ -4388,6 +5341,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _devices__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../devices */ "./src/device/devices.js");
 /* harmony import */ var _CriOS__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./CriOS */ "./src/device/browser/CriOS.js");
 /* harmony import */ var _Edge__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./Edge */ "./src/device/browser/Edge.js");
+/* harmony import */ var _EdgiOS__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./EdgiOS */ "./src/device/browser/EdgiOS.js");
+/* harmony import */ var _EdgA__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./EdgA */ "./src/device/browser/EdgA.js");
 
 
 
@@ -4426,6 +5381,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
  * This notice shall be included in all copies or substantial portions of the Software.
  *
  */
+
+
 
 
 
@@ -4511,7 +5468,7 @@ var init = function init() {
   var edge = _Edge__WEBPACK_IMPORTED_MODULE_10__["default"].is();
   var chrome = false;
 
-  if (!edge) {
+  if (!edge && !_EdgiOS__WEBPACK_IMPORTED_MODULE_11__["default"].is() && !_EdgA__WEBPACK_IMPORTED_MODULE_12__["default"].is()) {
     if (crios) {
       // iOS chrome
       chrome = true;
@@ -6724,24 +7681,25 @@ var browsers = {
  * const property = Object.assign({}, device);
  * ```
  * @type {{
- *  ua: string,
- *  app: string,
- *  props: {ios: boolean, ipad: boolean, ipod: boolean, iphone: boolean, windows: boolean, android: boolean, standard: boolean, phone: boolean, tablet: boolean, hd: boolean, webView: boolean, standalone: boolean, version: number, major: number, build: number, numbers: Array.<number>},
- *  safari: boolean
- * }}
- */
-
-/**
- * devices object
- * `device/index.js`
- * ```
- * @import device from './device';
- * const property = Object.assign({}, device);
- * ```
- * @type {{
  *    ua: string,
  *    app: string,
- *    props: {ios: boolean, ipad: boolean, ipod: boolean, iphone: boolean, windows: boolean, android: boolean, standard: boolean, phone: boolean, tablet: boolean, hd: boolean, webView: boolean, standalone: boolean, version: number, major: number, build: string, numbers: (number|number|number)[]},
+ *    props: {
+ *      ios: boolean,
+ *      ipad: boolean,
+ *      ipod: boolean,
+ *      iphone: boolean,
+ *      windows: boolean,
+ *      android: boolean,
+ *      standard: boolean,
+ *      phone: boolean,
+ *      tablet: boolean,
+ *      hd: boolean,
+ *      webView: boolean,
+ *      standalone: boolean,
+ *      version: number,
+ *      major: number,
+ *      build: string,
+ *      numbers: (number|number|number)[]},
  *    safari: boolean,
  *    browsers: {
  *      safari: boolean,
@@ -8571,6 +9529,8 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 /**
  * Copyright (c) 2011-2017 inazumatv.com, inc.
  * @author (at)taikiken / http://inazumatv.com
@@ -8634,7 +9594,7 @@ function (_EventDispatcher) {
      * @type {ScrollEvents}
      */
 
-    _this.onUpdate = function (event) {
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "onUpdate", function (event) {
       // @type {number} - scroll top
       var y = _Scroll__WEBPACK_IMPORTED_MODULE_3__["default"].y(); // @type {number} - previous scroll top
 
@@ -8686,7 +9646,7 @@ function (_EventDispatcher) {
       _this.body.height = bodyHeight; // save scroll top -> previous
 
       _this.previous = y;
-    };
+    });
 
     _this.events = new _events_ResizingEvents__WEBPACK_IMPORTED_MODULE_6__["default"](_Resizing__WEBPACK_IMPORTED_MODULE_5__["default"].UPDATE, _assertThisInitialized(_assertThisInitialized(_this)), _assertThisInitialized(_assertThisInitialized(_this))); // console.log('Resizing events', this.events);
 
@@ -8894,6 +9854,8 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 /**
  * Copyright (c) 2011-2017 inazumatv.com, inc.
  * @author (at)taikiken / http://inazumatv.com
@@ -8970,7 +9932,7 @@ function (_Scrolling) {
      * @type {ScrollEvents}
      */
 
-    _this.onUpdate = function (event) {
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "onUpdate", function (event) {
       // @type {number} - scroll top
       var y = _Scroll__WEBPACK_IMPORTED_MODULE_4__["default"].y(); // @type {number} - previous scroll top
 
@@ -9025,7 +9987,7 @@ function (_Scrolling) {
       // if (!changed) {
       //   this.unwatch();
       // }
-    };
+    });
 
     _this.events = new _events_ResizingEvents__WEBPACK_IMPORTED_MODULE_5__["default"](Resizing.UPDATE, _assertThisInitialized(_assertThisInitialized(_this)), _assertThisInitialized(_assertThisInitialized(_this))); // console.log('Resizing events', this.events);
 
@@ -9087,7 +10049,8 @@ function (_Scrolling) {
   return Resizing;
 }(_Scrolling__WEBPACK_IMPORTED_MODULE_3__["default"]);
 
-Resizing.UPDATE = 'resizingUpdate';
+_defineProperty(Resizing, "UPDATE", 'resizingUpdate');
+
 
 
 /***/ }),
@@ -9206,6 +10169,8 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 /**
  * Copyright (c) 2011-2016 inazumatv.com, inc.
  * @author (at)taikiken / http://inazumatv.com
@@ -9279,7 +10244,7 @@ function (_EventDispatcher) {
      * @type {elements}
      */
 
-    _this.onUpdate = function (scrollEvents) {
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "onUpdate", function (scrollEvents) {
       if (!scrollEvents.changed) {
         return false;
       } // element offset
@@ -9302,7 +10267,7 @@ function (_EventDispatcher) {
       _this.dispatch(events);
 
       return hit.result;
-    };
+    });
 
     _this.elements = elements;
     /**
@@ -9357,8 +10322,10 @@ function (_EventDispatcher) {
   return Rising;
 }(_EventDispatcher__WEBPACK_IMPORTED_MODULE_4__["default"]);
 
-Rising.COLLISION = 'risingCollision';
-Rising.ALIEN = 'risingAlien';
+_defineProperty(Rising, "COLLISION", 'risingCollision');
+
+_defineProperty(Rising, "ALIEN", 'risingAlien');
+
 
 
 /***/ }),
@@ -9403,6 +10370,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /**
  * Copyright (c) 2011-2016 inazumatv.com, inc.
@@ -9561,7 +10530,7 @@ function (_EventDispatcher) {
      * @type {ScrollEvents}
      */
 
-    _this.onScroll = function (event) {
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "onScroll", function (event) {
       // @type {number} - scroll top
       var y = Scroll.y(); // @type {number} - window height
 
@@ -9590,7 +10559,7 @@ function (_EventDispatcher) {
       _this.dispatch(events);
 
       _this.previous = y;
-    };
+    });
 
     _this.events = new _events_ScrollEvents__WEBPACK_IMPORTED_MODULE_4__["default"](Scroll.SCROLL, _assertThisInitialized(_assertThisInitialized(_this)), _assertThisInitialized(_assertThisInitialized(_this)));
     /**
@@ -9635,7 +10604,8 @@ function (_EventDispatcher) {
   return Scroll;
 }(_EventDispatcher__WEBPACK_IMPORTED_MODULE_3__["default"]);
 
-Scroll.SCROLL = 'scrollScroll';
+_defineProperty(Scroll, "SCROLL", 'scrollScroll');
+
 
 
 /***/ }),
@@ -9681,6 +10651,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /**
  * license inazumatv.com
@@ -9775,7 +10747,7 @@ function (_EventDispatcher) {
      * @type {ScrollEvents}
      */
 
-    _this.onUpdate = function (event) {
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "onUpdate", function (event) {
       // @type {number} - scroll top
       var y = _Scroll__WEBPACK_IMPORTED_MODULE_3__["default"].y(); // @type {ScrollEvents} - events
       // const { events } = this;
@@ -9819,7 +10791,7 @@ function (_EventDispatcher) {
 
 
       _this.previous = y;
-    };
+    });
 
     _this.events = new _events_ScrollEvents__WEBPACK_IMPORTED_MODULE_5__["default"](Scrolling.UPDATE, _assertThisInitialized(_assertThisInitialized(_this)), _assertThisInitialized(_assertThisInitialized(_this))); // this.events = events;
 
@@ -9941,7 +10913,8 @@ function (_EventDispatcher) {
   return Scrolling;
 }(_EventDispatcher__WEBPACK_IMPORTED_MODULE_4__["default"]);
 
-Scrolling.UPDATE = 'scrollingUpdate';
+_defineProperty(Scrolling, "UPDATE", 'scrollingUpdate');
+
 
 
 /***/ }),
@@ -9987,6 +10960,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /**
  * Copyright (c) 2011-2017 inazumatv.com, inc.
@@ -10070,7 +11045,7 @@ function (_EventDispatcher) {
    * @param {Touching} touching - 設定済み {@link Touching} instance
    * @param {number} [marginal=10] 閾値 X 方向 - 絶対値が超えると swipe event 発火します
    */
-  function Swipe(element, touching) {
+  function Swipe(element, _touching) {
     var _this;
 
     var marginal = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 10;
@@ -10084,7 +11059,59 @@ function (_EventDispatcher) {
      * @type {Element}
      */
 
-    _initialiseProps.call(_assertThisInitialized(_assertThisInitialized(_this)));
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "onStart", function () {
+      _this.dispose();
+
+      _this.reset(); // ----
+
+
+      var _assertThisInitialize = _assertThisInitialized(_assertThisInitialized(_this)),
+          touching = _assertThisInitialize.touching;
+
+      touching.on(_Touching__WEBPACK_IMPORTED_MODULE_6__["default"].MOVE, _this.onMove);
+      touching.on(_Touching__WEBPACK_IMPORTED_MODULE_6__["default"].END, _this.onEnd);
+      touching.on(_Touching__WEBPACK_IMPORTED_MODULE_6__["default"].CANCEL, _this.onCancel);
+    });
+
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "onMove", function (events) {
+      // 移動量を累積する
+      _this.dragging += events.between.x;
+
+      _this.drag(_this.dragging);
+
+      if (_this.swipeCheck()) {
+        _this.dispose();
+
+        _this.reset();
+      }
+    });
+
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "onEnd", function (events) {
+      // 移動量を累積する
+      _this.dragging += events.between.x;
+
+      _this.drag(_this.dragging); // ---
+
+
+      var move = _this.swipeCheck();
+
+      if (!move) {
+        _this.dispatch(_this.events.end);
+      } // ---
+
+
+      _this.dispose();
+
+      _this.reset();
+    });
+
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "onCancel", function () {
+      _this.dispose();
+
+      _this.reset();
+
+      _this.dispatch(_this.events.end);
+    });
 
     _this.element = element;
     /**
@@ -10092,7 +11119,7 @@ function (_EventDispatcher) {
      * @type {Touching}
      */
 
-    _this.touching = touching;
+    _this.touching = _touching;
     /**
      * 閾値 X 方向
      * @type {number}
@@ -10231,66 +11258,13 @@ function (_EventDispatcher) {
   return Swipe;
 }(_EventDispatcher__WEBPACK_IMPORTED_MODULE_3__["default"]);
 
-Swipe.LEFT = 'left';
-Swipe.RIGHT = 'right';
-Swipe.END = 'end';
-Swipe.DRAG = 'drag';
+_defineProperty(Swipe, "LEFT", 'left');
 
-var _initialiseProps = function _initialiseProps() {
-  var _this2 = this;
+_defineProperty(Swipe, "RIGHT", 'right');
 
-  this.onStart = function () {
-    _this2.dispose();
+_defineProperty(Swipe, "END", 'end');
 
-    _this2.reset(); // ----
-
-
-    var touching = _this2.touching;
-    touching.on(_Touching__WEBPACK_IMPORTED_MODULE_6__["default"].MOVE, _this2.onMove);
-    touching.on(_Touching__WEBPACK_IMPORTED_MODULE_6__["default"].END, _this2.onEnd);
-    touching.on(_Touching__WEBPACK_IMPORTED_MODULE_6__["default"].CANCEL, _this2.onCancel);
-  };
-
-  this.onMove = function (events) {
-    // 移動量を累積する
-    _this2.dragging += events.between.x;
-
-    _this2.drag(_this2.dragging);
-
-    if (_this2.swipeCheck()) {
-      _this2.dispose();
-
-      _this2.reset();
-    }
-  };
-
-  this.onEnd = function (events) {
-    // 移動量を累積する
-    _this2.dragging += events.between.x;
-
-    _this2.drag(_this2.dragging); // ---
-
-
-    var move = _this2.swipeCheck();
-
-    if (!move) {
-      _this2.dispatch(_this2.events.end);
-    } // ---
-
-
-    _this2.dispose();
-
-    _this2.reset();
-  };
-
-  this.onCancel = function () {
-    _this2.dispose();
-
-    _this2.reset();
-
-    _this2.dispatch(_this2.events.end);
-  };
-};
+_defineProperty(Swipe, "DRAG", 'drag');
 
 
 
@@ -10339,6 +11313,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /**
  * license inazumatv.com
@@ -10519,7 +11495,7 @@ function (_EventDispatcher) {
      * @type {Element}
      */
 
-    _this.onStart = function (event) {
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "onStart", function (event) {
       // event unbind <- 二重 bind にならないように
       _this.dispose(); // vectors を初期化
 
@@ -10543,9 +11519,9 @@ function (_EventDispatcher) {
       body.addEventListener('touchcancel', _this.onCancel, eventOption); // Touching.START 発火
 
       _this.dispatch(new _events_TouchingEvents__WEBPACK_IMPORTED_MODULE_4__["default"](Touching.START, _assertThisInitialized(_assertThisInitialized(_this)), event, vectors.start));
-    };
+    });
 
-    _this.onMove = function (event) {
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "onMove", function (event) {
       // console.log('Touching.onMove', event);
       var _assertThisInitialize2 = _assertThisInitialized(_assertThisInitialized(_this)),
           vectors = _assertThisInitialize2.vectors;
@@ -10577,9 +11553,9 @@ function (_EventDispatcher) {
       if (_this.kitkat) {
         _this.kitkatEnd(event);
       }
-    };
+    });
 
-    _this.onEnd = function (event) {
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "onEnd", function (event) {
       // console.log('Touching.onEnd', event);
       var _assertThisInitialize3 = _assertThisInitialized(_assertThisInitialized(_this)),
           vectors = _assertThisInitialize3.vectors; // 現在 position
@@ -10606,15 +11582,15 @@ function (_EventDispatcher) {
 
 
       _this.dispose();
-    };
+    });
 
-    _this.onCancel = function (event) {
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "onCancel", function (event) {
       return _this.abort(event);
-    };
+    });
 
-    _this.onBlur = function (event) {
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "onBlur", function (event) {
       return _this.abort(event);
-    };
+    });
 
     _this.element = element;
     /**
@@ -10810,14 +11786,20 @@ function (_EventDispatcher) {
   return Touching;
 }(_EventDispatcher__WEBPACK_IMPORTED_MODULE_3__["default"]);
 
-Touching.event3rd = _device_Can__WEBPACK_IMPORTED_MODULE_7__["default"].passive() ? {
+_defineProperty(Touching, "event3rd", _device_Can__WEBPACK_IMPORTED_MODULE_7__["default"].passive() ? {
   passive: true
-} : false;
-Touching.START = 'touchingStart';
-Touching.END = 'touchingEnd';
-Touching.CANCEL = 'touchingCancel';
-Touching.MOVE = 'touchingMove';
-Touching.TOUCH = 'touchingTouch';
+} : false);
+
+_defineProperty(Touching, "START", 'touchingStart');
+
+_defineProperty(Touching, "END", 'touchingEnd');
+
+_defineProperty(Touching, "CANCEL", 'touchingCancel');
+
+_defineProperty(Touching, "MOVE", 'touchingMove');
+
+_defineProperty(Touching, "TOUCH", 'touchingTouch');
+
 
 
 /***/ }),
@@ -10861,6 +11843,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /**
  * Copyright (c) 2011-2016 inazumatv.com, inc.
@@ -10964,10 +11948,10 @@ function (_EventDispatcher) {
      * @default 200
      */
 
-    _this.onMouseWheel = function (event) {
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "onMouseWheel", function (event) {
       var deltaY = event.deltaY;
       return _this.moving(deltaY);
-    };
+    });
 
     _this.threshold = threshold;
     /**
@@ -11138,9 +12122,12 @@ function (_EventDispatcher) {
   return Wheel;
 }(_EventDispatcher__WEBPACK_IMPORTED_MODULE_3__["default"]);
 
-Wheel.UP = 'wheelUp';
-Wheel.DOWN = 'wheelDown';
-Wheel.UPDATE = 'wheelUpdate';
+_defineProperty(Wheel, "UP", 'wheelUp');
+
+_defineProperty(Wheel, "DOWN", 'wheelDown');
+
+_defineProperty(Wheel, "UPDATE", 'wheelUpdate');
+
 
 
 /***/ }),
@@ -11817,7 +12804,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _dom_Bounding__WEBPACK_IMPORTED_MODULE_44__ = __webpack_require__(/*! ./dom/Bounding */ "./src/dom/Bounding.js");
 /* harmony import */ var _dom_Classes__WEBPACK_IMPORTED_MODULE_45__ = __webpack_require__(/*! ./dom/Classes */ "./src/dom/Classes.js");
 /* harmony import */ var _dom_Elements__WEBPACK_IMPORTED_MODULE_46__ = __webpack_require__(/*! ./dom/Elements */ "./src/dom/Elements.js");
-/*!
+/**
  * Copyright (c) inazumatv.com, inc.
  * @author (at)taikiken / http://inazumatv.com
  * @date 2016/06/30 - 17:54
@@ -11902,19 +12889,19 @@ __webpack_require__.r(__webpack_exports__);
 // }
 
 /**
- * **MOKU**
+ * **moku**
  * - global Object
  * - public な Class はここからアクセス可能です
  * @type {Object}
  */
 
-var MOKU = {};
+var moku = {};
 /**
  * version number を取得します
  * @returns {string} version number を返します
  */
 
-MOKU.version = function () {
+moku.version = function () {
   return "0.5.4";
 };
 /**
@@ -11923,16 +12910,16 @@ MOKU.version = function () {
  */
 
 
-MOKU.buildTime = function () {
-  return 1550485079440;
+moku.buildTime = function () {
+  return 1555313744260;
 };
 /**
- * MOKU.event
- * @type {Object} MOKU.event object を返します
+ * moku.event
+ * @type {Object} moku.event object を返します
  */
 
 
-MOKU.event = {
+moku.event = {
   EventDispatcher: _event_EventDispatcher__WEBPACK_IMPORTED_MODULE_1__["default"],
   Events: _event_Events__WEBPACK_IMPORTED_MODULE_2__["default"],
   Rising: _event_Rising__WEBPACK_IMPORTED_MODULE_3__["default"],
@@ -11947,33 +12934,33 @@ MOKU.event = {
   NativeResizingSingle: _event_NativeResizingSingle__WEBPACK_IMPORTED_MODULE_12__["default"]
 };
 /**
- * MOKU.net
- * @type {Object} MOKU.net object を返します
+ * moku.net
+ * @type {Object} moku.net object を返します
  */
 
-MOKU.net = {
+moku.net = {
   Ajax: _net_Ajax__WEBPACK_IMPORTED_MODULE_13__["default"],
   Cookie: _net_Cookie__WEBPACK_IMPORTED_MODULE_14__["default"],
   Queries: _net_Queries__WEBPACK_IMPORTED_MODULE_15__["default"],
   AjaxThunk: _net_AjaxThunk__WEBPACK_IMPORTED_MODULE_16__["default"]
 };
 /**
- * MOKU.tick
- * @type {Object} MOKU.tick object を返します
+ * moku.tick
+ * @type {Object} moku.tick object を返します
  */
 
-MOKU.tick = {
+moku.tick = {
   Cycle: _tick_Cycle__WEBPACK_IMPORTED_MODULE_17__["default"],
   Fps: _tick_Fps__WEBPACK_IMPORTED_MODULE_18__["default"],
   Polling: _tick_Polling__WEBPACK_IMPORTED_MODULE_19__["default"],
   Rate: _tick_Rate__WEBPACK_IMPORTED_MODULE_20__["default"]
 };
 /**
- * MOKU.util
- * @type {Object} MOKU.util object を返します
+ * moku.util
+ * @type {Object} moku.util object を返します
  */
 
-MOKU.util = {
+moku.util = {
   Type: _util_Type__WEBPACK_IMPORTED_MODULE_21__["default"],
   List: _util_List__WEBPACK_IMPORTED_MODULE_23__["default"],
   Text: _util_Text__WEBPACK_IMPORTED_MODULE_24__["default"],
@@ -11983,26 +12970,26 @@ MOKU.util = {
   Iro: _util_Iro__WEBPACK_IMPORTED_MODULE_27__["default"]
 };
 /**
- * MOKU.util
- * @type {Object} MOKU.css object を返します
+ * moku.util
+ * @type {Object} moku.css object を返します
  */
 
-MOKU.css = {
+moku.css = {
   Patterns: _css_Patterns__WEBPACK_IMPORTED_MODULE_28__["default"],
   Style: _css_Style__WEBPACK_IMPORTED_MODULE_29__["default"],
   Can: _device_Can__WEBPACK_IMPORTED_MODULE_30__["default"]
 };
 /**
- * MOKU.util
- * @type {Object} MOKU.dom object を返します
+ * moku.util
+ * @type {Object} moku.dom object を返します
  */
 
-MOKU.dom = {
+moku.dom = {
   Bounding: _dom_Bounding__WEBPACK_IMPORTED_MODULE_44__["default"],
   Classes: _dom_Classes__WEBPACK_IMPORTED_MODULE_45__["default"],
   Elements: _dom_Elements__WEBPACK_IMPORTED_MODULE_46__["default"]
 };
-MOKU.device = {
+moku.device = {
   Can: _device_Can__WEBPACK_IMPORTED_MODULE_30__["default"],
   devices: _device_devices__WEBPACK_IMPORTED_MODULE_31__["default"],
   os: {
@@ -12024,12 +13011,12 @@ MOKU.device = {
 }; // export
 
 /**
- * global object `MOKU`
+ * global object `moku`
  * @type {Object}
  */
 
-window.MOKU = MOKU;
-/* harmony default export */ __webpack_exports__["default"] = (MOKU);
+window.moku = moku;
+/* harmony default export */ __webpack_exports__["default"] = (moku);
 
 /***/ }),
 
@@ -12992,13 +13979,13 @@ function () {
     var _Queries$parse3 = Queries.parse(queryString),
         _Queries$parse4 = _slicedToArray(_Queries$parse3, 2),
         data = _Queries$parse4[0],
-        keys = _Queries$parse4[1];
+        keys = _Queries$parse4[1]; // const naked = Queries.naked(queryString);
 
-    var naked = Queries.naked(queryString);
     /**
      * query key を取得します - query key array
      * @type {Array<string>}
      */
+
 
     this.keys = keys;
     /**
@@ -13006,19 +13993,16 @@ function () {
      * @type {Object}
      */
 
-    this.data = data;
-    /**
-     * query 文字列を取得します - パースする query 文字列
-     * @type {string}
-     */
-
-    this.queryString = queryString;
-    /**
-     * パースしやすいように正規化した query 文字列 - `?` 以降文字 + `&amp;` を `&` へ置換えます
-     * @type {string}
-     */
-
-    this.naked = naked;
+    this.data = data; // /**
+    //  * query 文字列を取得します - パースする query 文字列
+    //  * @type {string}
+    //  */
+    // this.queryString = queryString;
+    // /**
+    //  * パースしやすいように正規化した query 文字列 - `?` 以降文字 + `&amp;` を `&` へ置換えます
+    //  * @type {string}
+    //  */
+    // this.naked = naked;
   } // ----------------------------------------
   // METHOD
   // ----------------------------------------
@@ -13076,44 +14060,10 @@ function () {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _method_fetch__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./method/fetch */ "./src/polyfill/method/fetch.js");
 /* harmony import */ var _method_animationFrame__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./method/animationFrame */ "./src/polyfill/method/animationFrame.js");
-/**
- * Copyright (c) 2011-2017 inazumatv.com, inc.
- * @author (at)taikiken / http://inazumatv.com
- * @date 2017/08/28 - 18:25
- *
- * Distributed under the terms of the MIT license.
- * http://www.opensource.org/licenses/mit-license.html
- *
- * This notice shall be included in all copies or substantial portions of the Software.
- *
- */
-// fetch
+/* harmony import */ var _method_assign__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./method/assign */ "./src/polyfill/method/assign.js");
 
- // ------------------------------------------------
 
-Object(_method_animationFrame__WEBPACK_IMPORTED_MODULE_1__["default"])(); // /**
-//  * 以下全てを読み込みます、一部だけ必要な時は個別に `import` します
-//  * - babel-polyfill - `./method/babel`
-//  *   - IE, Symbol 対応できない問題を解決するために...
-//  *   - https://babeljs.io/docs/usage/polyfill/
-//  *   - https://github.com/babel/babel-preset-env/issues/203
-//  *   - `babel-preset-env includes plugins by default. To include polyfill you need:, specify useBuiltIns: true in presets options (see more), include import "babel-polyfill" to your codebase.`
-//  * - promise-polyfill - `./method/promise`
-//  *   - https://github.com/taylorhakes/promise-polyfill
-//  *   - https://developers.google.com/web/fundamentals/getting-started/primers/promises
-//  *   - Chrome 32、Opera 19、Firefox 29、Safari 8、および Microsoft Edge - enabled
-//  * - whatwg-fetch - `./method/fetch`
-//  *   - https://github.com/whatwg/fetch
-//  *   - https://fetch.spec.whatwg.org/
-//  *   - https://github.github.io/fetch/
-//  * - animationFrame - `./method/animationFrame`
-//  *   - Android 4.3 以下, requestAnimationFrame 未実装なので polyfill する
-//  * @type {{animationFrame: function}}
-//  */
-// const polyfill = {
-//   animationFrame,
-// };
-// export default polyfill;
+
 
 /***/ }),
 
@@ -13148,11 +14098,11 @@ var animationFrame = function animationFrame() {
   if (window.requestAnimationFrame && window.cancelAnimationFrame) {
     return;
   } // vendor prefix
+  // const vendors = ['ms', 'moz', 'webkit', 'o'];
+  // add vendor prefix
 
 
-  var vendors = ['ms', 'moz', 'webkit', 'o']; // add vendor prefix
-
-  vendors.some(function (prefix) {
+  ['ms', 'moz', 'webkit', 'o'].some(function (prefix) {
     window.requestAnimationFrame = window["".concat(prefix, "RequestAnimationFrame")];
     window.cancelAnimationFrame = window["".concat(prefix, "CancelAnimationFrame")] || window["".concat(prefix, "CancelRequestAnimationFrame")]; // return false;
 
@@ -13181,7 +14131,27 @@ var animationFrame = function animationFrame() {
   }
 };
 
+animationFrame();
 /* harmony default export */ __webpack_exports__["default"] = (animationFrame);
+
+/***/ }),
+
+/***/ "./src/polyfill/method/assign.js":
+/*!***************************************!*\
+  !*** ./src/polyfill/method/assign.js ***!
+  \***************************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es6.object.assign */ "./node_modules/core-js/modules/es6.object.assign.js");
+/* harmony import */ var core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es6_object_assign__WEBPACK_IMPORTED_MODULE_0__);
+
+
+if (!Object.assign) {
+  Object.assign = __webpack_require__(/*! object-assign */ "./node_modules/object-assign/index.js");
+}
 
 /***/ }),
 
@@ -13194,7 +14164,7 @@ var animationFrame = function animationFrame() {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _fetch__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./fetch */ "./src/polyfill/method/fetch.js");
+/* harmony import */ var _promise__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./promise */ "./src/polyfill/method/promise.js");
 /* harmony import */ var whatwg_fetch__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! whatwg-fetch */ "./node_modules/whatwg-fetch/fetch.js");
 /**
  * Copyright (c) 2011-2017 inazumatv.com, inc.
@@ -13212,6 +14182,50 @@ __webpack_require__.r(__webpack_exports__);
 // @see https://github.github.io/fetch/
 
 
+
+/***/ }),
+
+/***/ "./src/polyfill/method/promise.js":
+/*!****************************************!*\
+  !*** ./src/polyfill/method/promise.js ***!
+  \****************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var promise_polyfill__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! promise-polyfill */ "./node_modules/promise-polyfill/src/index.js");
+/**
+ * Copyright (c) 2011-2017 inazumatv.com, inc.
+ * @author (at)taikiken / http://inazumatv.com
+ * @date 2017/08/29 - 14:05
+ *
+ * Distributed under the terms of the MIT license.
+ * http://www.opensource.org/licenses/mit-license.html
+ *
+ * This notice shall be included in all copies or substantial portions of the Software.
+ *
+ */
+// @see https://github.com/taylorhakes/promise-polyfill
+// @see https://developers.google.com/web/fundamentals/getting-started/primers/promises
+// > Chrome 32、Opera 19、Firefox 29、Safari 8、および Microsoft Edge - enabled
+
+/**
+ * Promise 未実装ブラウザへ polyfill します
+ * - Chrome 32、Opera 19、Firefox 29、Safari 8、および Microsoft Edge - enabled
+ * @see https://github.com/taylorhakes/promise-polyfill
+ * @see https://developers.google.com/web/fundamentals/getting-started/primers/promises
+ */
+
+var activate = function activate() {
+  // Promise: To add to window
+  if (!window.Promise) {
+    window.Promise = promise_polyfill__WEBPACK_IMPORTED_MODULE_0__["default"];
+  }
+};
+
+activate();
+/* harmony default export */ __webpack_exports__["default"] = (activate);
 
 /***/ }),
 
@@ -13254,6 +14268,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /**
  * license inazumatv.com
@@ -13379,7 +14395,7 @@ function (_EventDispatcher) {
      * @type {Events}
      */
 
-    _this.onUpdate = function () {
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "onUpdate", function () {
       var time = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
       // @type {number} - requestAnimationFrame id
       var id = requestAnimationFrame(_this.onUpdate);
@@ -13394,7 +14410,7 @@ function (_EventDispatcher) {
       _this.dispatch(events);
 
       return id;
-    };
+    });
 
     _this.events = new _events_CycleEvents__WEBPACK_IMPORTED_MODULE_4__["default"](Cycle.UPDATE, _assertThisInitialized(_assertThisInitialized(_this)), _assertThisInitialized(_assertThisInitialized(_this))); // /**
     //  * bound update requestAnimationFrame callback
@@ -13450,7 +14466,8 @@ function (_EventDispatcher) {
   return Cycle;
 }(_event_EventDispatcher__WEBPACK_IMPORTED_MODULE_3__["default"]);
 
-Cycle.UPDATE = 'cycleUpdate';
+_defineProperty(Cycle, "UPDATE", 'cycleUpdate');
+
 
 
 /***/ }),
@@ -13494,6 +14511,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /**
  * Copyright (c) 2011-2016 inazumatv.com, inc.
@@ -13602,7 +14621,8 @@ function (_Polling) {
   return Fps;
 }(_Polling__WEBPACK_IMPORTED_MODULE_3__["default"]);
 
-Fps.UPDATE = 'fpsUpdate';
+_defineProperty(Fps, "UPDATE", 'fpsUpdate');
+
 
 
 /***/ }),
@@ -13647,6 +14667,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /**
  * Copyright (c) 2011-2016 inazumatv.com, inc.
@@ -13716,7 +14738,7 @@ function (_EventDispatcher) {
   function Polling() {
     var _this;
 
-    var interval = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1000;
+    var _interval = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 1000;
 
     _classCallCheck(this, Polling);
 
@@ -13726,7 +14748,30 @@ function (_EventDispatcher) {
      * @ty[e {Cycle}
      */
 
-    _initialiseProps.call(_assertThisInitialized(_assertThisInitialized(_this)));
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "onUpdate", function (events) {
+      // 現在時間
+      // @type {number}
+      var present = Date.now(); // @type {number} - interval 間隔
+      // const interval = this.interval;
+      // @type {number} - 開始時間
+
+      var _assertThisInitialize = _assertThisInitialized(_assertThisInitialized(_this)),
+          begin = _assertThisInitialize.begin,
+          interval = _assertThisInitialize.interval; // 現在時間 が interval より大きくなったか
+
+
+      if (present - begin >= interval) {
+        // event 発火
+        _this.fire(_this.updateEvents(begin, present, events)); // 開始時間を update
+
+
+        _this.begin = present; // event 発生
+
+        return true;
+      }
+
+      return false;
+    });
 
     _this.cycle = _Cycle__WEBPACK_IMPORTED_MODULE_4__["default"].factory();
     /**
@@ -13734,7 +14779,7 @@ function (_EventDispatcher) {
      * @type {number}
      */
 
-    _this.interval = interval; // /**
+    _this.interval = _interval; // /**
     //  * bound onUpdate, Cycle.UPDATE event handler
     //  * @returns {function}
     //  */
@@ -13836,34 +14881,7 @@ function (_EventDispatcher) {
   return Polling;
 }(_event_EventDispatcher__WEBPACK_IMPORTED_MODULE_3__["default"]);
 
-Polling.UPDATE = 'pollingUpdate';
-
-var _initialiseProps = function _initialiseProps() {
-  var _this2 = this;
-
-  this.onUpdate = function (events) {
-    // 現在時間
-    // @type {number}
-    var present = Date.now(); // @type {number} - interval 間隔
-    // const interval = this.interval;
-    // @type {number} - 開始時間
-
-    var begin = _this2.begin,
-        interval = _this2.interval; // 現在時間 が interval より大きくなったか
-
-    if (present - begin >= interval) {
-      // event 発火
-      _this2.fire(_this2.updateEvents(begin, present, events)); // 開始時間を update
-
-
-      _this2.begin = present; // event 発生
-
-      return true;
-    }
-
-    return false;
-  };
-};
+_defineProperty(Polling, "UPDATE", 'pollingUpdate');
 
 
 
@@ -13908,6 +14926,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /**
  * license inazumatv.com
@@ -14052,9 +15072,24 @@ function (_Polling) {
     // 60fps で polling を行う
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Rate).call(this, 1000 / 60)); // @type {Events}
 
-    _initialiseProps.call(_assertThisInitialized(_assertThisInitialized(_this)));
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "onUpdate", function (events) {
+      // 余りが 0 の時にイベントを発火します
+      _this.count += 1;
+      var reminder = _this.count % _this.rate;
 
-    var events = new _event_Events__WEBPACK_IMPORTED_MODULE_3__["default"](Rate.UPDATE, _assertThisInitialized(_assertThisInitialized(_this)), _assertThisInitialized(_assertThisInitialized(_this))); // 設定可能な rate list
+      if (reminder === 0) {
+        _this.count = 0;
+
+        _this.fire(_this.updateEvents(0, 0, events));
+
+        return true;
+      }
+
+      return false;
+    });
+
+    var _events = new _event_Events__WEBPACK_IMPORTED_MODULE_3__["default"](Rate.UPDATE, _assertThisInitialized(_assertThisInitialized(_this)), _assertThisInitialized(_assertThisInitialized(_this))); // 設定可能な rate list
+
 
     var rates = [Rate.RATE_60, Rate.RATE_30, Rate.RATE_20, Rate.RATE_15, Rate.RATE_12, Rate.RATE_10, Rate.RATE_6, Rate.RATE_5, Rate.RATE_4, Rate.RATE_3, Rate.RATE_2, Rate.RATE_1];
     /**
@@ -14062,7 +15097,7 @@ function (_Polling) {
      * @type {Events}
      */
 
-    _this.events = events;
+    _this.events = _events;
     /**
      * 許容可能な rate
      * @type {Array<number>}
@@ -14139,39 +15174,31 @@ function (_Polling) {
   return Rate;
 }(_Polling__WEBPACK_IMPORTED_MODULE_4__["default"]);
 
-Rate.RATE_60 = 1;
-Rate.RATE_30 = 2;
-Rate.RATE_20 = 3;
-Rate.RATE_15 = 4;
-Rate.RATE_12 = 5;
-Rate.RATE_10 = 6;
-Rate.RATE_6 = 10;
-Rate.RATE_5 = 12;
-Rate.RATE_4 = 15;
-Rate.RATE_3 = 20;
-Rate.RATE_2 = 30;
-Rate.RATE_1 = 60;
-Rate.UPDATE = 'rateUpdate';
+_defineProperty(Rate, "RATE_60", 1);
 
-var _initialiseProps = function _initialiseProps() {
-  var _this2 = this;
+_defineProperty(Rate, "RATE_30", 2);
 
-  this.onUpdate = function (events) {
-    // 余りが 0 の時にイベントを発火します
-    _this2.count += 1;
-    var reminder = _this2.count % _this2.rate;
+_defineProperty(Rate, "RATE_20", 3);
 
-    if (reminder === 0) {
-      _this2.count = 0;
+_defineProperty(Rate, "RATE_15", 4);
 
-      _this2.fire(_this2.updateEvents(0, 0, events));
+_defineProperty(Rate, "RATE_12", 5);
 
-      return true;
-    }
+_defineProperty(Rate, "RATE_10", 6);
 
-    return false;
-  };
-};
+_defineProperty(Rate, "RATE_6", 10);
+
+_defineProperty(Rate, "RATE_5", 12);
+
+_defineProperty(Rate, "RATE_4", 15);
+
+_defineProperty(Rate, "RATE_3", 20);
+
+_defineProperty(Rate, "RATE_2", 30);
+
+_defineProperty(Rate, "RATE_1", 60);
+
+_defineProperty(Rate, "UPDATE", 'rateUpdate');
 
 
 
@@ -14492,6 +15519,8 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 /**
  * Copyright (c) 2011-2016 inazumatv.com, inc.
  * @author (at)taikiken / http://inazumatv.com
@@ -14595,8 +15624,10 @@ function () {
   return Freeze;
 }();
 
-Freeze.timerId = 0;
-Freeze.delay = 200;
+_defineProperty(Freeze, "timerId", 0);
+
+_defineProperty(Freeze, "delay", 200);
+
 
 
 /***/ }),

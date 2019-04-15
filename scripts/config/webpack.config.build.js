@@ -81,7 +81,7 @@ module.exports = {
                 'node_modules',
               ],
               plugins: [
-                'transform-class-properties'
+                '@babel/plugin-proposal-class-properties',
               ],
             },// options
           },

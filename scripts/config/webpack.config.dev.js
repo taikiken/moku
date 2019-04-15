@@ -81,7 +81,7 @@ module.exports = {
                 'node_modules',
               ],
               plugins: [
-                'transform-class-properties'
+                '@babel/plugin-proposal-class-properties',
               ],
             },// options
           },
@@ -89,12 +89,12 @@ module.exports = {
       },
     ],// rules
   },// modules
-  performance: {
-    hints: 'warning',
-    // int (in bytes)
-    maxAssetSize: 200000,
-    maxEntrypointSize: 400000,
-  },
+  // performance: {
+  //   hints: 'warning',
+  //   // int (in bytes)
+  //   maxAssetSize: 200000,
+  //   maxEntrypointSize: 400000,
+  // },
   devtool: 'source-map',
   plugins: [
     new webpack.DefinePlugin({

@@ -1,4 +1,4 @@
-/*!
+/**
  * Copyright (c) inazumatv.com, inc.
  * @author (at)taikiken / http://inazumatv.com
  * @date 2016/06/30 - 17:54
@@ -97,27 +97,27 @@ import Elements from './dom/Elements';
 // }
 
 /**
- * **MOKU**
+ * **moku**
  * - global Object
  * - public な Class はここからアクセス可能です
  * @type {Object}
  */
-const MOKU = {};
+const moku = {};
 /**
  * version number を取得します
  * @returns {string} version number を返します
  */
-MOKU.version = () => (process.env.BUILD_VERSION);
+moku.version = () => (process.env.BUILD_VERSION);
 /**
  * build 日時を取得します
  * @returns {string}  build 日時を返します
  */
-MOKU.buildTime = () => (process.env.BUILD_TIME);
+moku.buildTime = () => (process.env.BUILD_TIME);
 /**
- * MOKU.event
- * @type {Object} MOKU.event object を返します
+ * moku.event
+ * @type {Object} moku.event object を返します
  */
-MOKU.event = {
+moku.event = {
   EventDispatcher,
   Events,
   Rising,
@@ -132,30 +132,30 @@ MOKU.event = {
   NativeResizingSingle,
 };
 /**
- * MOKU.net
- * @type {Object} MOKU.net object を返します
+ * moku.net
+ * @type {Object} moku.net object を返します
  */
-MOKU.net = {
+moku.net = {
   Ajax,
   Cookie,
   Queries,
   AjaxThunk,
 };
 /**
- * MOKU.tick
- * @type {Object} MOKU.tick object を返します
+ * moku.tick
+ * @type {Object} moku.tick object を返します
  */
-MOKU.tick = {
+moku.tick = {
   Cycle,
   Fps,
   Polling,
   Rate,
 };
 /**
- * MOKU.util
- * @type {Object} MOKU.util object を返します
+ * moku.util
+ * @type {Object} moku.util object を返します
  */
-MOKU.util = {
+moku.util = {
   Type,
   List,
   Text,
@@ -165,25 +165,25 @@ MOKU.util = {
   Iro,
 };
 /**
- * MOKU.util
- * @type {Object} MOKU.css object を返します
+ * moku.util
+ * @type {Object} moku.css object を返します
  */
-MOKU.css = {
+moku.css = {
   Patterns,
   Style,
   Can,
 };
 /**
- * MOKU.util
- * @type {Object} MOKU.dom object を返します
+ * moku.util
+ * @type {Object} moku.dom object を返します
  */
-MOKU.dom = {
+moku.dom = {
   Bounding,
   Classes,
   Elements,
 };
 
-MOKU.device = {
+moku.device = {
   Can,
   devices,
   os: {
@@ -206,9 +206,9 @@ MOKU.device = {
 
 // export
 /**
- * global object `MOKU`
+ * global object `moku`
  * @type {Object}
  */
-window.MOKU = MOKU;
+window.moku = moku;
 
-export default MOKU;
+export default moku;
