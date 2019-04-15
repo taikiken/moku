@@ -38,11 +38,11 @@ const ua = document.getElementById('ua');
 const app = document.getElementById('app');
 const result = document.getElementById('result');
 
-const devices = MOKU.device.devices;
+const devices = moku.device.devices;
 ua.innerHTML = devices.ua;
 app.innerHTML = devices.app;
 // ----
-const Android = MOKU.device.os.Android;
+const Android = moku.device.os.Android;
 let content = '';
 content += `Android.is: ${Android.is()}<br>`;
 content += `Android.standard: ${Android.standard()}<br>`;

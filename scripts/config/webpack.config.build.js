@@ -70,6 +70,7 @@ module.exports = {
                       ],
                     },
                     useBuiltIns: 'usage',
+                    corejs: 3,
                   },
                   // modules: false - IE Symbol polyfill not found error になる
                   // 回避策 - babel-polyfill import + useBuiltIns: entry -> dev-client.bundle.js とコンフリクトの危険性
@@ -81,7 +82,7 @@ module.exports = {
                 'node_modules',
               ],
               plugins: [
-                'transform-class-properties'
+                '@babel/plugin-proposal-class-properties',
               ],
             },// options
           },

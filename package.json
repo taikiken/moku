@@ -1,6 +1,6 @@
 {
   "name": "moku",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "description": "moku emulate eventdispatcher",
   "main": "index.js",
   "directories": {
@@ -32,16 +32,18 @@
   "homepage": "https://github.com/taikiken/moku#readme",
   "dependencies": {
     "@babel/core": "^7.2.2",
+    "@babel/plugin-proposal-class-properties": "^7.4.0",
     "@babel/preset-env": "^7.3.1",
     "@babel/register": "^7.0.0",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.5",
-    "babel-plugin-transform-class-properties": "^6.24.1",
+    "core-js": "3",
     "esdoc": "^1.1.0",
     "esdoc-ecmascript-proposal-plugin": "^1.0.0",
     "esdoc-flow-type-plugin": "^1.1.0",
     "esdoc-jsx-plugin": "^1.0.0",
     "esdoc-standard-plugin": "^1.0.0",
+    "esdoc-unexported-identifier-plugin": "^1.0.0",
     "eslint": "^5.12.0",
     "eslint-loader": "^2.1.1",
     "promise-polyfill": "^8.1.0",

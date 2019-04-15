@@ -1,6 +1,6 @@
 var assert = require('assert');
 
-var MOKU = require('../dist/moku.bundle');
+var moku = require('../dist/moku.bundle');
 
 describe('Array', function() {
   describe('#method()', function() {
