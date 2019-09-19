@@ -1,0 +1,27 @@
+#parser:
+#  "flow"
+#trailingComma:
+#  "es5"
+#singleQuote:
+#  true
+endOfLine:
+  "lf"
+
+overrides:
+  - files:
+      - 'src/**/*.{js,jsx}'
+    options:
+      singleQuote: true
+      trailingComma: "es5"
+    parser: "flow"
+  - files:
+      - 'src/**/*.css'
+      - 'src/**/*.scss'
+      - 'scss/**/*.scss'
+    options:
+      singleQuote: false
+    parser: "scss"
+  - files:
+      - './**/*.md'
+      - '!./node_modules/**/*.md'
+    parser: 'markdown'
