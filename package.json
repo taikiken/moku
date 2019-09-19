@@ -13,7 +13,26 @@
   "scripts": {
     "dev": "node scripts/dev.js",
     "build": "node scripts/build.js",
+    "js:lint": "eslint ./src/**/*.js",
+    "js:lint:fix": "eslint ./src/**/*.js --fix",
+    "format:js": "prettier --write 'src/**/*.{js,jsx}'",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "./**/.md": [
+      "prettier --write",
+      "git add"
+    ],
+    "src/**/*.{js,jsx}": [
+      "prettier --write",
+      "eslint",
+      "git add"
+    ]
   },
   "repository": {
     "type": "git",
