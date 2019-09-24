@@ -20,7 +20,6 @@ import devices from '../devices';
  */
 let browsers = null;
 
-
 /**
  * version 情報を計算します
  * {@link Edge}
@@ -42,12 +41,7 @@ const version = () => {
     return null;
   });
   browsers.build = versions.join('.');
-  const [
-    strMajor,
-    strMinor,
-    strBuild,
-    strOption,
-  ] = versions;
+  const [strMajor, strMinor, strBuild, strOption] = versions;
   const major = parseInt(strMajor, 10);
   let minor = 0;
   if (versions.length >= 2) {
@@ -76,7 +70,7 @@ const init = () => {
     return;
   }
   // browsers = Object.assign({}, devices.browsers);
-  browsers = {...{}};
+  browsers = { ...{} };
   const { ua } = devices;
   const edge = !!ua.match(/edgios/i);
   browsers.edgios = edge;

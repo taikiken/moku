@@ -93,7 +93,7 @@ export default class Times {
    * @returns {Date} 指定分後の Date instance
    */
   static minute(n) {
-    return new Date(Date.now() + (n * oneMinute));
+    return new Date(Date.now() + n * oneMinute);
   }
 
   /**
@@ -102,7 +102,7 @@ export default class Times {
    * @returns {Date} 指定時間後の Date instance
    */
   static hour(n) {
-    return new Date(Date.now() + (n * oneHour));
+    return new Date(Date.now() + n * oneHour);
   }
 
   /**
@@ -111,7 +111,7 @@ export default class Times {
    * @returns {Date} 指定日後の Date instance
    */
   static day(n) {
-    return new Date(Date.now() + (n * oneDay));
+    return new Date(Date.now() + n * oneDay);
   }
 
   /**
@@ -120,7 +120,7 @@ export default class Times {
    * @returns {Date} 指定週後の Date instance
    */
   static week(n) {
-    return new Date(Date.now() + (n * oneWeek));
+    return new Date(Date.now() + n * oneWeek);
   }
 
   /**
@@ -129,6 +129,6 @@ export default class Times {
    * @returns {Date} 指定月後の Date instance
    */
   static month(n) {
-    return new Date(Date.now() + (n * oneMonth));
+    return new Date(Date.now() + n * oneMonth);
   }
 }

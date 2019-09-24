@@ -80,7 +80,7 @@ export default class Vectors {
   distance(vectors) {
     const distanceX = this.x - vectors.x;
     const distanceY = this.y - vectors.y;
-    const sqrt = (distanceX * distanceX) + (distanceY * distanceY);
+    const sqrt = distanceX * distanceX + distanceY * distanceY;
     return Math.sqrt(sqrt);
   }
 
@@ -109,7 +109,7 @@ export default class Vectors {
    */
   length() {
     const { x, y } = this;
-    return Math.sqrt((x * x) + (y * y));
+    return Math.sqrt(x * x + y * y);
   }
 
   /**
@@ -223,7 +223,7 @@ export default class Vectors {
    * @returns {number} 内積を返します
    */
   dot(vectors) {
-    return (this.x * vectors.x) + (this.y * vectors.y);
+    return this.x * vectors.x + this.y * vectors.y;
   }
 
   /**
@@ -232,7 +232,7 @@ export default class Vectors {
    * @returns {boolean} true: 等しい
    */
   equals(vectors) {
-    return (vectors.x === this.x) && (vectors.y === this.y);
+    return vectors.x === this.x && vectors.y === this.y;
   }
 
   /**

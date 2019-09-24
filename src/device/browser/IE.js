@@ -60,7 +60,7 @@ const init = () => {
     return;
   }
   // browsers = Object.assign({}, devices.browsers);
-  browsers = {...{}};
+  browsers = { ...{} };
   const { ua } = devices;
   let ie = !!ua.match(/msie/i);
   browsers.ie = ie;

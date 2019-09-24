@@ -107,12 +107,12 @@ const moku = {};
  * version number を取得します
  * @returns {string} version number を返します
  */
-moku.version = () => (process.env.BUILD_VERSION);
+moku.version = () => process.env.BUILD_VERSION;
 /**
  * build 日時を取得します
  * @returns {string}  build 日時を返します
  */
-moku.buildTime = () => (process.env.BUILD_TIME);
+moku.buildTime = () => process.env.BUILD_TIME;
 /**
  * moku.event
  * @type {Object} moku.event object を返します

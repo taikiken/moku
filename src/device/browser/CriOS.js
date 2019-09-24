@@ -34,15 +34,10 @@ const version = () => {
   // 先頭 削除
   numbers.shift();
   // array
-  const intArr = numbers.map(number => (parseInt(number, 10)));
+  const intArr = numbers.map(number => parseInt(number, 10));
   const versions = intArr.filter(int => !Number.isNaN(int));
   browsers.build = versions.join('.');
-  const [
-    strMajor,
-    strMinor,
-    strBuild,
-    strOption,
-  ] = versions;
+  const [strMajor, strMinor, strBuild, strOption] = versions;
   const major = parseInt(strMajor, 10);
   let minor = 0;
   if (versions.length >= 2) {
@@ -71,7 +66,7 @@ const init = () => {
     return;
   }
   // browsers = Object.assign({}, devices.browsers);
-  browsers = {...{}};
+  browsers = { ...{} };
   const { ua } = devices;
   const crios = !!ua.match(/crios/i);
   browsers.crios = crios;

@@ -2,10 +2,10 @@ extends:
   - "eslint:recommended"
 rules:
   # http://eslint.org/docs/rules/indent
-  indent:
-    - 2
-    - 2
-    - SwitchCase: 1
+#  indent:
+#    - 2
+#    - 2
+#    - SwitchCase: 1
 
   # http://eslint.org/docs/rules/require-jsdoc
   # JSDoc 必須

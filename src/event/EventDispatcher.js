@@ -51,7 +51,7 @@ export default class EventDispatcher {
      * event type {string} を key, 値は Array.<function> になります
      * @type {Object}
      */
-    this.listeners = {...{}};
+    this.listeners = { ...{} };
     // this.listeners = Object.create({});
   }
 
@@ -63,7 +63,7 @@ export default class EventDispatcher {
    */
   destroy() {
     // this.listeners = Object.create({});
-    this.listeners = {...{}};
+    this.listeners = { ...{} };
   }
 
   /**
@@ -212,17 +212,16 @@ export default class EventDispatcher {
     eventObject.target = this;
 
     // callback を実行する
-    listeners[type]
-      .map(
-        // @param listener {Function}
-        (listener) => {
-          // null が混じっているのでタイプチェックを行い listener 関数を実行します
-          if (Type.method(listener)) {
-            return listener.call(this, eventObject);
-          }
-          return null;
-        },
-      );
+    listeners[type].map(
+      // @param listener {Function}
+      listener => {
+        // null が混じっているのでタイプチェックを行い listener 関数を実行します
+        if (Type.method(listener)) {
+          return listener.call(this, eventObject);
+        }
+        return null;
+      }
+    );
 
     return true;
   }

@@ -31,7 +31,6 @@ export default class Resizing extends Scrolling {
    */
   static UPDATE = 'resizingUpdate';
 
-
   /**
    * 指定 rate(fps) 毎にスクロール位置を scroll top 位置をもたせた Scrolling.UPDATE custom event を発火します
    *
@@ -49,7 +48,7 @@ export default class Resizing extends Scrolling {
    *
    * @param {?Events} event {@link Rate.UPDATE} Events instance
    */
-  onUpdate = (event) => {
+  onUpdate = event => {
     // @type {number} - scroll top
     const y = Scroll.y();
     // @type {number} - previous scroll top
@@ -63,12 +62,13 @@ export default class Resizing extends Scrolling {
     const bodyWidth = document.body.clientWidth;
     const bodyHeight = document.body.clientHeight;
     // @type {boolean} - 移動したかを表します,
-    const changed = event === null
-      || previous !== y
-      || height !== this.window.height
-      || width !== this.window.width
-      || bodyWidth !== this.body.width
-      || bodyHeight !== this.body.height;
+    const changed =
+      event === null ||
+      previous !== y ||
+      height !== this.window.height ||
+      width !== this.window.width ||
+      bodyWidth !== this.body.width ||
+      bodyHeight !== this.body.height;
     // ----------------------------------------------
     // @type {ScrollEvents} - events
     const events = this.events.clone();
