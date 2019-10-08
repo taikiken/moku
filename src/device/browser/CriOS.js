@@ -11,6 +11,7 @@
  */
 
 import devices from '../devices';
+import { buildNum, getNumbersWithApp, getVersions } from './util';
 
 /**
  * {@link devices}.browsers
@@ -26,17 +27,23 @@ let browsers = null;
  * @since 0.4.2
  */
 const version = () => {
-  const { app } = devices;
-  const numbers = app.match(/crios\/(\d+)\.(\d+)\.(\d+)\.?(\d+)?/i);
-  if (!Array.isArray(numbers)) {
+  // const { app } = devices;
+  // const numbers = app.match(/crios\/(\d+)\.(\d+)\.(\d+)\.?(\d+)?/i);
+  // if (!Array.isArray(numbers)) {
+  //   return;
+  // }
+  const numbers = getNumbersWithApp('CriOS');
+  if (!numbers) {
     return;
   }
   // 先頭 削除
   numbers.shift();
   // array
-  const intArr = numbers.map(number => parseInt(number, 10));
-  const versions = intArr.filter(int => !Number.isNaN(int));
-  browsers.build = versions.join('.');
+  // const intArr = numbers.map(number => parseInt(number, 10));
+  // const versions = intArr.filter(int => !Number.isNaN(int));
+  // browsers.build = versions.join('.');
+  const versions = getVersions(numbers);
+  browsers.build = buildNum(versions);
   const [strMajor, strMinor, strBuild, strOption] = versions;
   const major = parseInt(strMajor, 10);
   let minor = 0;

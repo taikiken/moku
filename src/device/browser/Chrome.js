@@ -15,6 +15,7 @@ import CriOS from './CriOS';
 import Edge from './Edge';
 import EdgiOS from './EdgiOS';
 import EdgA from './EdgA';
+import { buildNum, getNumbersWithApp } from './util';
 
 /**
  * {@link devices}.browsers
@@ -30,9 +31,13 @@ let browsers = null;
  * @since 0.4.2
  */
 const version = () => {
-  const { app } = devices;
-  const numbers = app.match(/chrome\/(\d+)\.(\d+)\.(\d+)\.?(\d+)?/i);
-  if (!Array.isArray(numbers)) {
+  // const { app } = devices;
+  // const numbers = app.match(/chrome\/(\d+)\.(\d+)\.(\d+)\.?(\d+)?/i);
+  // if (!Array.isArray(numbers)) {
+  //   return;
+  // }
+  const numbers = getNumbersWithApp('Chrome');
+  if (!numbers) {
     return;
   }
   // 先頭 削除
@@ -44,7 +49,8 @@ const version = () => {
     }
     return null;
   });
-  browsers.build = versions.join('.');
+  // browsers.build = versions.join('.');
+  browsers.build = buildNum(versions);
   const [strMajor, strMinor, strBuild, strOption] = versions;
   const major = parseInt(strMajor, 10);
   let minor = 0;

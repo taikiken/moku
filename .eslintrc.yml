@@ -1,9 +1,5 @@
 parser: 'babel-eslint'
 plugins:
-  - 'react'
-  - 'jsx-a11y'
-  # https://ja.reactjs.org/docs/hooks-rules.html#eslint-plugin
-  - 'react-hooks'
   - 'prettier'
 env:
   node: true
