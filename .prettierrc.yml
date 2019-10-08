@@ -1,27 +1,21 @@
-#parser:
-#  "flow"
-#trailingComma:
-#  "es5"
-#singleQuote:
-#  true
-endOfLine:
-  "lf"
+endOfLine: "lf"
+
+printWidth: 100
+tabWidth: 2
+useTabs: false
+
 
 overrides:
-  - files:
-      - 'src/**/*.{js,jsx}'
+#  - files: '*.scss'
+#    options:
+#      singleQuote: false
+#      parser: "scss"
+#  - files: '*.md'
+#    options:
+#      singleQuote: false
+#      parser: 'markdown'
+  - files: '*.{js,jsx}'
     options:
       singleQuote: true
       trailingComma: "es5"
-    parser: "flow"
-  - files:
-      - 'src/**/*.css'
-      - 'src/**/*.scss'
-      - 'scss/**/*.scss'
-    options:
-      singleQuote: false
-    parser: "scss"
-  - files:
-      - './**/*.md'
-      - '!./node_modules/**/*.md'
-    parser: 'markdown'
+      parser: "flow"
