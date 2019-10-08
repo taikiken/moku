@@ -88,7 +88,7 @@ const init = () => {
 export default class IE {
   /**
    * 書き換え済み `browsers` を取得します
-   * @returns {Object} 書き換え済み `browsers` を返します
+   * @returns {?Object} 書き換え済み `browsers` を返します
    */
   static browsers() {
     init();

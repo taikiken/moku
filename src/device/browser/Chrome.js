@@ -15,7 +15,7 @@ import CriOS from './CriOS';
 import Edge from './Edge';
 import EdgiOS from './EdgiOS';
 import EdgA from './EdgA';
-import { buildNum, getNumbersWithApp } from './util';
+import { getNumbersWithApp, setBrowsersBuild, setBrowsersMajor } from './util';
 
 /**
  * {@link devices}.browsers
@@ -50,24 +50,27 @@ const version = () => {
     return null;
   });
   // browsers.build = versions.join('.');
-  browsers.build = buildNum(versions);
-  const [strMajor, strMinor, strBuild, strOption] = versions;
-  const major = parseInt(strMajor, 10);
-  let minor = 0;
-  if (versions.length >= 2) {
-    minor = strMinor;
-  }
-  let build = '';
-  if (versions.length >= 3) {
-    build = strBuild;
-  }
-  let option = '';
-  if (versions.length === 4) {
-    option = strOption;
-  }
-  browsers.major = major;
-  browsers.version = parseFloat(`${major}.${minor}${build}${option}`);
-  browsers.numbers = versions;
+  // browsers.build = buildNum(versions);
+  browsers = setBrowsersBuild(browsers, numbers);
+  // const [strMajor, strMinor, strBuild, strOption] = versions;
+  // const major = parseInt(strMajor, 10);
+  // let minor = 0;
+  // if (versions.length >= 2) {
+  //   minor = strMinor;
+  // }
+  // let build = '';
+  // if (versions.length >= 3) {
+  //   build = strBuild;
+  // }
+  // let option = '';
+  // if (versions.length === 4) {
+  //   option = strOption;
+  // }
+  // browsers.major = major;
+  // browsers.version = parseFloat(`${major}.${minor}${build}${option}`);
+  // browsers.numbers = versions;
+  browsers = setBrowsersMajor(browsers, versions);
+  // browsers.numbers = versions;
 };
 
 /**
@@ -106,7 +109,7 @@ const init = () => {
 export default class Chrome {
   /**
    * 書き換え済み `browsers` を取得します
-   * @returns {Object} 書き換え済み `browsers` を返します
+   * @returns {?Object} 書き換え済み `browsers` を返します
    */
   static browsers() {
     init();

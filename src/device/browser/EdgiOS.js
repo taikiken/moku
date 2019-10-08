@@ -11,6 +11,7 @@
  */
 
 import devices from '../devices';
+import { getNumbersWithApp, getVersions, setBrowsersBuild, setBrowsersMajor } from './util';
 
 /**
  * {@link devices}.browsers
@@ -26,43 +27,52 @@ let browsers = null;
  * @since 0.4.2
  */
 const version = () => {
-  const { app } = devices;
-  const numbers = app.match(/edgios\/(\d+)\.(\d+)\.?(\d+)?/i);
-  if (!Array.isArray(numbers)) {
+  // const { app } = devices;
+  // const numbers = app.match(/edgios\/(\d+)\.(\d+)\.?(\d+)?/i);
+  // if (!Array.isArray(numbers)) {
+  //   return;
+  // }
+  // // 先頭 削除
+  // numbers.shift();
+  // const versions = numbers.map((number, index) => {
+  //   const int = parseInt(number, 10);
+  //   if (index <= 3) {
+  //     return Number.isNaN(int) ? 0 : int;
+  //   }
+  //   return null;
+  // });
+  // browsers.build = versions.join('.');
+  // const [strMajor, strMinor, strBuild, strOption] = versions;
+  // const major = parseInt(strMajor, 10);
+  // let minor = 0;
+  // if (versions.length >= 2) {
+  //   minor = strMinor;
+  // }
+  // let build = '';
+  // if (versions.length >= 3) {
+  //   build = strBuild;
+  // }
+  // let option = '';
+  // if (versions.length === 4) {
+  //   option = strOption;
+  // }
+  // browsers.major = major;
+  // browsers.version = parseFloat(`${major}.${minor}${build}${option}`);
+  // browsers.numbers = versions;
+  const numbers = getNumbersWithApp('EdgiOS');
+  if (!numbers) {
     return;
   }
   // 先頭 削除
   numbers.shift();
-  const versions = numbers.map((number, index) => {
-    const int = parseInt(number, 10);
-    if (index <= 3) {
-      return Number.isNaN(int) ? 0 : int;
-    }
-    return null;
-  });
-  browsers.build = versions.join('.');
-  const [strMajor, strMinor, strBuild, strOption] = versions;
-  const major = parseInt(strMajor, 10);
-  let minor = 0;
-  if (versions.length >= 2) {
-    minor = strMinor;
-  }
-  let build = '';
-  if (versions.length >= 3) {
-    build = strBuild;
-  }
-  let option = '';
-  if (versions.length === 4) {
-    option = strOption;
-  }
-  browsers.major = major;
-  browsers.version = parseFloat(`${major}.${minor}${build}${option}`);
-  browsers.numbers = versions;
+  const versions = getVersions(numbers);
+  browsers = setBrowsersBuild(browsers, numbers);
+  browsers = setBrowsersMajor(browsers, versions);
 };
 
 /**
  * browser 判別します
- * {@link Edge}
+ * {@link EdgiOS}
  * @since 0.4.2
  */
 const init = () => {
@@ -80,13 +90,13 @@ const init = () => {
 };
 
 /**
- * Edge detector
+ * EdgiOS detector
  * @since 0.4.2
  */
 export default class EdgiOS {
   /**
    * 書き換え済み `browsers` を取得します
-   * @returns {Object} 書き換え済み `browsers` を返します
+   * @returns {?Object} 書き換え済み `browsers` を返します
    */
   static browsers() {
     init();

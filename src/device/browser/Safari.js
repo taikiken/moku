@@ -18,6 +18,7 @@ import FxiOS from './FxiOS';
 import Android from '../os/Android';
 import EdgiOS from './EdgiOS';
 import EdgA from './EdgA';
+import { getNumbersWithApp, getVersions, setBrowsersBuild, setBrowsersMajor } from './util';
 
 /**
  * {@link devices}.browsers
@@ -33,34 +34,43 @@ let browsers = null;
  * @since 0.4.2
  */
 const version = () => {
-  const { app } = devices;
-  const numbers = app.match(/version\/(\d+)\.(\d+)\.?(\d+)?/i);
-  if (!Array.isArray(numbers)) {
+  // const { app } = devices;
+  // const numbers = app.match(/version\/(\d+)\.(\d+)\.?(\d+)?/i);
+  // if (!Array.isArray(numbers)) {
+  //   return;
+  // }
+  // // 先頭 削除
+  // numbers.shift();
+  // // array
+  // const intArr = numbers.map(number => parseInt(number, 10));
+  // const versions = intArr.filter(int => !Number.isNaN(int));
+  // browsers.build = versions.join('.');
+  // const [strMajor, strMinor, strBuild, strOption] = versions;
+  // const major = parseInt(strMajor, 10);
+  // let minor = 0;
+  // if (versions.length >= 2) {
+  //   minor = strMinor;
+  // }
+  // let build = '';
+  // if (versions.length >= 3) {
+  //   build = strBuild;
+  // }
+  // let option = '';
+  // if (versions.length === 4) {
+  //   option = strOption;
+  // }
+  // browsers.major = major;
+  // browsers.version = parseFloat(`${major}.${minor}${build}${option}`);
+  // browsers.numbers = versions;
+  const numbers = getNumbersWithApp('Safari');
+  if (!numbers) {
     return;
   }
   // 先頭 削除
   numbers.shift();
-  // array
-  const intArr = numbers.map(number => parseInt(number, 10));
-  const versions = intArr.filter(int => !Number.isNaN(int));
-  browsers.build = versions.join('.');
-  const [strMajor, strMinor, strBuild, strOption] = versions;
-  const major = parseInt(strMajor, 10);
-  let minor = 0;
-  if (versions.length >= 2) {
-    minor = strMinor;
-  }
-  let build = '';
-  if (versions.length >= 3) {
-    build = strBuild;
-  }
-  let option = '';
-  if (versions.length === 4) {
-    option = strOption;
-  }
-  browsers.major = major;
-  browsers.version = parseFloat(`${major}.${minor}${build}${option}`);
-  browsers.numbers = versions;
+  const versions = getVersions(numbers);
+  browsers = setBrowsersBuild(browsers, numbers);
+  browsers = setBrowsersMajor(browsers, versions);
 };
 
 /**
@@ -99,7 +109,7 @@ const init = () => {
 export default class Safari {
   /**
    * 書き換え済み `browsers` を取得します
-   * @returns {Object} 書き換え済み `browsers` を返します
+   * @returns {?Object} 書き換え済み `browsers` を返します
    */
   static browsers() {
     init();
