@@ -16,6 +16,7 @@
     "js:lint": "eslint ./src/**/*.js",
     "js:lint:fix": "eslint ./src/**/*.js --fix",
     "format:js": "prettier --write 'src/**/*.{js,jsx}'",
+    "docs": "documentation build src/** -f html -o docs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "husky": {
