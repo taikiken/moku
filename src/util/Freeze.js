@@ -12,16 +12,21 @@
 
 /**
  * scroll 操作を強制的に不可能にします
+ * @class Freeze
  */
 export default class Freeze {
   /**
    * scroll freeze timeout id
+   * @static
+   * @member {number}
    * @type {number}
    */
   static timerId = 0;
 
   /**
    * scroll を止める時間
+   * @static delay
+   * @member {number}
    * @type {number}
    * @default 200
    */
@@ -29,6 +34,8 @@ export default class Freeze {
 
   /**
    * scroll 動作を受付不能にします
+   * @static start
+   * @function
    * @returns {void}
    */
   static start() {
@@ -43,6 +50,8 @@ export default class Freeze {
 
   /**
    * scroll 動作を回復します
+   * @static stop
+   * @function
    * @returns {void}
    */
   static stop() {
@@ -57,6 +66,8 @@ export default class Freeze {
 
   /**
    * window scroll event handler, バブリング・伝播全てキャンセルします
+   * @static onScroll
+   * @function
    * @param {Event} event window scroll event
    * @returns {boolean} event をキャンセルするために false を返します
    */
@@ -68,6 +79,8 @@ export default class Freeze {
 
   /**
    * scroll 操作を引数(delay)の間キャンセルします
+   * @static freeze
+   * @function
    * @param {number} [delay=200] 遅延時間(ms), 200
    * @returns {number} time out id
    */
