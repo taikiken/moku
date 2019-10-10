@@ -1,0 +1,15 @@
+{
+  "plugins": [
+    "node_modules/better-docs/category"
+  ],
+  "tags": {
+    "allowUnknownTags": ["category"]
+  },
+  "opts": {
+    "template": "node_modules/better-docs"
+  },
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": false
+  }
+}
