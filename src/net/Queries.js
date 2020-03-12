@@ -36,9 +36,7 @@ export default class Queries {
   static naked(targetText) {
     // const queryString = Queries.amp(targetText);
     const queryString = Text.and(targetText);
-    return queryString.substr(0, 1) === '?'
-      ? queryString.substring(1)
-      : targetText;
+    return queryString.substr(0, 1) === '?' ? queryString.substring(1) : targetText;
   }
 
   /**

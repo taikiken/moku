@@ -82,9 +82,7 @@ const init = () => {
       props.tablet = true;
     }
     // Android 標準 browser
-    props.standard =
-      devices.safari &&
-      (!!ua.match(/version/i) || !!ua.match(/samsungbrowser/i));
+    props.standard = devices.safari && (!!ua.match(/version/i) || !!ua.match(/samsungbrowser/i));
     // hd
     props.hd = Math.max(window.innerWidth, window.innerHeight) > 1024;
     // version check
@@ -185,6 +183,6 @@ export default class Android {
   static kitKat() {
     // no touchend - standard browser 4.3 ~ 4.4
     const v = Android.version();
-    return Android.standard() && (v > 4.2 && v < 4.5);
+    return Android.standard() && v > 4.2 && v < 4.5;
   }
 }

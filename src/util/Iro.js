@@ -344,10 +344,7 @@ export default class Iro {
       return null;
     }
     const pattern = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-    const color = hex.replace(
-      pattern,
-      (m, r, g, b) => `${r}${r}${g}${g}${b}${b}`
-    );
+    const color = hex.replace(pattern, (m, r, g, b) => `${r}${r}${g}${g}${b}${b}`);
     return color.length === 7 ? color : `#${color}`;
   }
 

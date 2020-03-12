@@ -137,13 +137,7 @@ export default class Cookie {
    * @param {boolean} [secure=false] true: https 通信のときのみ、クッキーが送信されます
    * @returns {string} 設定した cookie 文字列
    */
-  set(
-    value,
-    end = this.end(),
-    path = this.path(),
-    domain = this.domain(),
-    secure = this.secure()
-  ) {
+  set(value, end = this.end(), path = this.path(), domain = this.domain(), secure = this.secure()) {
     return Cookie.set(this.key(), value, end, path, domain, secure);
   }
 
@@ -166,9 +160,7 @@ export default class Cookie {
   static get(key) {
     const { cookie } = document;
     const escapeKey = encodeURIComponent(key).replace(/[-.+*]/g, '\\$&');
-    const exp = new RegExp(
-      `(?:(?:^|.*;)\\s*${escapeKey}\\s*\\=\\s*([^;]*).*$)|^.*$`
-    );
+    const exp = new RegExp(`(?:(?:^|.*;)\\s*${escapeKey}\\s*\\=\\s*([^;]*).*$)|^.*$`);
     return decodeURIComponent(cookie.replace(exp, '$1')) || null;
   }
 
