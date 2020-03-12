@@ -92,8 +92,7 @@ export default class Scroll extends EventDispatcher {
   static y() {
     return typeof window.pageYOffset !== 'undefined'
       ? window.pageYOffset
-      : (document.documentElement || document.body.parentNode || document.body)
-          .scrollTop;
+      : (document.documentElement || document.body.parentNode || document.body).scrollTop;
   }
 
   // ---------------------------------------------------

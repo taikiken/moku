@@ -26,8 +26,7 @@ const animationFrame = () => {
   ['ms', 'moz', 'webkit', 'o'].some(prefix => {
     window.requestAnimationFrame = window[`${prefix}RequestAnimationFrame`];
     window.cancelAnimationFrame =
-      window[`${prefix}CancelAnimationFrame`] ||
-      window[`${prefix}CancelRequestAnimationFrame`];
+      window[`${prefix}CancelAnimationFrame`] || window[`${prefix}CancelRequestAnimationFrame`];
     // return false;
     return !!window.requestAnimationFrame;
   });

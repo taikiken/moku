@@ -145,8 +145,7 @@ export default class Can {
       let webgl = false;
       if (Can.canvas()) {
         const canvas = document.createElement('canvas');
-        const webGLContext =
-          canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+        const webGLContext = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
         try {
           webgl = !!(
             window.WebGLRenderingContext &&

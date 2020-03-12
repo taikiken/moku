@@ -117,7 +117,7 @@ export default class Touching extends EventDispatcher {
 
     // event.pageX / pageY があればそのまま値を返します
     // Android で pageX / pageY 存在しても 0, 0 しか返さない端末あり
-    if (Type.number(x) && Type.number(y) && (x !== 0 && y !== 0)) {
+    if (Type.number(x) && Type.number(y) && x !== 0 && y !== 0) {
       return { x, y };
     }
 
@@ -163,9 +163,7 @@ export default class Touching extends EventDispatcher {
     body.addEventListener('touchcancel', this.onCancel, eventOption);
 
     // Touching.START 発火
-    this.dispatch(
-      new TouchingEvents(Touching.START, this, event, vectors.start)
-    );
+    this.dispatch(new TouchingEvents(Touching.START, this, event, vectors.start));
   };
 
   /**
@@ -203,16 +201,7 @@ export default class Touching extends EventDispatcher {
     const between = position.between(previous);
 
     // Touching.MOVE 発火
-    this.dispatch(
-      new TouchingEvents(
-        Touching.MOVE,
-        this,
-        event,
-        position,
-        between,
-        scrolling
-      )
-    );
+    this.dispatch(new TouchingEvents(Touching.MOVE, this, event, position, between, scrolling));
     // kitkat(Android 4.3 ~ 4.4 && standard browser) - touchend 発火しないので check
     if (this.kitkat) {
       this.kitkatEnd(event);
@@ -246,28 +235,10 @@ export default class Touching extends EventDispatcher {
     const between = position.between(previous);
 
     // Touching.END 発火
-    this.dispatch(
-      new TouchingEvents(
-        Touching.END,
-        this,
-        event,
-        position,
-        between,
-        scrolling
-      )
-    );
+    this.dispatch(new TouchingEvents(Touching.END, this, event, position, between, scrolling));
 
     // Touching.Touch 発火
-    this.dispatch(
-      new TouchingEvents(
-        Touching.TOUCH,
-        this,
-        event,
-        position,
-        between,
-        scrolling
-      )
-    );
+    this.dispatch(new TouchingEvents(Touching.TOUCH, this, event, position, between, scrolling));
     // ---
     this.dispose();
   };

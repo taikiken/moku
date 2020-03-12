@@ -1,6 +1,5 @@
 import 'intersection-observer';
 
-
 /**
  * `IntersectionObserver` 表示されたかをチェックします
  * - 画面縦幅より大きな `HTMLElement` には反応しないので注意します
@@ -13,11 +12,9 @@ export default class Intersection {
    * @see https://wiki.developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API#Intersection_observer_concepts_and_usage
    * @see https://wiki.developer.mozilla.org/en-US/docs/Web/API/IntersectionObserverEntry
    */
-  check = (entries) => {
-    entries.map(entry => (
-      entry.isIntersecting ? this.intersect(entry) : this.parallel(entry)
-    ))
-  }
+  check = entries => {
+    entries.map(entry => (entry.isIntersecting ? this.intersect(entry) : this.parallel(entry)));
+  };
 
   /**
    * `IntersectionObserver` 準備します
@@ -30,13 +27,13 @@ export default class Intersection {
       root: null,
       rootMargin: '0px',
       threshold: [0.5],
-    },
+    }
   ) {
     /**
      * target Element list
      * @type {Array<HTMLElement>}
      */
-    this.elements = elements
+    this.elements = elements;
     /**
      * `IntersectionObserver` instance
      * @type {IntersectionObserver}
@@ -48,20 +45,20 @@ export default class Intersection {
    * `IntersectionObserver` 開始する
    */
   start() {
-    this.elements.map(element => this.activate(element))
+    this.elements.map(element => this.activate(element));
   }
 
   destroy() {
-    this.elements.map(element => this.deactivate(element))
-    this.disconnect()
+    this.elements.map(element => this.deactivate(element));
+    this.disconnect();
   }
 
   disconnect() {
-    this.observer.disconnect()
+    this.observer.disconnect();
   }
 
   activate(element) {
-    this.observer.observe(element)
+    this.observer.observe(element);
   }
 
   deactivate(element) {
@@ -69,10 +66,10 @@ export default class Intersection {
   }
 
   intersect(entry) {
-    console.log('Intersection.intersect - entry', entry)
+    console.log('Intersection.intersect - entry', entry);
   }
 
   parallel(entry) {
-    console.log('Intersection.parallel - entry', entry)
+    console.log('Intersection.parallel - entry', entry);
   }
 }

@@ -41,9 +41,7 @@ export default class Type {
   static number(target) {
     // [参考] jQuery 2.x, jQuery 2 関数は文字列 "2" も true にするので type check を追加した
     return (
-      typeof target === 'number' &&
-      !Type.array(target) &&
-      target - parseFloat(target) + 1 >= 0
+      typeof target === 'number' && !Type.array(target) && target - parseFloat(target) + 1 >= 0
     );
   }
 
@@ -174,8 +172,6 @@ export default class Type {
       return true;
     }
     // 拡張子チェック
-    return (
-      ['jpg', 'png', 'jpeg', 'gif'].indexOf(Type.extension(fileName)) !== -1
-    );
+    return ['jpg', 'png', 'jpeg', 'gif'].indexOf(Type.extension(fileName)) !== -1;
   }
 }
