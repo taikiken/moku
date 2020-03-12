@@ -44,6 +44,9 @@ export default class Intersection {
     this.observer = new IntersectionObserver(this.check, options);
   }
 
+  /**
+   * `IntersectionObserver` 開始する
+   */
   start() {
     this.elements.map(element => this.activate(element))
   }
