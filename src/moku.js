@@ -59,6 +59,7 @@ import Text from './util/Text';
 import Times from './util/Times';
 import Vectors from './util/Vectors';
 import Iro from './util/Iro';
+import Intersection from './util/Intersection'
 
 // css
 import Patterns from './css/Patterns';
@@ -163,6 +164,7 @@ moku.util = {
   Vectors,
   Hit,
   Iro,
+  Intersection,
 };
 /**
  * moku.util
