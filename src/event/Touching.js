@@ -36,7 +36,6 @@ import Android from '../device/os/Android';
 //  */
 // const event3rd = Can.passive() ? { passive: true } : false;
 
-
 /**
  * Touch event を監視し y方向移動が `threshold` 以内の時に `TOUCH` event を発火します
  */
@@ -145,7 +144,7 @@ export default class Touching extends EventDispatcher {
    * @param {Event|TouchEvent} event touchstart event
    * @returns {void}
    */
-  onStart = (event) => {
+  onStart = event => {
     // event unbind <- 二重 bind にならないように
     this.dispose();
     // vectors を初期化
@@ -164,12 +163,9 @@ export default class Touching extends EventDispatcher {
     body.addEventListener('touchcancel', this.onCancel, eventOption);
 
     // Touching.START 発火
-    this.dispatch(new TouchingEvents(
-      Touching.START,
-      this,
-      event,
-      vectors.start,
-    ));
+    this.dispatch(
+      new TouchingEvents(Touching.START, this, event, vectors.start)
+    );
   };
 
   /**
@@ -178,7 +174,7 @@ export default class Touching extends EventDispatcher {
    * @param {Event} event touchmove event
    * @returns {void}
    */
-  onMove = (event) => {
+  onMove = event => {
     // console.log('Touching.onMove', event);
     const { vectors } = this;
     const movingArray = vectors.moving;
@@ -207,14 +203,16 @@ export default class Touching extends EventDispatcher {
     const between = position.between(previous);
 
     // Touching.MOVE 発火
-    this.dispatch(new TouchingEvents(
-      Touching.MOVE,
-      this,
-      event,
-      position,
-      between,
-      scrolling,
-    ));
+    this.dispatch(
+      new TouchingEvents(
+        Touching.MOVE,
+        this,
+        event,
+        position,
+        between,
+        scrolling
+      )
+    );
     // kitkat(Android 4.3 ~ 4.4 && standard browser) - touchend 発火しないので check
     if (this.kitkat) {
       this.kitkatEnd(event);
@@ -226,7 +224,7 @@ export default class Touching extends EventDispatcher {
    * - {@link Touching}.[END|TOUCH] を発火します
    * @param {Event} event touchend event
    */
-  onEnd = (event) => {
+  onEnd = event => {
     // console.log('Touching.onEnd', event);
     const { vectors } = this;
 
@@ -248,24 +246,28 @@ export default class Touching extends EventDispatcher {
     const between = position.between(previous);
 
     // Touching.END 発火
-    this.dispatch(new TouchingEvents(
-      Touching.END,
-      this,
-      event,
-      position,
-      between,
-      scrolling,
-    ));
+    this.dispatch(
+      new TouchingEvents(
+        Touching.END,
+        this,
+        event,
+        position,
+        between,
+        scrolling
+      )
+    );
 
     // Touching.Touch 発火
-    this.dispatch(new TouchingEvents(
-      Touching.TOUCH,
-      this,
-      event,
-      position,
-      between,
-      scrolling,
-    ));
+    this.dispatch(
+      new TouchingEvents(
+        Touching.TOUCH,
+        this,
+        event,
+        position,
+        between,
+        scrolling
+      )
+    );
     // ---
     this.dispose();
   };
@@ -276,9 +278,9 @@ export default class Touching extends EventDispatcher {
    * @param {Event} event touchend event
    * @returns {boolean} 正常終了時に true を返します
    */
-  onCancel = (event) => {
+  onCancel = event => {
     return this.abort(event);
-  }
+  };
 
   /**
    * window.blur event handler<br>
@@ -286,7 +288,7 @@ export default class Touching extends EventDispatcher {
    * @param {Event} event window blur event
    * @returns {boolean} 正常終了時に true を返します
    */
-  onBlur = (event) => {
+  onBlur = event => {
     return this.abort(event);
   };
 
@@ -441,11 +443,7 @@ export default class Touching extends EventDispatcher {
   abort(event) {
     this.dispose();
     this.reset();
-    this.dispatch(new TouchingEvents(
-      Touching.CANCEL,
-      this,
-      event,
-    ));
+    this.dispatch(new TouchingEvents(Touching.CANCEL, this, event));
     return true;
   }
 

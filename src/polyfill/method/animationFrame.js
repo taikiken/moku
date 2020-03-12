@@ -23,10 +23,11 @@ const animationFrame = () => {
   // vendor prefix
   // const vendors = ['ms', 'moz', 'webkit', 'o'];
   // add vendor prefix
-  ['ms', 'moz', 'webkit', 'o'].some((prefix) => {
+  ['ms', 'moz', 'webkit', 'o'].some(prefix => {
     window.requestAnimationFrame = window[`${prefix}RequestAnimationFrame`];
-    window.cancelAnimationFrame = window[`${prefix}CancelAnimationFrame`]
-      || window[`${prefix}CancelRequestAnimationFrame`];
+    window.cancelAnimationFrame =
+      window[`${prefix}CancelAnimationFrame`] ||
+      window[`${prefix}CancelRequestAnimationFrame`];
     // return false;
     return !!window.requestAnimationFrame;
   });
@@ -34,7 +35,7 @@ const animationFrame = () => {
   // still check
   if (!window.requestAnimationFrame) {
     let lastTime = 0;
-    window.requestAnimationFrame = (callback) => {
+    window.requestAnimationFrame = callback => {
       const currentTime = new Date().getTime();
       const timeToCall = Math.max(0, 16 - (currentTime - lastTime));
       const id = setTimeout(() => {
@@ -45,7 +46,7 @@ const animationFrame = () => {
     };
   }
   if (!window.cancelAnimationFrame) {
-    window.cancelAnimationFrame = (id) => {
+    window.cancelAnimationFrame = id => {
       clearTimeout(id);
     };
   }

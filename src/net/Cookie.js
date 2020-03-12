@@ -47,7 +47,7 @@ export default class Cookie {
     endValue = null,
     defaultPath = '/',
     defaultDomain = '',
-    secureSetting = false,
+    secureSetting = false
   ) {
     let key = keyName;
     let end = endValue;
@@ -64,7 +64,9 @@ export default class Cookie {
      * cookie key を設定します
      * @param {string} setting 設定する key name
      */
-    this.setKey = (setting) => { key = setting; };
+    this.setKey = setting => {
+      key = setting;
+    };
     /**
      * cookie end を取得します
      * @returns {?Date} cookie end Date instance
@@ -74,7 +76,9 @@ export default class Cookie {
      * cookie end を設定します
      * @param {Date} setting cookie end Date instance
      */
-    this.setEnd = (setting) => { end = setting; };
+    this.setEnd = setting => {
+      end = setting;
+    };
     /**
      * cookie path を取得します
      * @returns {string} cookie path を返します
@@ -84,7 +88,9 @@ export default class Cookie {
      * cookie path を設定します
      * @param {string} setting 設定する path name
      */
-    this.setPath = (setting) => { path = setting; };
+    this.setPath = setting => {
+      path = setting;
+    };
     /**
      * cookie domain を取得します
      * @returns {string} cookie domain を返します
@@ -94,7 +100,9 @@ export default class Cookie {
      * cookie domain を設定します
      * @param {string} setting 設定する domain name
      */
-    this.setDomain = (setting) => { domain = setting; };
+    this.setDomain = setting => {
+      domain = setting;
+    };
     /**
      * https 通信のときのみクッキー送信を行うかのフラッグを取得します
      * @returns {boolean} https 通信のときのみクッキー送信を行うかのフラッグ
@@ -104,7 +112,9 @@ export default class Cookie {
      * https 通信のときのみクッキー送信を行うかのフラッグを設定します
      * @param {boolean} setting https 通信のときのみクッキー送信を行うかのフラッグ
      */
-    this.setSecure = (setting) => { secure = setting; };
+    this.setSecure = setting => {
+      secure = setting;
+    };
   }
 
   // ----------------------------------------
@@ -127,7 +137,13 @@ export default class Cookie {
    * @param {boolean} [secure=false] true: https 通信のときのみ、クッキーが送信されます
    * @returns {string} 設定した cookie 文字列
    */
-  set(value, end = this.end(), path = this.path(), domain = this.domain(), secure = this.secure()) {
+  set(
+    value,
+    end = this.end(),
+    path = this.path(),
+    domain = this.domain(),
+    secure = this.secure()
+  ) {
     return Cookie.set(this.key(), value, end, path, domain, secure);
   }
 
@@ -150,7 +166,9 @@ export default class Cookie {
   static get(key) {
     const { cookie } = document;
     const escapeKey = encodeURIComponent(key).replace(/[-.+*]/g, '\\$&');
-    const exp = new RegExp(`(?:(?:^|.*;)\\s*${escapeKey}\\s*\\=\\s*([^;]*).*$)|^.*$`);
+    const exp = new RegExp(
+      `(?:(?:^|.*;)\\s*${escapeKey}\\s*\\=\\s*([^;]*).*$)|^.*$`
+    );
     return decodeURIComponent(cookie.replace(exp, '$1')) || null;
   }
 

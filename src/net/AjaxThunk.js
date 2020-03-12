@@ -78,14 +78,16 @@ export default class AjaxThunk extends Ajax {
     const request = this.option(path, method, headers, formData);
 
     // fetch start
-    return fetch(request)
-    // @param {Object} response - Ajax response
-      .then((response) => {
-        // may be success
-        if (response.status !== 200) {
-          throw new Error(`Ajax status error: (${response.status})`);
-        }
-        return response.json();
-      });
+    return (
+      fetch(request)
+        // @param {Object} response - Ajax response
+        .then(response => {
+          // may be success
+          if (response.status !== 200) {
+            throw new Error(`Ajax status error: (${response.status})`);
+          }
+          return response.json();
+        })
+    );
   }
 }

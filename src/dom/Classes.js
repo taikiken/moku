@@ -27,7 +27,7 @@ export default class Classes {
     let i = 0;
     const limit = arr.length;
     const empty = [];
-    for (;i < limit; i += 1) {
+    for (; i < limit; i += 1) {
       const className = arr[i];
       if (!!className && className !== ' ') {
         empty.push(className);
@@ -56,9 +56,9 @@ export default class Classes {
    * @returns {boolean} 存在すると true を返します
    */
   static has(element, className) {
-    return element.classList ?
-      element.classList.contains(className) :
-      Classes.get(element).includes(className);
+    return element.classList
+      ? element.classList.contains(className)
+      : Classes.get(element).includes(className);
     // const elementClasses = Classes.get(element);
     // return elementClasses.indexOf(className) !== -1;
   }

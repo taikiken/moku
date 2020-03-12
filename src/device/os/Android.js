@@ -40,11 +40,7 @@ const version = () => {
     return null;
   });
   props.build = versions.join('.');
-  const [
-    strMajor,
-    strMinor,
-    strBuild,
-  ] = versions;
+  const [strMajor, strMinor, strBuild] = versions;
   const major = parseInt(strMajor, 10);
   let minor = 0;
   if (versions.length >= 2) {
@@ -74,7 +70,7 @@ const init = () => {
     return;
   }
   // props = Object.assign({}, devices.props);
-  props = {...devices.props};
+  props = { ...devices.props };
   const { ua } = devices;
   // windows phone ua に `Android` が入っている
   const android = !Windows.phone() && !!ua.match(/android/i);
@@ -86,7 +82,9 @@ const init = () => {
       props.tablet = true;
     }
     // Android 標準 browser
-    props.standard = devices.safari && (!!ua.match(/version/i) || !!ua.match(/samsungbrowser/i));
+    props.standard =
+      devices.safari &&
+      (!!ua.match(/version/i) || !!ua.match(/samsungbrowser/i));
     // hd
     props.hd = Math.max(window.innerWidth, window.innerHeight) > 1024;
     // version check

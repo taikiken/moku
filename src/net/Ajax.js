@@ -166,7 +166,7 @@ export default class Ajax {
   option(path, method, headers, formData) {
     // request option
     // const option = Object.assign({}, this.props);
-    const option = {...this.props};
+    const option = { ...this.props };
     option.method = method;
 
     // headers option
@@ -212,35 +212,37 @@ export default class Ajax {
     const request = this.option(path, method, headers, formData);
 
     // fetch start
-    return fetch(request)
-    // @param {Object} response - Ajax response
-      .then((response) => {
-        // may be success
-        if (response.status !== 200) {
-          throw new Error(`Ajax status error: (${response.status})`);
-        }
-        return response.json();
-      })
-      // @param {Object} - JSON パース済み Object
-      .then((json) => {
-        // complete event fire
-        if (Type.method(this.resolve)) {
-          this.resolve(json);
-        }
-        // flag true
-        this.enable();
-        return json;
-      })
-      // @param {Error} - Ajax something error
-      .catch((error) => {
-        // error event fire
-        if (Type.method(this.reject)) {
-          this.reject(error);
-        }
-        // flag true
-        this.enable();
-        return error;
-      });
+    return (
+      fetch(request)
+        // @param {Object} response - Ajax response
+        .then(response => {
+          // may be success
+          if (response.status !== 200) {
+            throw new Error(`Ajax status error: (${response.status})`);
+          }
+          return response.json();
+        })
+        // @param {Object} - JSON パース済み Object
+        .then(json => {
+          // complete event fire
+          if (Type.method(this.resolve)) {
+            this.resolve(json);
+          }
+          // flag true
+          this.enable();
+          return json;
+        })
+        // @param {Error} - Ajax something error
+        .catch(error => {
+          // error event fire
+          if (Type.method(this.reject)) {
+            this.reject(error);
+          }
+          // flag true
+          this.enable();
+          return error;
+        })
+    );
   }
 
   /**

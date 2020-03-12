@@ -36,7 +36,9 @@ export default class Queries {
   static naked(targetText) {
     // const queryString = Queries.amp(targetText);
     const queryString = Text.and(targetText);
-    return queryString.substr(0, 1) === '?' ? queryString.substring(1) : targetText;
+    return queryString.substr(0, 1) === '?'
+      ? queryString.substring(1)
+      : targetText;
   }
 
   /**
@@ -49,7 +51,7 @@ export default class Queries {
     const pairs = query.split('&');
     const data = {};
     const keys = [];
-    pairs.map((pair) => {
+    pairs.map(pair => {
       let keyName = '';
       if (pair && pair.indexOf('=') !== -1) {
         // @type {Array<string>} - `key=value` を `=` で分割する

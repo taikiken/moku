@@ -73,7 +73,6 @@ export default class Cycle extends EventDispatcher {
     return instance;
   }
 
-
   // ----------------------------------------
   // CALLBACK
   // ----------------------------------------
@@ -108,7 +107,7 @@ export default class Cycle extends EventDispatcher {
   constructor(checkSymbol) {
     // checkSymbol と singleton が等価かをチェックします
     if (checkSymbol !== singletonSymbol) {
-      throw new Error('don\'t use new, instead use static factory method.');
+      throw new Error("don't use new, instead use static factory method.");
     }
     // instance 作成済みかをチェックし instance が null の時 this を設定します
     if (instance !== null) {

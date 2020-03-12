@@ -54,7 +54,7 @@ export default class Polling extends EventDispatcher {
    * @listens {Cycle.UPDATE} Cycle.UPDATE が発生すると実行されます
    * @returns {boolean} Polling.UPDATE event が発生すると true を返します
    */
-  onUpdate = (events) => {
+  onUpdate = events => {
     // 現在時間
     // @type {number}
     const present = Date.now();
@@ -63,7 +63,7 @@ export default class Polling extends EventDispatcher {
     // @type {number} - 開始時間
     const { begin, interval } = this;
     // 現在時間 が interval より大きくなったか
-    if ((present - begin) >= interval) {
+    if (present - begin >= interval) {
       // event 発火
       this.fire(this.updateEvents(begin, present, events));
       // 開始時間を update
