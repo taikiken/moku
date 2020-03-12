@@ -48,7 +48,7 @@ export default class Rising extends EventDispatcher {
    * @param {ScrollEvents} scrollEvents scroll events object
    * @return {boolean} 衝突時に true を返します
    */
-  onUpdate = (scrollEvents) => {
+  onUpdate = scrollEvents => {
     if (!scrollEvents.changed) {
       return false;
     }

@@ -29,7 +29,7 @@ const init = () => {
     return;
   }
   // props = Object.assign({}, devices.props);
-  props = {...devices.props};
+  props = { ...devices.props };
   const { ua } = devices;
   const windows = !!ua.match(/windows/i);
   if (windows) {

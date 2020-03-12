@@ -1,11 +1,5 @@
-# bundle
-*.bundle.js
+# node
+node_modules/*
+dist/*
+build/*
 
-# min
-*.min.js
-
-# test
-test
-
-# dist
-dist/moku.bundle.js

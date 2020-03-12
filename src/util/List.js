@@ -55,7 +55,7 @@ export default class List {
    * @see https://gist.github.com/yesvods/51af798dd1e7058625f4
    */
   static marge(...args) {
-    return args.reduce((acc, val) => ([...acc, ...val]));
+    return args.reduce((acc, val) => [...acc, ...val]);
   }
 
   /**

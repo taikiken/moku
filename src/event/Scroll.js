@@ -70,7 +70,9 @@ export default class Scroll extends EventDispatcher {
    * @returns {number} time out id
    */
   static jump(y = 0, delay = 0) {
-    return setTimeout(() => { window.scrollTo(0, y); }, delay);
+    return setTimeout(() => {
+      window.scrollTo(0, y);
+    }, delay);
   }
 
   /**
@@ -88,11 +90,10 @@ export default class Scroll extends EventDispatcher {
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Window/pageYOffset
    */
   static y() {
-    return (typeof window.pageYOffset !== 'undefined')
+    return typeof window.pageYOffset !== 'undefined'
       ? window.pageYOffset
-      : (document.documentElement
-        || document.body.parentNode
-        || document.body).scrollTop;
+      : (document.documentElement || document.body.parentNode || document.body)
+          .scrollTop;
   }
 
   // ---------------------------------------------------
@@ -103,7 +104,7 @@ export default class Scroll extends EventDispatcher {
    * - window scroll event 発生後に scroll top 位置をもたせた Scroll.SCROLL custom event を発火します
    * @param {?Event} event window scroll event, nullable
    */
-  onScroll = (event) => {
+  onScroll = event => {
     // @type {number} - scroll top
     const y = Scroll.y();
     // @type {number} - window height
@@ -141,7 +142,7 @@ export default class Scroll extends EventDispatcher {
   constructor(checkSymbol) {
     // checkSymbol と singleton が等価かをチェックします
     if (checkSymbol !== singletonSymbol) {
-      throw new Error('don\'t use new, instead use static factory method.');
+      throw new Error("don't use new, instead use static factory method.");
     }
     // instance 作成済みかをチェックし instance が null の時 this を設定します
     if (instance !== null) {
@@ -167,7 +168,7 @@ export default class Scroll extends EventDispatcher {
      * @type {number}
      * @default -1
      */
-    this.previous = -1
+    this.previous = -1;
     // 設定済み instance を返します
     return this;
   }

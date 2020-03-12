@@ -1,11 +1,12 @@
 extends:
   - "eslint:recommended"
+  - "prettier"
 rules:
-  # http://eslint.org/docs/rules/indent
-  indent:
-    - 2
-    - 2
-    - SwitchCase: 1
+#  # http://eslint.org/docs/rules/indent
+#  indent:
+#    - 2
+#    - 2
+#    - SwitchCase: 1
 
   # http://eslint.org/docs/rules/require-jsdoc
   # JSDoc 必須
@@ -26,24 +27,25 @@ rules:
   # http://eslint.org/docs/rules/no-console
   # console.warn, console.error は許可
   no-console:
-    - 1
-    - allow:
-        - warn
-        - error
+    - 0
+#    - 1
+#    - allow:
+#      - warn
+#      - error
 
   # http://eslint.org/docs/rules/max-len#ignorecomments
   max-len:
-    - 1
-    - ignoreComments: true
-      code: 100
+   - 1
+   - ignoreComments: true
+     code: 100
 
   # https://eslint.org/docs/rules/spaced-comment
   spaced-comment:
-    - 1
-    - 'always'
-    - line:
-        markers: ['/']
-        exceptions: ['-', '+']
+  - 1
+  - 'always'
+  - line:
+      markers: ['/']
+      exceptions: ['-', '+']
 
   # https://eslint.org/docs/rules/no-return-assign
   no-return-assign:

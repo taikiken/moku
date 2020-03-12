@@ -126,15 +126,15 @@ export default class Iro {
     s = l > 0.5 ? d / (2 - maxValue - minValue) : d / (maxValue + minValue);
     switch (maxValue) {
       case r: {
-        h = ((g - b) / d) + (g < b ? 6 : 0);
+        h = (g - b) / d + (g < b ? 6 : 0);
         break;
       }
       case g: {
-        h = ((b - r) / d) + 2;
+        h = (b - r) / d + 2;
         break;
       }
       case b: {
-        h = ((r - g) / d) + 4;
+        h = (r - g) / d + 4;
         break;
       }
       default: {
@@ -149,7 +149,7 @@ export default class Iro {
       s,
       l,
     };
-  }// rgb2hsl
+  } // rgb2hsl
 
   /**
    * HSL to RGB で `saturation !== 0` な時の R, G, B 変換 helper です
@@ -166,13 +166,13 @@ export default class Iro {
       t -= 1;
     }
     if (t < ONE_SIX) {
-      return point + ((q - point) * 6 * t);
+      return point + (q - point) * 6 * t;
     }
     if (t < HALF) {
       return q;
     }
     if (t < TWO_THREE) {
-      return point + ((q - point) * (TWO_THREE - t) * 6);
+      return point + (q - point) * (TWO_THREE - t) * 6;
     }
     return point;
   }
@@ -189,8 +189,8 @@ export default class Iro {
     let g = l;
     let b = l;
     if (s !== 0) {
-      const q = l < 0.5 ? l * (1 + s) : (l + s) - (l * s);
-      const point = (2 * l) - q;
+      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      const point = 2 * l - q;
       r = Iro.hue2rgb(point, q, h + ONE_THREE);
       g = Iro.hue2rgb(point, q, h);
       b = Iro.hue2rgb(point, q, h - ONE_THREE);
@@ -238,15 +238,15 @@ export default class Iro {
     // ---
     switch (maxValue) {
       case red: {
-        h = ((green - blue) / d) + (green < blue ? 6 : 0);
+        h = (green - blue) / d + (green < blue ? 6 : 0);
         break;
       }
       case green: {
-        h = ((blue - red) / d) + 2;
+        h = (blue - red) / d + 2;
         break;
       }
       case blue: {
-        h = ((red - green) / d) + 4;
+        h = (red - green) / d + 4;
         break;
       }
       default: {
@@ -271,10 +271,10 @@ export default class Iro {
    */
   static hsv2rgb(h, s, v) {
     const i = mathFloor(h * 6);
-    const f = (h * 6) - i;
+    const f = h * 6 - i;
     const point = v * (1 - s);
-    const q = v * (1 - (f * s));
-    const t = v * (1 - ((1 - f) * s));
+    const q = v * (1 - f * s);
+    const t = v * (1 - (1 - f) * s);
     let r = 0;
     let g = 0;
     let b = 0;
@@ -344,7 +344,10 @@ export default class Iro {
       return null;
     }
     const pattern = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-    const color = hex.replace(pattern, (m, r, g, b) => `${r}${r}${g}${g}${b}${b}`);
+    const color = hex.replace(
+      pattern,
+      (m, r, g, b) => `${r}${r}${g}${g}${b}${b}`
+    );
     return color.length === 7 ? color : `#${color}`;
   }
 
@@ -362,10 +365,10 @@ export default class Iro {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hexString);
     return Array.isArray(result) && result.length === 4
       ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16),
-      }
+          r: parseInt(result[1], 16),
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16),
+        }
       : null;
   }
 

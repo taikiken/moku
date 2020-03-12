@@ -39,7 +39,7 @@ export default class NativeResizing extends EventDispatcher {
    * - changed {boolean} - scroll top が前回と変わっていたら true
    * @param {?Event} [event] scroll / resize Event
    */
-  onUpdate = (event) => {
+  onUpdate = event => {
     // @type {number} - scroll top
     const y = Scroll.y();
     // @type {number} - previous scroll top
@@ -53,12 +53,13 @@ export default class NativeResizing extends EventDispatcher {
     const bodyWidth = document.body.clientWidth;
     const bodyHeight = document.body.clientHeight;
     // @type {boolean} - 移動したかを表します,
-    const changed = event === null
-      || previous !== y
-      || height !== this.window.height
-      || width !== this.window.width
-      || bodyWidth !== this.body.width
-      || bodyHeight !== this.body.height;
+    const changed =
+      event === null ||
+      previous !== y ||
+      height !== this.window.height ||
+      width !== this.window.width ||
+      bodyWidth !== this.body.width ||
+      bodyHeight !== this.body.height;
     // ----------------------------------------------
     // @type {ScrollEvents} - events
     const events = this.events.clone();

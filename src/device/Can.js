@@ -44,13 +44,7 @@ export default class Can {
    * - ''
    * @type {[string,string,string,string,string]}
    */
-  static vendors = [
-    '-webkit-',
-    '-moz-',
-    '-ms-',
-    '-o-',
-    '',
-  ];
+  static vendors = ['-webkit-', '-moz-', '-ms-', '-o-', ''];
 
   /**
    * CSS3 transition が使用可能かを調べます
@@ -59,8 +53,9 @@ export default class Can {
   static transition() {
     if (can.transition === null) {
       const { style } = document.createElement('p');
-      can.transition = Can.vendors
-        .some(prefix => (typeof style[`${prefix}transition`] !== 'undefined'));
+      can.transition = Can.vendors.some(
+        prefix => typeof style[`${prefix}transition`] !== 'undefined'
+      );
     }
     return can.transition;
   }
@@ -72,8 +67,9 @@ export default class Can {
   static transform() {
     if (can.transform === null) {
       const { style } = document.createElement('p');
-      can.transform = Can.vendors
-        .some(prefix => typeof style[`${prefix}transform`] !== 'undefined');
+      can.transform = Can.vendors.some(
+        prefix => typeof style[`${prefix}transform`] !== 'undefined'
+      );
     }
     return can.transform;
   }
@@ -149,12 +145,13 @@ export default class Can {
       let webgl = false;
       if (Can.canvas()) {
         const canvas = document.createElement('canvas');
-        const webGLContext = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+        const webGLContext =
+          canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
         try {
           webgl = !!(
-            window.WebGLRenderingContext
-            && webGLContext
-            && webGLContext.getShaderPrecisionFormat
+            window.WebGLRenderingContext &&
+            webGLContext &&
+            webGLContext.getShaderPrecisionFormat
           );
         } catch (e) {
           webgl = false;

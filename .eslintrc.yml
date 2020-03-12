@@ -1,10 +1,8 @@
 parser: 'babel-eslint'
-#plugins: [
-#  'react',
-#  'jsx-a11y'
-#]
+plugins:
+  - 'prettier'
 env:
-  browser: true
   node: true
+  browser: true
   es6: true
 extends: './eslint.extends.yml'

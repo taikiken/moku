@@ -31,16 +31,12 @@ const version = () => {
   }
   // iOS N.N.N 削除
   numbers.shift();
-  const versions = numbers.map((number) => {
+  const versions = numbers.map(number => {
     const int = parseInt(number, 10);
     return Number.isNaN(int) ? 0 : int;
   });
   props.build = versions.join('.');
-  const [
-    strMajor,
-    strMinor,
-    strBuild,
-  ] = versions;
+  const [strMajor, strMinor, strBuild] = versions;
   const major = parseInt(strMajor, 10);
   let minor = 0;
   if (versions.length >= 2) {
@@ -64,7 +60,7 @@ const init = () => {
     return;
   }
   // props = Object.assign({}, devices.props);
-  props = {...devices.props};
+  props = { ...devices.props };
   const { ua } = devices;
   const ipad = !!ua.match(/ipad/i);
   const ipod = !!ua.match(/ipod/i);
