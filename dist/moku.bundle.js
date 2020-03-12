@@ -16899,7 +16899,7 @@ moku.version = function () {
 
 
 moku.buildTime = function () {
-  return 1584014718589;
+  return 1584016190720;
 };
 /**
  * moku.event
@@ -19931,7 +19931,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 /**
  * `IntersectionObserver` 表示されたかをチェックします
- * - 画面縦幅より大きな `HTMLElement` には反応しないので注意します
+ * - 画面縦幅より大きな `HTMLElement` には反応しないので注意します ?? <- 反応するかも
  */
 
 var Intersection = /*#__PURE__*/function () {
@@ -19992,6 +19992,10 @@ var Intersection = /*#__PURE__*/function () {
         return _this2.activate(element);
       });
     }
+    /**
+     * `IntersectionObserver` 処理を中断します
+     */
+
   }, {
     key: "destroy",
     value: function destroy() {
@@ -20002,26 +20006,50 @@ var Intersection = /*#__PURE__*/function () {
       });
       this.disconnect();
     }
+    /**
+     * `disconnect` 実行します
+     */
+
   }, {
     key: "disconnect",
     value: function disconnect() {
       this.observer.disconnect();
     }
+    /**
+     * `IntersectionObserver`.observe 実行します
+     * @param {HTMLElement} element 処理ターゲット
+     */
+
   }, {
     key: "activate",
     value: function activate(element) {
       this.observer.observe(element);
     }
+    /**
+     * `IntersectionObserver`.unobserve 実行します
+     * @param {HTMLElement} element 処理ターゲット
+     */
+
   }, {
     key: "deactivate",
     value: function deactivate(element) {
       this.observer.unobserve(element);
     }
+    /**
+     * intersect 処理を行います - override し使用します
+     * @param {IntersectionObserverEntry} entry hit object
+     */
+
   }, {
     key: "intersect",
     value: function intersect(entry) {
       console.log('Intersection.intersect - entry', entry);
     }
+    /**
+     * intersect から外れた処理を行います - override し使用します
+     * @param {IntersectionObserverEntry} entry hit object
+     */
+
   }, {
     key: "parallel",
     value: function parallel(entry) {

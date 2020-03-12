@@ -6,7 +6,7 @@
   <link href="//cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.css" rel="stylesheet" />
   <style>
     .arrive {
-      opacity: 0.5;
+      background-color: #edbec3!important;
     }
   </style>
 </head>
@@ -39,18 +39,25 @@
   var options = {
     root: null,
     rootMargin: '0px',
-    threshold: [0.5, 1],
+    // threshold: [0.5, 1],
+    threshold: [0.5],
   };
   var intersection = new Intersection([...document.querySelectorAll('.target')], options);
   var Text = util.Text;
 
   intersection.intersect = function (entry) {
-    console.log('entry', entry)
+    console.log('intersect - entry.boundingClientRect', entry.boundingClientRect)
+    console.log('intersect - entry.intersectionRect', entry.intersectionRect)
     entry.target.classList.add('arrive')
   }
   intersection.parallel = function (entry) {
-    console.log('parallel', entry)
-    entry.target.classList.remove('arrive')
+    // console.log('parallel - entry.target.boundingClientRect', entry.target.getBoundingClientRect())
+    // entry.target.classList.remove('arrive')
+    if (entry.target.classList.contains('arrive')) {
+      console.log('parallel - entry.boundingClientRect', entry.boundingClientRect)
+      console.log('parallel - entry.intersectionRect', entry.intersectionRect)
+      intersection.deactivate(entry.target);
+    }
   }
 
   //  Text.dash
