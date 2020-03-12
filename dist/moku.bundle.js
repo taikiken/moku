@@ -16899,7 +16899,7 @@ moku.version = function () {
 
 
 moku.buildTime = function () {
-  return 1584010687008;
+  return 1584014718589;
 };
 /**
  * moku.event
@@ -19945,12 +19945,13 @@ var Intersection = /*#__PURE__*/function () {
 
   /**
    * `IntersectionObserver` 準備します
-   * @param {Array<HTMLElement>} elements target Element list
+   * @param {Array<HTMLElement>} [elements=[]] target Element list
    * @param {{root: ?HTMLElement, rootMargin: string, threshold: Array<number>}} options `IntersectionObserver` option
    */
-  function Intersection(elements) {
+  function Intersection() {
     var _this = this;
 
+    var elements = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
     var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {
       root: null,
       rootMargin: '0px',

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Mocha</title>
+  <link href="//cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.css" rel="stylesheet" />
+  <style>
+    .arrive {
+      opacity: 0.5;
+    }
+  </style>
+</head>
+<body>
+<div id="mocha"></div>
+<div style="height: 100vh;">empty</div>
+<div class="target" style="height: 110vh; background-color: #cccccc;">1</div>
+<div class="target" style="height: 200px; background-color: #444444;">2</div>
+<div class="target" style="height: 160px; background-color: #fef2c0;">3</div>
+<div class="target" style="height: 110px; background-color: #bbcbea;">4</div>
+<div style="height: 100vh;">empty</div>
+<script src="//cdn.rawgit.com/jquery/jquery/2.1.4/dist/jquery.min.js"></script>
+<script src="//cdn.rawgit.com/Automattic/expect.js/0.3.1/index.js"></script>
+<script src="//cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.js"></script>
+<script src="http://chaijs.com/chai.js"></script>
+<script src="../dist/moku.bundle.js" charset="utf-8"></script>
+<script>
+  // mochaの機能を呼び出します。ここでは、BDDとTDDを使用します。
+  mocha.setup('bdd');
+  mocha.setup('tdd');
+  var assert = chai.assert;
+  // expectの機能を読み込み
+  var expect = chai.expect;
+  // shouldの機能を読み込み
+  chai.Should();
+</script>
+<script>
+  var util = window.moku.util;
+  var Intersection = util.Intersection;
+  var options = {
+    root: null,
+    rootMargin: '0px',
+    threshold: [0.5, 1],
+  };
+  var intersection = new Intersection([...document.querySelectorAll('.target')], options);
+  var Text = util.Text;
+
+  intersection.intersect = function (entry) {
+    console.log('entry', entry)
+    entry.target.classList.add('arrive')
+  }
+  intersection.parallel = function (entry) {
+    console.log('parallel', entry)
+    entry.target.classList.remove('arrive')
+  }
+
+  //  Text.dash
+  describe('#Intersection', function() {
+
+    console.log('intersection', typeof intersection)
+
+    it("intersection.start is 'undefined'", function() {
+      expect(intersection.start()).to.eql(undefined);
+    });
+    it("typeof intersection is 'object'", function() {
+      expect(typeof intersection).to.eql('object');
+    });
+  });
+  // assert.typeOf(new Intersection(), 'object', 'new Intersection is object');
+
+  // console.log('Intersection', typeof new Intersection())
+</script>
+<script>
+  mocha.checkLeaks();
+  mocha.globals(['jQuery']);
+  mocha.run();
+</script>
+</body>
+</html>
