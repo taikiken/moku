@@ -14,6 +14,7 @@
 
 /**
  * ある点の座標(x, y)と時間(time)を管理します
+ * @class Vectors
  */
 export default class Vectors {
   /**

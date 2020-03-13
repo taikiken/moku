@@ -12,6 +12,7 @@
 
 /**
  * scroll 操作を強制的に不可能にします
+ * @class Freeze
  */
 export default class Freeze {
   /**

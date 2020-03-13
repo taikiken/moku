@@ -12,6 +12,7 @@
 
 /**
  * Array.from(nodeList) が Android で error になるから polyfill する
+ * @class NodeList
  */
 export default class NodeLists {
   /**

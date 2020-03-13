@@ -101,22 +101,29 @@ import Elements from './dom/Elements';
  * **moku**
  * - global Object
  * - public な Class はここからアクセス可能です
- * @type {Object}
+ * @type {{}}
  */
 const moku = {};
+
 /**
  * version number を取得します
- * @returns {string} version number を返します
+ * @return {string} version number を返します
  */
 moku.version = () => process.env.BUILD_VERSION;
+
 /**
  * build 日時を取得します
  * @returns {string}  build 日時を返します
  */
 moku.buildTime = () => process.env.BUILD_TIME;
+
+// /**
+//  * moku.event
+//  * @type {Object} moku.event object を返します
+//  */
 /**
- * moku.event
- * @type {Object} moku.event object を返します
+ * moku.event - moku.event object
+ * @type {{Wheel: Wheel, ResizingSingle: ResizingSingle, Touching: Touching, Resizing: Resizing, EventDispatcher: EventDispatcher, Swipe: Swipe, Events: Events, Scroll: Scroll, NativeResizing: NativeResizing, NativeResizingSingle: NativeResizingSingle, Rising: Rising, Scrolling: Scrolling}}
  */
 moku.event = {
   EventDispatcher,
@@ -132,9 +139,14 @@ moku.event = {
   NativeResizing,
   NativeResizingSingle,
 };
+
+// /**
+//  * moku.net
+//  * @type {Object} moku.net object を返します
+//  */
 /**
  * moku.net
- * @type {Object} moku.net object を返します
+ * @type {{Cookie: Cookie, AjaxThunk: AjaxThunk, Queries: Queries, Ajax: Ajax}}
  */
 moku.net = {
   Ajax,
@@ -142,9 +154,14 @@ moku.net = {
   Queries,
   AjaxThunk,
 };
+
+// /**
+//  * moku.tick
+//  * @type {Object} moku.tick object を返します
+//  */
 /**
  * moku.tick
- * @type {Object} moku.tick object を返します
+ * @type {{Polling: Polling, Rate: Rate, Fps: Fps, Cycle: Cycle}}
  */
 moku.tick = {
   Cycle,
@@ -152,9 +169,14 @@ moku.tick = {
   Polling,
   Rate,
 };
+
+// /**
+//  * moku.util
+//  * @type {{Intersection: Intersection, Type: Type, Hit: Hit, Times: Times, Iro: Iro, List: List, Text: Text, Vectors: Vectors}}
+//  */
 /**
  * moku.util
- * @type {Object} moku.util object を返します
+ * @type {{Intersection: Intersection, Type: Type, Hit: Hit, Times: Times, Iro: Iro, List: List, Text: Text, Vectors: Vectors}}
  */
 moku.util = {
   Type,
@@ -166,18 +188,33 @@ moku.util = {
   Iro,
   Intersection,
 };
+
+// /**
+//  * moku.util
+//  * @type {Object} moku.css object を返します
+//  */
 /**
- * moku.util
- * @type {Object} moku.css object を返します
+ * moku.css
+ * @type {{Can: Can, Style: Style, Patterns: Patterns}}
  */
 moku.css = {
   Patterns,
   Style,
   Can,
 };
+// /**
+//  * moku.util
+//  * @type {Object} moku.dom object を返します
+//  */
+
+// /**
+//  * moku.util
+//  * @type {{Bounding: Bounding, Elements: Elements, Classes: Classes}}
+//  */
+
 /**
- * moku.util
- * @type {Object} moku.dom object を返します
+ * moku.dom
+ * @type {{Bounding: Bounding, Elements: Elements, Classes: Classes}}
  */
 moku.dom = {
   Bounding,
@@ -185,6 +222,10 @@ moku.dom = {
   Elements,
 };
 
+/**
+ * moku.device
+ * @type {{Can: Can, os: {Windows: Windows, iOS: iOS, Android: Android}, devices: {app: string, safari: boolean, ua: string, browsers: {standard: boolean, safari: boolean, chrome: boolean, firefox: boolean, numbers: number[], ie10: boolean, ie11: boolean, version: number, edgios: boolean, fxios: boolean, edge: boolean, major: number, build: string, edga: boolean, crios: boolean, ie7: boolean, ie6: boolean, ie: boolean, ie9: boolean, ie8: boolean}, props: {standard: boolean, android: boolean, standalone: boolean, numbers: number[], ios: boolean, windows: boolean, ipod: boolean, iphone: boolean, version: number, tablet: boolean, major: number, phone: boolean, webView: boolean, build: string, ipad: boolean, hd: boolean}}, browser: {Safari: Safari, Chrome: Chrome, EdgA: EdgA, FxiOS: FxiOS, EdgiOS: EdgiOS, CriOS: CriOS, IE: IE, Edge: Edge, Firefox: Firefox}}}
+ */
 moku.device = {
   Can,
   devices,
@@ -207,9 +248,15 @@ moku.device = {
 };
 
 // export
+// /**
+//  * global object `moku`
+//  * @type {Object}
+//  */
+
 /**
  * global object `moku`
- * @type {Object}
+ * @global
+ * @type {{}}
  */
 window.moku = moku;
 

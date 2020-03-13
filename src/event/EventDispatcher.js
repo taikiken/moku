@@ -143,7 +143,7 @@ export default class EventDispatcher {
    * リスナー配列を調べ可能なら空にします
    * - リスナーリストが全て null の時に 空配列にします
    * @param {string} type event type（種類）
-   * @param {Array<Function>} types event type に登録されている配列（関数）
+   * @param {Array.<Function>} types event type に登録されている配列（関数）
    * @returns {boolean} 成功・不成功の真偽値を返します, true: 空にした
    */
   clean(type, types) {

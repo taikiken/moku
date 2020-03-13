@@ -13,45 +13,50 @@
 /**
  * [native code] userAgent
  * `device/index.js`
- * @type {string}
+ * @constant {string}
  */
 const ua = navigator.userAgent;
 
 /**
  * [native code] appVersion
  * `device/index.js`
- * @type {string}
+ * @constant {string}
  */
 const app = navigator.appVersion;
 
 /**
  * Safari - userAgent に `Safari` が含まれる
  * - 【注意】Safari browser を保証しない
- * @type {boolean}
+ * @constant {boolean}
  */
 const safari = !!ua.match(/safari/i);
 
+// /**
+//  * device property
+//  * `device/index.js`
+//  * @constant {{
+//  *  ios: boolean,
+//  *  ipad: boolean,
+//  *  ipod: boolean,
+//  *  iphone: boolean,
+//  *  windows: boolean,
+//  *  android: boolean,
+//  *  standard: boolean,
+//  *  phone: boolean,
+//  *  tablet: boolean,
+//  *  hd: boolean,
+//  *  webView: boolean,
+//  *  standalone: boolean,
+//  *  version: number,
+//  *  major: number,
+//  *  build: string,
+//  *  numbers: [?number,?number,?number]
+//  * }}
+//  */
+
 /**
- * device property
- * `device/index.js`
- * @type {{
- * ios: boolean,
- * ipad: boolean,
- * ipod: boolean,
- * iphone: boolean,
- * windows: boolean,
- * android: boolean,
- * standard: boolean,
- * phone: boolean,
- * tablet: boolean,
- * hd: boolean,
- * webView: boolean,
- * standalone: boolean,
- * version: number,
- * major: number,
- * build: string,
- * numbers: [?number,?number,?number]
- * }}
+ * device property - `device/index.js`
+ * @type {{standard: boolean, android: boolean, standalone: boolean, numbers: number[], ios: boolean, windows: boolean, ipod: boolean, iphone: boolean, version: number, tablet: boolean, major: number, phone: boolean, webView: boolean, build: string, ipad: boolean, hd: boolean}}
  */
 const props = {
   ios: false,
@@ -72,31 +77,36 @@ const props = {
   version: -1,
 };
 
+// /**
+//  * browser property
+//  * `device/index.js`
+//  * @constant {{
+//  *   safari: boolean,
+//  *   chrome: boolean,
+//  *   firefox: boolean,
+//  *   ie: boolean,
+//  *   ie6: boolean,
+//  *   ie7: boolean,
+//  *   ie8: boolean,
+//  *   ie9: boolean,
+//  *   ie10: boolean,
+//  *   ie11: boolean,
+//  *   edge: boolean,
+//  *   crios: boolean,
+//  *   fxios: boolean,
+//  *   edgios: boolean,
+//  *   edga: boolean,
+//  *   standard: boolean,
+//  *   build: string,
+//  *   major: number,
+//  *   numbers: [null,null,null],
+//  *   version: number
+//  * }}
+//  */
+
 /**
- * browser property
- * `device/index.js`
- * @type {{
- *   safari: boolean,
- *   chrome: boolean,
- *   firefox: boolean,
- *   ie: boolean,
- *   ie6: boolean,
- *   ie7: boolean,
- *   ie8: boolean,
- *   ie9: boolean,
- *   ie10: boolean,
- *   ie11: boolean,
- *   edge: boolean,
- *   crios: boolean,
- *   fxios: boolean,
- *   edgios: boolean,
- *   edga: boolean,
- *   standard: boolean,
- *   build: string,
- *   major: number,
- *   numbers: [null,null,null],
- *   version: number
- * }}
+ * browser property - `device/index.js`
+ * @type {{standard: boolean, safari: boolean, chrome: boolean, firefox: boolean, numbers: number[], ie10: boolean, ie11: boolean, version: number, edgios: boolean, fxios: boolean, edge: boolean, major: number, build: string, edga: boolean, crios: boolean, ie7: boolean, ie6: boolean, ie: boolean, ie9: boolean, ie8: boolean}}
  */
 const browsers = {
   safari: false,
@@ -121,56 +131,61 @@ const browsers = {
   version: -1,
 };
 
+// /**
+//  * devices object
+//  * `device/index.js`
+//  * ```
+//  * @import device from './device';
+//  * const property = Object.assign({}, device);
+//  * ```
+//  * @constant {{
+//  *    ua: string,
+//  *    app: string,
+//  *    props: {
+//  *      ios: boolean,
+//  *      ipad: boolean,
+//  *      ipod: boolean,
+//  *      iphone: boolean,
+//  *      windows: boolean,
+//  *      android: boolean,
+//  *      standard: boolean,
+//  *      phone: boolean,
+//  *      tablet: boolean,
+//  *      hd: boolean,
+//  *      webView: boolean,
+//  *      standalone: boolean,
+//  *      version: number,
+//  *      major: number,
+//  *      build: string,
+//  *      numbers: (number|number|number)[]},
+//  *    safari: boolean,
+//  *    browsers: {
+//  *      safari: boolean,
+//  *      chrome: boolean,
+//  *      firefox: boolean,
+//  *      ie: boolean,
+//  *      ie6: boolean,
+//  *      ie7: boolean,
+//  *      ie8: boolean,
+//  *      ie9: boolean,
+//  *      ie10: boolean,
+//  *      ie11: boolean,
+//  *      edge: boolean,
+//  *      edgios: boolean,
+//  *      crios: boolean,
+//  *      fxios: boolean,
+//  *      standard: boolean,
+//  *      build: string,
+//  *      major: number,
+//  *      numbers: [null,null,null],
+//  *      version: number
+//  *    }
+//  * }}
+//  */
+
 /**
- * devices object
- * `device/index.js`
- * ```
- * @import device from './device';
- * const property = Object.assign({}, device);
- * ```
- * @type {{
- *    ua: string,
- *    app: string,
- *    props: {
- *      ios: boolean,
- *      ipad: boolean,
- *      ipod: boolean,
- *      iphone: boolean,
- *      windows: boolean,
- *      android: boolean,
- *      standard: boolean,
- *      phone: boolean,
- *      tablet: boolean,
- *      hd: boolean,
- *      webView: boolean,
- *      standalone: boolean,
- *      version: number,
- *      major: number,
- *      build: string,
- *      numbers: (number|number|number)[]},
- *    safari: boolean,
- *    browsers: {
- *      safari: boolean,
- *      chrome: boolean,
- *      firefox: boolean,
- *      ie: boolean,
- *      ie6: boolean,
- *      ie7: boolean,
- *      ie8: boolean,
- *      ie9: boolean,
- *      ie10: boolean,
- *      ie11: boolean,
- *      edge: boolean,
- *      edgios: boolean,
- *      crios: boolean,
- *      fxios: boolean,
- *      standard: boolean,
- *      build: string,
- *      major: number,
- *      numbers: [null,null,null],
- *      version: number
- *    }
- * }}
+ * devices object - `device/index.js`
+ * @type {{app: string, safari: boolean, ua: string, browsers: {standard: boolean, safari: boolean, chrome: boolean, firefox: boolean, numbers: number[], ie10: boolean, ie11: boolean, version: number, edgios: boolean, fxios: boolean, edge: boolean, major: number, build: string, edga: boolean, crios: boolean, ie7: boolean, ie6: boolean, ie: boolean, ie9: boolean, ie8: boolean}, props: {standard: boolean, android: boolean, standalone: boolean, numbers: number[], ios: boolean, windows: boolean, ipod: boolean, iphone: boolean, version: number, tablet: boolean, major: number, phone: boolean, webView: boolean, build: string, ipad: boolean, hd: boolean}}}
  */
 const devices = {
   ua,

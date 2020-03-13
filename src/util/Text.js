@@ -12,6 +12,7 @@
 
 /**
  * 文字列操作の utility
+ * @class Text
  */
 export default class Text {
   /**

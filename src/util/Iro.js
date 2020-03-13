@@ -83,8 +83,10 @@ const TWO_THREE = 2 / 3;
  * @static
  */
 const ONE_THREE = 1 / 3;
+
 /**
  * 色変換ユーティリティーです
+ * @class Iro
  */
 export default class Iro {
   // ----------------------------------------

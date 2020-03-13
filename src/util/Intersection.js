@@ -3,12 +3,13 @@ import 'intersection-observer';
 /**
  * `IntersectionObserver` 表示されたかをチェックします
  * - 画面縦幅より大きな `HTMLElement` には反応しないので注意します ?? <- 反応するかも
+ * @class Intersection
  */
 export default class Intersection {
   /**
    * `IntersectionObserver` callback
    * - `isIntersecting` property を使用し hit しているかを判定します
-   * @param {Array<IntersectionObserverEntry>} entries `IntersectionObserverEntry` list
+   * @param {Array.<IntersectionObserverEntry>} entries `IntersectionObserverEntry` list
    * @see https://wiki.developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API#Intersection_observer_concepts_and_usage
    * @see https://wiki.developer.mozilla.org/en-US/docs/Web/API/IntersectionObserverEntry
    */
@@ -18,8 +19,9 @@ export default class Intersection {
 
   /**
    * `IntersectionObserver` 準備します
-   * @param {Array<HTMLElement>} [elements=[]] target Element list
-   * @param {{root: ?HTMLElement, rootMargin: string, threshold: Array<number>}} options `IntersectionObserver` option
+   * @param {Array.<HTMLElement>} [elements=[]] target Element list
+   * @param {{root: ?HTMLElement, rootMargin: string, threshold: Array.<number>}} options `IntersectionObserver` option
+   * @constructor
    */
   constructor(
     elements = [],
@@ -30,11 +32,13 @@ export default class Intersection {
     }
   ) {
     /**
+     * @property elements
      * target Element list
-     * @type {Array<HTMLElement>}
+     * @type {Array.<HTMLElement>}
      */
     this.elements = elements;
     /**
+     * @property observer
      * `IntersectionObserver` instance
      * @type {IntersectionObserver}
      */

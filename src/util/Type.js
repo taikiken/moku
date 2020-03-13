@@ -13,6 +13,7 @@
 /**
  * 型チェックを行います
  * @static
+ * @class Type
  */
 export default class Type {
   /**

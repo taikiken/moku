@@ -70,6 +70,7 @@ const oneMonth = oneDay * 30;
 
 /**
  * 指定時間を計算し Date instance を作成します
+ * @class Times
  */
 export default class Times {
   // /**

@@ -12,6 +12,7 @@
 
 /**
  * 衝突判定を行います
+ * @class Hit
  */
 export default class Hit {
   /**

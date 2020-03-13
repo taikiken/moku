@@ -179,7 +179,7 @@ export default class Rate extends Polling {
     this.events = events;
     /**
      * 許容可能な rate
-     * @type {Array<number>}
+     * @type {Array.<number>}
      */
     this.rates = rates;
     /**

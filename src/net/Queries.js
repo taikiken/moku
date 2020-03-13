@@ -42,7 +42,7 @@ export default class Queries {
   /**
    * query を kye: value 形式にします
    * @param {string} targetText 操作対象文字列
-   * @returns {[Object, Array]} data, keys を返します
+   * @return {Array.<*>} data, keys を返します
    */
   static parse(targetText) {
     const query = Queries.naked(targetText);
@@ -52,7 +52,7 @@ export default class Queries {
     pairs.map(pair => {
       let keyName = '';
       if (pair && pair.indexOf('=') !== -1) {
-        // @type {Array<string>} - `key=value` を `=` で分割する
+        // @type {Array.<string>} - `key=value` を `=` で分割する
         const keyValue = pair.split('=');
         // @type {string} keyName
         const key = keyValue.shift();
@@ -82,7 +82,7 @@ export default class Queries {
   /**
    * URL query の key: value 形式を取得します
    * @param {string} targetText query
-   * @returns {[Object, Array]} URL query を key: value 形式で返します
+   * @returns {Array.<*>} URL query を key: value 形式で返します
    */
   static getAll(targetText = window.location.search) {
     // const [data] = Queries.parse(targetText);
@@ -101,7 +101,7 @@ export default class Queries {
     // const naked = Queries.naked(queryString);
     /**
      * query key を取得します - query key array
-     * @type {Array<string>}
+     * @type {Array.<string>}
      */
     this.keys = keys;
     /**

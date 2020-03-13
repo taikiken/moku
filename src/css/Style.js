@@ -48,7 +48,7 @@ export default class Style {
    * CSS 設定値の short hand をパターン {@link Patterns} から探し返します
    * @param {Object|Window} view Document.defaultView
    * @param {Element} element 操作対象 Element
-   * @param {Array<string>} patterns 調査対象 CSS property name の配列
+   * @param {Array.<string>} patterns 調査対象 CSS property name の配列
    * @returns {*|string|undefined} style value を返します
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Document/defaultView
    */

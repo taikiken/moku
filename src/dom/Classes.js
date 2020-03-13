@@ -81,7 +81,7 @@ export default class Classes {
     }
     // argument copy
     const element = node;
-    // @type {Array<string>} - element class を取得し配列へ変換
+    // @type {Array.<string>} - element class を取得し配列へ変換
     const elementClasses = Classes.get(element);
     // 置換え配列最後尾に新規 `className` を追加します
     elementClasses.push(className);
@@ -106,7 +106,7 @@ export default class Classes {
     }
     // argument copy
     const element = node;
-    // @type {Array<string>} - element class を取得し配列へ変換
+    // @type {Array.<string>} - element class を取得し配列へ変換
     const elementClasses = Classes.get(element);
     // 配列での削除対象 class の位置を取得します
     const index = elementClasses.indexOf(className);

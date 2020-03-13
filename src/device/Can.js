@@ -42,7 +42,7 @@ export default class Can {
    * - '-ms-',
    * - '-o-',
    * - ''
-   * @type {[string,string,string,string,string]}
+   * @property [string,string,string,string,string]
    */
   static vendors = ['-webkit-', '-moz-', '-ms-', '-o-', ''];
 
