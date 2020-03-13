@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: net/Cookie.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: net/Cookie.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Copyright (c) 2011-2016 inazumatv.com, inc.
+ * @author (at)taikiken / http://inazumatv.com
+ * @date 2016/12/16 - 14:45
+ *
+ * Distributed under the terms of the MIT license.
+ * http://www.opensource.org/licenses/mit-license.html
+ *
+ * This notice shall be included in all copies or substantial portions of the Software.
+ *
+ */
+
+// // --------------------------------
+// // copy [native code]
+// /**
+//  * copy [native code] - decodeURIComponent
+//  * @type {function}
+//  */
+// const decodeURIComponent = self.decodeURIComponent;
+// /**
+//  * copy [native code] - encodeURIComponent
+//  * @type {function}
+//  */
+// const encodeURIComponent = self.encodeURIComponent;
+// /**
+//  * copy [native code] - RegExp
+//  * @type {function}
+//  */
+// const RegExp = self.RegExp;
+
+/**
+ * cookie を取得・保存・削除します
+ */
+export default class Cookie {
+  /**
+   * cookie を処理します
+   *
+   * インスタンスは key 毎に作成します
+   * @param {string} keyName cookie key
+   * @param {?Date} [endValue=null] cookie end Date instance, null の時はプラウザ `quit` で削除されます
+   * @param {string} [defaultPath='/'] cookie path
+   * @param {string} [defaultDomain=''] cookie domain
+   * @param {boolean} [secureSetting=false] true: https 通信のときのみ、クッキーが送信されます
+   */
+  constructor(
+    keyName,
+    endValue = null,
+    defaultPath = '/',
+    defaultDomain = '',
+    secureSetting = false
+  ) {
+    let key = keyName;
+    let end = endValue;
+    let path = defaultPath;
+    let domain = defaultDomain;
+    let secure = secureSetting;
+
+    /**
+     * cookie key を取得します
+     * @returns {string} cookie key を返します
+     */
+    this.key = () => key;
+    /**
+     * cookie key を設定します
+     * @param {string} setting 設定する key name
+     */
+    this.setKey = setting => {
+      key = setting;
+    };
+    /**
+     * cookie end を取得します
+     * @returns {?Date} cookie end Date instance
+     */
+    this.end = () => end;
+    /**
+     * cookie end を設定します
+     * @param {Date} setting cookie end Date instance
+     */
+    this.setEnd = setting => {
+      end = setting;
+    };
+    /**
+     * cookie path を取得します
+     * @returns {string} cookie path を返します
+     */
+    this.path = () => path;
+    /**
+     * cookie path を設定します
+     * @param {string} setting 設定する path name
+     */
+    this.setPath = setting => {
+      path = setting;
+    };
+    /**
+     * cookie domain を取得します
+     * @returns {string} cookie domain を返します
+     */
+    this.domain = () => domain;
+    /**
+     * cookie domain を設定します
+     * @param {string} setting 設定する domain name
+     */
+    this.setDomain = setting => {
+      domain = setting;
+    };
+    /**
+     * https 通信のときのみクッキー送信を行うかのフラッグを取得します
+     * @returns {boolean} https 通信のときのみクッキー送信を行うかのフラッグ
+     */
+    this.secure = () => secure;
+    /**
+     * https 通信のときのみクッキー送信を行うかのフラッグを設定します
+     * @param {boolean} setting https 通信のときのみクッキー送信を行うかのフラッグ
+     */
+    this.setSecure = setting => {
+      secure = setting;
+    };
+  }
+
+  // ----------------------------------------
+  // METHOD
+  // ----------------------------------------
+  /**
+   * cookie value を取得します
+   * @returns {string|null} cookie value を返します
+   */
+  get() {
+    return Cookie.get(this.key());
+  }
+
+  /**
+   * cookie value を設定します
+   * @param {string} value cookie value
+   * @param {?Date} [end=null] cookie end Date instance, null の時はプラウザ `quit` で削除されます
+   * @param {string} [path='/'] cookie path
+   * @param {string} [domain=''] cookie domain
+   * @param {boolean} [secure=false] true: https 通信のときのみ、クッキーが送信されます
+   * @returns {string} 設定した cookie 文字列
+   */
+  set(value, end = this.end(), path = this.path(), domain = this.domain(), secure = this.secure()) {
+    return Cookie.set(this.key(), value, end, path, domain, secure);
+  }
+
+  /**
+   * cookie を削除します
+   * @returns {boolean} true: cookie 削除成功
+   */
+  remove() {
+    return Cookie.remove(this.key());
+  }
+
+  // ----------------------------------------
+  // STATIC METHOD
+  // ----------------------------------------
+  /**
+   * cookie value を取得します
+   * @param {string} key 取得する cookie key 名称
+   * @returns {string|null} cookie value
+   */
+  static get(key) {
+    const { cookie } = document;
+    const escapeKey = encodeURIComponent(key).replace(/[-.+*]/g, '\\$&amp;');
+    const exp = new RegExp(`(?:(?:^|.*;)\\s*${escapeKey}\\s*\\=\\s*([^;]*).*$)|^.*$`);
+    return decodeURIComponent(cookie.replace(exp, '$1')) || null;
+  }
+
+  /**
+   * cookie value を設定します
+   * @param {string} key cookie key
+   * @param {string} value cookie value
+   * @param {?Date} [end=null] cookie end date Date instance
+   * @param {string} [path=/] cookie path
+   * @param {string} [domain=''] cookie domain
+   * @param {boolean} [secure=false] true: https 通信のときのみ、クッキーが送信されます
+   * @returns {string} 設定した cookie 文字列
+   */
+  static set(key, value, end = null, path = '/', domain = '', secure = false) {
+    let cookie = `${encodeURIComponent(key)}=${encodeURIComponent(value)}`;
+    if (end) {
+      cookie += `; expires=${end.toUTCString()}`;
+    }
+    if (path) {
+      cookie += `; path=${path}`;
+    }
+    if (domain) {
+      cookie += `; domain=${domain}`;
+    }
+    if (secure) {
+      cookie += '; secure';
+    }
+    document.cookie = cookie;
+    return cookie;
+  }
+
+  /**
+   * cookie を削除します
+   *
+   * 現在時間より前の時刻を設定します
+   * @param {string} key cookie key
+   * @returns {boolean} true: 削除成功
+   */
+  static remove(key) {
+    if (Cookie.has(key)) {
+      Cookie.set(key, '', new Date());
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * cookie key が存在するかを調べます
+   * @param {string} key cookie key
+   * @returns {boolean} true: cookie key が存在します
+   */
+  static has(key) {
+    return Cookie.get(key) !== null;
+  }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Freeze.html">Freeze</a></li><li><a href="Hit.html">Hit</a></li><li><a href="Intersection.html">Intersection</a></li><li><a href="Iro.html">Iro</a></li><li><a href="List.html">List</a></li><li><a href="module.exports.html">exports</a></li><li><a href="module.exports_module.exports.html">exports</a></li><li><a href="NodeList.html">NodeList</a></li><li><a href="Text.html">Text</a></li><li><a href="Times.html">Times</a></li><li><a href="Type.html">Type</a></li><li><a href="Vectors.html">Vectors</a></li></ul><h3>Events</h3><ul><li><a href="global.html#event:ALIEN">ALIEN</a></li><li><a href="global.html#event:COLLISION">COLLISION</a></li><li><a href="global.html#event:SCROLL">SCROLL</a></li><li><a href="global.html#event:UPDATE">UPDATE</a></li></ul><h3>Global</h3><ul><li><a href="global.html#abort">abort</a></li><li><a href="global.html#activate">activate</a></li><li><a href="global.html#add">add</a></li><li><a href="global.html#addEventListener">addEventListener</a></li><li><a href="global.html#amp">amp</a></li><li><a href="global.html#and">and</a></li><li><a href="global.html#angle">angle</a></li><li><a href="global.html#app">app</a></li><li><a href="global.html#array">array</a></li><li><a href="global.html#base64">base64</a></li><li><a href="global.html#between">between</a></li><li><a href="global.html#betweenTime">betweenTime</a></li><li><a href="global.html#betweenX">betweenX</a></li><li><a href="global.html#betweenY">betweenY</a></li><li><a href="global.html#browsers">browsers</a></li><li><a href="global.html#camel">camel</a></li><li><a href="global.html#can">can</a></li><li><a href="global.html#CANCEL">CANCEL</a></li><li><a href="global.html#canvas">canvas</a></li><li><a href="global.html#change">change</a></li><li><a href="global.html#clean">clean</a></li><li><a href="global.html#clone">clone</a></li><li><a href="global.html#comma">comma</a></li><li><a href="global.html#compute">compute</a></li><li><a href="global.html#convert">convert</a></li><li><a href="global.html#current">current</a></li><li><a href="global.html#dash">dash</a></li><li><a href="global.html#day">day</a></li><li><a href="global.html#deactivate">deactivate</a></li><li><a href="global.html#destroy">destroy</a></li><li><a href="global.html#devices">devices</a></li><li><a href="global.html#disable">disable</a></li><li><a href="global.html#disconnect">disconnect</a></li><li><a href="global.html#dispatch">dispatch</a></li><li><a href="global.html#dispatchEvent">dispatchEvent</a></li><li><a href="global.html#dispose">dispose</a></li><li><a href="global.html#distance">distance</a></li><li><a href="global.html#divideByScalar">divideByScalar</a></li><li><a href="global.html#dot">dot</a></li><li><a href="global.html#down">down</a></li><li><a href="global.html#drag">drag</a></li><li><a href="global.html#duration">duration</a></li><li><a href="global.html#enable">enable</a></li><li><a href="global.html#END">END</a></li><li><a href="global.html#equals">equals</a></li><li><a href="global.html#exist">exist</a></li><li><a href="global.html#extension">extension</a></li><li><a href="global.html#factory">factory</a></li><li><a href="global.html#fill">fill</a></li><li><a href="global.html#fire">fire</a></li><li><a href="global.html#flatten">flatten</a></li><li><a href="global.html#freeze">freeze</a></li><li><a href="global.html#from">from</a></li><li><a href="global.html#get">get</a></li><li><a href="global.html#getAll">getAll</a></li><li><a href="global.html#getExtension">getExtension</a></li><li><a href="global.html#has">has</a></li><li><a href="global.html#hasEventListener">hasEventListener</a></li><li><a href="global.html#hasKey">hasKey</a></li><li><a href="global.html#hex2int">hex2int</a></li><li><a href="global.html#hex2rgb">hex2rgb</a></li><li><a href="global.html#hour">hour</a></li><li><a href="global.html#hsl2rgb">hsl2rgb</a></li><li><a href="global.html#hsv2rgb">hsv2rgb</a></li><li><a href="global.html#hue2rgb">hue2rgb</a></li><li><a href="global.html#id">id</a></li><li><a href="global.html#img">img</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#instance">instance</a></li><li><a href="global.html#int">int</a></li><li><a href="global.html#int2hex">int2hex</a></li><li><a href="global.html#int16">int16</a></li><li><a href="global.html#intersect">intersect</a></li><li><a href="global.html#isNormalize">isNormalize</a></li><li><a href="global.html#jump">jump</a></li><li><a href="global.html#kitkatEnd">kitkatEnd</a></li><li><a href="global.html#length">length</a></li><li><a href="global.html#marge">marge</a></li><li><a href="global.html#match">match</a></li><li><a href="global.html#method">method</a></li><li><a href="global.html#minute">minute</a></li><li><a href="global.html#moku">moku</a></li><li><a href="global.html#month">month</a></li><li><a href="global.html#MOVE">MOVE</a></li><li><a href="global.html#moving">moving</a></li><li><a href="global.html#multiplyByScalar">multiplyByScalar</a></li><li><a href="global.html#naked">naked</a></li><li><a href="global.html#nil">nil</a></li><li><a href="global.html#normalize">normalize</a></li><li><a href="global.html#number">number</a></li><li><a href="global.html#off">off</a></li><li><a href="global.html#offset">offset</a></li><li><a href="global.html#on">on</a></li><li><a href="global.html#onNativeEvent">onNativeEvent</a></li><li><a href="global.html#onScroll">onScroll</a></li><li><a href="global.html#option">option</a></li><li><a href="global.html#parallel">parallel</a></li><li><a href="global.html#parse">parse</a></li><li><a href="global.html#passive">passive</a></li><li><a href="global.html#point">point</a></li><li><a href="global.html#present">present</a></li><li><a href="global.html#props">props</a></li><li><a href="global.html#remove">remove</a></li><li><a href="global.html#removeEventListener">removeEventListener</a></li><li><a href="global.html#replace">replace</a></li><li><a href="global.html#reset">reset</a></li><li><a href="global.html#restore">restore</a></li><li><a href="global.html#rgb2hex">rgb2hex</a></li><li><a href="global.html#rgb2hsl">rgb2hsl</a></li><li><a href="global.html#rgb2hsv">rgb2hsv</a></li><li><a href="global.html#safari">safari</a></li><li><a href="global.html#save">save</a></li><li><a href="global.html#scrolling">scrolling</a></li><li><a href="global.html#select">select</a></li><li><a href="global.html#selects">selects</a></li><li><a href="global.html#set">set</a></li><li><a href="global.html#setRate">setRate</a></li><li><a href="global.html#settings">settings</a></li><li><a href="global.html#shortHand">shortHand</a></li><li><a href="global.html#shorthand">shorthand</a></li><li><a href="global.html#start">start</a></li><li><a href="global.html#START">START</a></li><li><a href="global.html#stop">stop</a></li><li><a href="global.html#string">string</a></li><li><a href="global.html#swipeCheck">swipeCheck</a></li><li><a href="global.html#test">test</a></li><li><a href="global.html#toInt">toInt</a></li><li><a href="global.html#touch">touch</a></li><li><a href="global.html#TOUCH">TOUCH</a></li><li><a href="global.html#transform">transform</a></li><li><a href="global.html#transition">transition</a></li><li><a href="global.html#truncate">truncate</a></li><li><a href="global.html#ua">ua</a></li><li><a href="global.html#undef">undef</a></li><li><a href="global.html#unwatch">unwatch</a></li><li><a href="global.html#up">up</a></li><li><a href="global.html#update">update</a></li><li><a href="global.html#updateEvents">updateEvents</a></li><li><a href="global.html#validate">validate</a></li><li><a href="global.html#watch">watch</a></li><li><a href="global.html#webgl">webgl</a></li><li><a href="global.html#week">week</a></li><li><a href="global.html#y">y</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri Mar 13 2020 18:23:41 GMT+0900 (GMT+09:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

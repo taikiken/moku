@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: event/events/TouchingEvents.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: event/events/TouchingEvents.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * license inazumatv.com
+ * @author (at)taikiken / http://inazumatv.com
+ * @date 2016/10/08
+ *
+ * Copyright (c) 2011-2015 inazumatv.com, inc.
+ *
+ * Distributed under the terms of the MIT license.
+ * http://www.opensource.org/licenses/mit-license.html
+ *
+ * This notice shall be included in all copies or substantial portions of the Software.
+ * TouchingEvents
+ */
+
+// events
+import Events from '../Events';
+
+// util
+import Vectors from '../../util/Vectors';
+
+/**
+ * {@link Touching} Events
+ */
+export default class TouchingEvents extends Events {
+  /**
+   * Touching events object 各プロパティを設定します
+   * @param {string} type event type
+   * @param {*} target イベント発生インスタンス
+   * @param {Event} origin 発生時のオリジナルイベント
+   * @param {Vectors} current 現在の位置
+   * @param {Vectors} between 前回位置との差
+   * @param {boolean} scrolling scroll したかの真偽値, true: scroll している
+   */
+  constructor(
+    type,
+    target,
+    origin,
+    current = new Vectors(),
+    between = new Vectors(),
+    scrolling = false
+  ) {
+    // super
+    super(type, target);
+    /**
+     * 発生時のオリジナルイベント
+     * @type {Event}
+     */
+    this.origin = origin;
+    /**
+     * 現在の位置
+     * @type {Vectors}
+     */
+    this.current = current;
+    /**
+     * 前回位置との差
+     * @type {Vectors}
+     */
+    this.between = between;
+    /**
+     * scroll したかの真偽値
+     * @type {boolean}
+     */
+    this.scrolling = scrolling;
+  }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="module.exports.html">exports</a></li></ul><h3>Events</h3><ul><li><a href="global.html#event:ALIEN">ALIEN</a></li><li><a href="global.html#event:COLLISION">COLLISION</a></li><li><a href="global.html#event:SCROLL">SCROLL</a></li><li><a href="global.html#event:UPDATE">UPDATE</a></li></ul><h3>Global</h3><ul><li><a href="global.html#abort">abort</a></li><li><a href="global.html#activate">activate</a></li><li><a href="global.html#add">add</a></li><li><a href="global.html#addEventListener">addEventListener</a></li><li><a href="global.html#amp">amp</a></li><li><a href="global.html#and">and</a></li><li><a href="global.html#angle">angle</a></li><li><a href="global.html#animationFrame">animationFrame</a></li><li><a href="global.html#app">app</a></li><li><a href="global.html#array">array</a></li><li><a href="global.html#base64">base64</a></li><li><a href="global.html#between">between</a></li><li><a href="global.html#betweenTime">betweenTime</a></li><li><a href="global.html#betweenX">betweenX</a></li><li><a href="global.html#betweenY">betweenY</a></li><li><a href="global.html#browsers">browsers</a></li><li><a href="global.html#build">build</a></li><li><a href="global.html#camel">camel</a></li><li><a href="global.html#can">can</a></li><li><a href="global.html#CANCEL">CANCEL</a></li><li><a href="global.html#canvas">canvas</a></li><li><a href="global.html#change">change</a></li><li><a href="global.html#clean">clean</a></li><li><a href="global.html#clone">clone</a></li><li><a href="global.html#comma">comma</a></li><li><a href="global.html#compute">compute</a></li><li><a href="global.html#convert">convert</a></li><li><a href="global.html#current">current</a></li><li><a href="global.html#dash">dash</a></li><li><a href="global.html#day">day</a></li><li><a href="global.html#deactivate">deactivate</a></li><li><a href="global.html#destroy">destroy</a></li><li><a href="global.html#devices">devices</a></li><li><a href="global.html#disable">disable</a></li><li><a href="global.html#disconnect">disconnect</a></li><li><a href="global.html#dispatch">dispatch</a></li><li><a href="global.html#dispatchEvent">dispatchEvent</a></li><li><a href="global.html#dispose">dispose</a></li><li><a href="global.html#distance">distance</a></li><li><a href="global.html#divideByScalar">divideByScalar</a></li><li><a href="global.html#dot">dot</a></li><li><a href="global.html#down">down</a></li><li><a href="global.html#drag">drag</a></li><li><a href="global.html#duration">duration</a></li><li><a href="global.html#enable">enable</a></li><li><a href="global.html#END">END</a></li><li><a href="global.html#equals">equals</a></li><li><a href="global.html#exist">exist</a></li><li><a href="global.html#extension">extension</a></li><li><a href="global.html#factory">factory</a></li><li><a href="global.html#fill">fill</a></li><li><a href="global.html#fire">fire</a></li><li><a href="global.html#flatten">flatten</a></li><li><a href="global.html#freeze">freeze</a></li><li><a href="global.html#from">from</a></li><li><a href="global.html#get">get</a></li><li><a href="global.html#getAll">getAll</a></li><li><a href="global.html#getExtension">getExtension</a></li><li><a href="global.html#has">has</a></li><li><a href="global.html#hasEventListener">hasEventListener</a></li><li><a href="global.html#hasKey">hasKey</a></li><li><a href="global.html#hd">hd</a></li><li><a href="global.html#hex2int">hex2int</a></li><li><a href="global.html#hex2rgb">hex2rgb</a></li><li><a href="global.html#hour">hour</a></li><li><a href="global.html#hsl2rgb">hsl2rgb</a></li><li><a href="global.html#hsv2rgb">hsv2rgb</a></li><li><a href="global.html#hue2rgb">hue2rgb</a></li><li><a href="global.html#id">id</a></li><li><a href="global.html#img">img</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#instance">instance</a></li><li><a href="global.html#int">int</a></li><li><a href="global.html#int2hex">int2hex</a></li><li><a href="global.html#int16">int16</a></li><li><a href="global.html#intersect">intersect</a></li><li><a href="global.html#ipad">ipad</a></li><li><a href="global.html#iphone">iphone</a></li><li><a href="global.html#ipod">ipod</a></li><li><a href="global.html#is">is</a></li><li><a href="global.html#is6">is6</a></li><li><a href="global.html#is7">is7</a></li><li><a href="global.html#is8">is8</a></li><li><a href="global.html#is9">is9</a></li><li><a href="global.html#is10">is10</a></li><li><a href="global.html#is11">is11</a></li><li><a href="global.html#isNormalize">isNormalize</a></li><li><a href="global.html#jump">jump</a></li><li><a href="global.html#kitKat">kitKat</a></li><li><a href="global.html#kitkatEnd">kitkatEnd</a></li><li><a href="global.html#length">length</a></li><li><a href="global.html#major">major</a></li><li><a href="global.html#marge">marge</a></li><li><a href="global.html#match">match</a></li><li><a href="global.html#method">method</a></li><li><a href="global.html#minute">minute</a></li><li><a href="global.html#moku">moku</a></li><li><a href="global.html#month">month</a></li><li><a href="global.html#MOVE">MOVE</a></li><li><a href="global.html#moving">moving</a></li><li><a href="global.html#multiplyByScalar">multiplyByScalar</a></li><li><a href="global.html#naked">naked</a></li><li><a href="global.html#nil">nil</a></li><li><a href="global.html#normalize">normalize</a></li><li><a href="global.html#number">number</a></li><li><a href="global.html#numbers">numbers</a></li><li><a href="global.html#off">off</a></li><li><a href="global.html#offset">offset</a></li><li><a href="global.html#on">on</a></li><li><a href="global.html#onNativeEvent">onNativeEvent</a></li><li><a href="global.html#onScroll">onScroll</a></li><li><a href="global.html#option">option</a></li><li><a href="global.html#parallel">parallel</a></li><li><a href="global.html#parse">parse</a></li><li><a href="global.html#passive">passive</a></li><li><a href="global.html#phone">phone</a></li><li><a href="global.html#point">point</a></li><li><a href="global.html#present">present</a></li><li><a href="global.html#props">props</a></li><li><a href="global.html#remove">remove</a></li><li><a href="global.html#removeEventListener">removeEventListener</a></li><li><a href="global.html#replace">replace</a></li><li><a href="global.html#reset">reset</a></li><li><a href="global.html#restore">restore</a></li><li><a href="global.html#rgb2hex">rgb2hex</a></li><li><a href="global.html#rgb2hsl">rgb2hsl</a></li><li><a href="global.html#rgb2hsv">rgb2hsv</a></li><li><a href="global.html#safari">safari</a></li><li><a href="global.html#save">save</a></li><li><a href="global.html#scrolling">scrolling</a></li><li><a href="global.html#select">select</a></li><li><a href="global.html#selects">selects</a></li><li><a href="global.html#set">set</a></li><li><a href="global.html#setRate">setRate</a></li><li><a href="global.html#settings">settings</a></li><li><a href="global.html#shortHand">shortHand</a></li><li><a href="global.html#shorthand">shorthand</a></li><li><a href="global.html#standalone">standalone</a></li><li><a href="global.html#standard">standard</a></li><li><a href="global.html#start">start</a></li><li><a href="global.html#START">START</a></li><li><a href="global.html#stop">stop</a></li><li><a href="global.html#string">string</a></li><li><a href="global.html#swipeCheck">swipeCheck</a></li><li><a href="global.html#tablet">tablet</a></li><li><a href="global.html#test">test</a></li><li><a href="global.html#toInt">toInt</a></li><li><a href="global.html#touch">touch</a></li><li><a href="global.html#TOUCH">TOUCH</a></li><li><a href="global.html#transform">transform</a></li><li><a href="global.html#transition">transition</a></li><li><a href="global.html#truncate">truncate</a></li><li><a href="global.html#ua">ua</a></li><li><a href="global.html#undef">undef</a></li><li><a href="global.html#unwatch">unwatch</a></li><li><a href="global.html#up">up</a></li><li><a href="global.html#update">update</a></li><li><a href="global.html#updateEvents">updateEvents</a></li><li><a href="global.html#validate">validate</a></li><li><a href="global.html#version">version</a></li><li><a href="global.html#watch">watch</a></li><li><a href="global.html#webgl">webgl</a></li><li><a href="global.html#webView">webView</a></li><li><a href="global.html#week">week</a></li><li><a href="global.html#y">y</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Fri Mar 13 2020 17:43:32 GMT+0900 (GMT+09:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
