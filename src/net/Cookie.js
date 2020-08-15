@@ -1,34 +1,4 @@
 /**
- * Copyright (c) 2011-2016 inazumatv.com, inc.
- * @author (at)taikiken / http://inazumatv.com
- * @date 2016/12/16 - 14:45
- *
- * Distributed under the terms of the MIT license.
- * http://www.opensource.org/licenses/mit-license.html
- *
- * This notice shall be included in all copies or substantial portions of the Software.
- *
- */
-
-// // --------------------------------
-// // copy [native code]
-// /**
-//  * copy [native code] - decodeURIComponent
-//  * @type {function}
-//  */
-// const decodeURIComponent = self.decodeURIComponent;
-// /**
-//  * copy [native code] - encodeURIComponent
-//  * @type {function}
-//  */
-// const encodeURIComponent = self.encodeURIComponent;
-// /**
-//  * copy [native code] - RegExp
-//  * @type {function}
-//  */
-// const RegExp = self.RegExp;
-
-/**
  * cookie を取得・保存・削除します
  */
 export default class Cookie {

@@ -9,15 +9,6 @@
  *
  * This notice shall be included in all copies or substantial portions of the Software.
  */
-
-// 'use strict';
-
-// // fetch / promise
-// import 'whatwg-fetch';
-// import Promise from 'promise-polyfill';
-// // for IE
-// import 'babel-polyfill';
-
 // polyfill
 // - babel-polyfill
 // - requestAnimationFrame
