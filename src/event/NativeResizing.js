@@ -27,7 +27,7 @@ export default class NativeResizing extends EventDispatcher {
    * - changed {boolean} - scroll top が前回と変わっていたら true
    * @param {?Event} [event] scroll / resize Event
    */
-  onUpdate = event => {
+  onUpdate = (event) => {
     // @type {number} - scroll top
     const y = Scroll.y();
     // @type {number} - previous scroll top

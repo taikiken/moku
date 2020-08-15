@@ -91,7 +91,7 @@ export default class Scroll extends EventDispatcher {
    * - window scroll event 発生後に scroll top 位置をもたせた Scroll.SCROLL custom event を発火します
    * @param {?Event} event window scroll event, nullable
    */
-  onScroll = event => {
+  onScroll = (event) => {
     // @type {number} - scroll top
     const y = Scroll.y();
     // @type {number} - window height

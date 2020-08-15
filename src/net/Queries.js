@@ -36,7 +36,7 @@ export default class Queries {
     const pairs = query.split('&');
     const data = {};
     const keys = [];
-    pairs.map(pair => {
+    pairs.map((pair) => {
       let keyName = '';
       if (pair && pair.indexOf('=') !== -1) {
         // @type {Array<string>} - `key=value` を `=` で分割する

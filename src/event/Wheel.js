@@ -60,7 +60,7 @@ export default class Wheel extends EventDispatcher {
    * @param {WheelEvent} event window wheel event
    * @returns {number} 前回移動量に delta 値 を加算した値を返します
    */
-  onMouseWheel = event => {
+  onMouseWheel = (event) => {
     const { deltaY } = event;
     return this.moving(deltaY);
   };

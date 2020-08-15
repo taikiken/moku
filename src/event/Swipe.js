@@ -58,7 +58,7 @@ export default class Swipe extends EventDispatcher {
    * touchmove {@link Touching}.MOVE - event handler
    * @param {TouchingEvents} events events.between.y で移動量を計算します
    */
-  onMove = events => {
+  onMove = (events) => {
     // 移動量を累積する
     this.dragging += events.between.x;
     this.drag(this.dragging);
@@ -72,7 +72,7 @@ export default class Swipe extends EventDispatcher {
    * touchend {@link Touching}.END - event handler
    * @param {TouchingEvents} events events.between.y で移動量を計算します
    */
-  onEnd = events => {
+  onEnd = (events) => {
     // 移動量を累積する
     this.dragging += events.between.x;
     this.drag(this.dragging);

@@ -42,7 +42,7 @@ export default class Can {
     if (can.transition === null) {
       const { style } = document.createElement('p');
       can.transition = Can.vendors.some(
-        prefix => typeof style[`${prefix}transition`] !== 'undefined'
+        (prefix) => typeof style[`${prefix}transition`] !== 'undefined'
       );
     }
     return can.transition;
@@ -56,7 +56,7 @@ export default class Can {
     if (can.transform === null) {
       const { style } = document.createElement('p');
       can.transform = Can.vendors.some(
-        prefix => typeof style[`${prefix}transform`] !== 'undefined'
+        (prefix) => typeof style[`${prefix}transform`] !== 'undefined'
       );
     }
     return can.transform;

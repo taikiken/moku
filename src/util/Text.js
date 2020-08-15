@@ -18,7 +18,7 @@ export default class Text {
    */
   static camel(str) {
     // return str.replace(/^\s+|\s+$/g, '');
-    return str.replace(/-([a-z])/g, g => {
+    return str.replace(/-([a-z])/g, (g) => {
       const first = g[1];
       return first.toUpperCase();
     });

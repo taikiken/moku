@@ -12,8 +12,8 @@ export default class Intersection {
    * @see https://wiki.developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API#Intersection_observer_concepts_and_usage
    * @see https://wiki.developer.mozilla.org/en-US/docs/Web/API/IntersectionObserverEntry
    */
-  check = entries => {
-    entries.map(entry => (entry.isIntersecting ? this.intersect(entry) : this.parallel(entry)));
+  check = (entries) => {
+    entries.map((entry) => (entry.isIntersecting ? this.intersect(entry) : this.parallel(entry)));
   };
 
   /**
@@ -45,14 +45,14 @@ export default class Intersection {
    * `IntersectionObserver` 開始する
    */
   start() {
-    this.elements.map(element => this.activate(element));
+    this.elements.map((element) => this.activate(element));
   }
 
   /**
    * `IntersectionObserver` 処理を中断します
    */
   destroy() {
-    this.elements.map(element => this.deactivate(element));
+    this.elements.map((element) => this.deactivate(element));
     this.disconnect();
   }
 

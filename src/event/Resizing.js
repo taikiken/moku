@@ -36,7 +36,7 @@ export default class Resizing extends Scrolling {
    *
    * @param {?Events} event {@link Rate.UPDATE} Events instance
    */
-  onUpdate = event => {
+  onUpdate = (event) => {
     // @type {number} - scroll top
     const y = Scroll.y();
     // @type {number} - previous scroll top

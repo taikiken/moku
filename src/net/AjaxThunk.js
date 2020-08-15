@@ -69,7 +69,7 @@ export default class AjaxThunk extends Ajax {
     return (
       fetch(request)
         // @param {Object} response - Ajax response
-        .then(response => {
+        .then((response) => {
           // may be success
           if (response.status !== 200) {
             throw new Error(`Ajax status error: (${response.status})`);

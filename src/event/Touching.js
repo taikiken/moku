@@ -130,7 +130,7 @@ export default class Touching extends EventDispatcher {
    * @param {Event|TouchEvent} event touchstart event
    * @returns {void}
    */
-  onStart = event => {
+  onStart = (event) => {
     // event unbind <- 二重 bind にならないように
     this.dispose();
     // vectors を初期化
@@ -158,7 +158,7 @@ export default class Touching extends EventDispatcher {
    * @param {Event} event touchmove event
    * @returns {void}
    */
-  onMove = event => {
+  onMove = (event) => {
     // console.log('Touching.onMove', event);
     const { vectors } = this;
     const movingArray = vectors.moving;
@@ -199,7 +199,7 @@ export default class Touching extends EventDispatcher {
    * - {@link Touching}.[END|TOUCH] を発火します
    * @param {Event} event touchend event
    */
-  onEnd = event => {
+  onEnd = (event) => {
     // console.log('Touching.onEnd', event);
     const { vectors } = this;
 
@@ -235,7 +235,7 @@ export default class Touching extends EventDispatcher {
    * @param {Event} event touchend event
    * @returns {boolean} 正常終了時に true を返します
    */
-  onCancel = event => {
+  onCancel = (event) => {
     return this.abort(event);
   };
 
@@ -245,7 +245,7 @@ export default class Touching extends EventDispatcher {
    * @param {Event} event window blur event
    * @returns {boolean} 正常終了時に true を返します
    */
-  onBlur = event => {
+  onBlur = (event) => {
     return this.abort(event);
   };
 

@@ -42,7 +42,7 @@ export default class Polling extends EventDispatcher {
    * @listens {Cycle.UPDATE} Cycle.UPDATE が発生すると実行されます
    * @returns {boolean} Polling.UPDATE event が発生すると true を返します
    */
-  onUpdate = events => {
+  onUpdate = (events) => {
     // 現在時間
     // @type {number}
     const present = Date.now();

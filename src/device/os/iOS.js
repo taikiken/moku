@@ -19,7 +19,7 @@ const version = () => {
   }
   // iOS N.N.N 削除
   numbers.shift();
-  const versions = numbers.map(number => {
+  const versions = numbers.map((number) => {
     const int = parseInt(number, 10);
     return Number.isNaN(int) ? 0 : int;
   });

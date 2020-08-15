@@ -120,7 +120,7 @@ export default class Rate extends Polling {
    * @param {CycleEvents} events Polling event object
    * @returns {boolean} Rate.UPDATE event が発生すると true を返します
    */
-  onUpdate = events => {
+  onUpdate = (events) => {
     // 余りが 0 の時にイベントを発火します
     this.count += 1;
     const reminder = this.count % this.rate;
