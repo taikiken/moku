@@ -102,7 +102,7 @@ module.exports = {
       'process.env': {
         NODE_ENV: JSON.stringify(mode),
         BUILD_VERSION: JSON.stringify(pkg.version),
-        BUILD_TIME: JSON.stringify(Date.now()),
+        BUILD_TIME: JSON.stringify(new Date().toLocaleDateString()),
       },
     }),
   ],
