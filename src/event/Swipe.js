@@ -1,15 +1,3 @@
-/**
- * Copyright (c) 2011-2017 inazumatv.com, inc.
- * @author (at)taikiken / http://inazumatv.com
- * @date 2017/09/30 - 18:21
- *
- * Distributed under the terms of the MIT license.
- * http://www.opensource.org/licenses/mit-license.html
- *
- * This notice shall be included in all copies or substantial portions of the Software.
- *
- */
-
 // event
 import EventDispatcher from './EventDispatcher';
 import Events from './Events';
@@ -70,7 +58,7 @@ export default class Swipe extends EventDispatcher {
    * touchmove {@link Touching}.MOVE - event handler
    * @param {TouchingEvents} events events.between.y で移動量を計算します
    */
-  onMove = events => {
+  onMove = (events) => {
     // 移動量を累積する
     this.dragging += events.between.x;
     this.drag(this.dragging);
@@ -84,7 +72,7 @@ export default class Swipe extends EventDispatcher {
    * touchend {@link Touching}.END - event handler
    * @param {TouchingEvents} events events.between.y で移動量を計算します
    */
-  onEnd = events => {
+  onEnd = (events) => {
     // 移動量を累積する
     this.dragging += events.between.x;
     this.drag(this.dragging);

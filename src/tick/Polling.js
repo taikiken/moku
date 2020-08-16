@@ -1,15 +1,3 @@
-/**
- * Copyright (c) 2011-2016 inazumatv.com, inc.
- * @author (at)taikiken / http://inazumatv.com
- * @date 2016/07/04 - 16:46
- *
- * Distributed under the terms of the MIT license.
- * http://www.opensource.org/licenses/mit-license.html
- *
- * This notice shall be included in all copies or substantial portions of the Software.
- *
- */
-
 // event
 import EventDispatcher from '../event/EventDispatcher';
 // import Events from '../event/Events';
@@ -54,7 +42,7 @@ export default class Polling extends EventDispatcher {
    * @listens {Cycle.UPDATE} Cycle.UPDATE が発生すると実行されます
    * @returns {boolean} Polling.UPDATE event が発生すると true を返します
    */
-  onUpdate = events => {
+  onUpdate = (events) => {
     // 現在時間
     // @type {number}
     const present = Date.now();

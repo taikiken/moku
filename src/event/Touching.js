@@ -1,17 +1,3 @@
-/**
- * license inazumatv.com
- * @author (at)taikiken / http://inazumatv.com
- * @date 2016/10/08
- *
- * Copyright (c) 2011-2015 inazumatv.com, inc.
- *
- * Distributed under the terms of the MIT license.
- * http://www.opensource.org/licenses/mit-license.html
- *
- * This notice shall be included in all copies or substantial portions of the Software.
- * f
- */
-
 // event
 import EventDispatcher from './EventDispatcher';
 import TouchingEvents from './events/TouchingEvents';
@@ -144,7 +130,7 @@ export default class Touching extends EventDispatcher {
    * @param {Event|TouchEvent} event touchstart event
    * @returns {void}
    */
-  onStart = event => {
+  onStart = (event) => {
     // event unbind <- 二重 bind にならないように
     this.dispose();
     // vectors を初期化
@@ -172,7 +158,7 @@ export default class Touching extends EventDispatcher {
    * @param {Event} event touchmove event
    * @returns {void}
    */
-  onMove = event => {
+  onMove = (event) => {
     // console.log('Touching.onMove', event);
     const { vectors } = this;
     const movingArray = vectors.moving;
@@ -213,7 +199,7 @@ export default class Touching extends EventDispatcher {
    * - {@link Touching}.[END|TOUCH] を発火します
    * @param {Event} event touchend event
    */
-  onEnd = event => {
+  onEnd = (event) => {
     // console.log('Touching.onEnd', event);
     const { vectors } = this;
 
@@ -249,7 +235,7 @@ export default class Touching extends EventDispatcher {
    * @param {Event} event touchend event
    * @returns {boolean} 正常終了時に true を返します
    */
-  onCancel = event => {
+  onCancel = (event) => {
     return this.abort(event);
   };
 
@@ -259,7 +245,7 @@ export default class Touching extends EventDispatcher {
    * @param {Event} event window blur event
    * @returns {boolean} 正常終了時に true を返します
    */
-  onBlur = event => {
+  onBlur = (event) => {
     return this.abort(event);
   };
 

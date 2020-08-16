@@ -1,16 +1,3 @@
-/**
- * license inazumatv.com
- * @author (at)taikiken / http://inazumatv.com
- * @date 2016/07/16
- *
- * Copyright (c) 2011-2015 inazumatv.com, inc.
- *
- * Distributed under the terms of the MIT license.
- * http://www.opensource.org/licenses/mit-license.html
- *
- * This notice shall be included in all copies or substantial portions of the Software.
- */
-
 // event
 import Events from '../event/Events';
 
@@ -133,7 +120,7 @@ export default class Rate extends Polling {
    * @param {CycleEvents} events Polling event object
    * @returns {boolean} Rate.UPDATE event が発生すると true を返します
    */
-  onUpdate = events => {
+  onUpdate = (events) => {
     // 余りが 0 の時にイベントを発火します
     this.count += 1;
     const reminder = this.count % this.rate;

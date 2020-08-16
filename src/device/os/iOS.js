@@ -1,15 +1,3 @@
-/**
- * Copyright (c) 2011-2017 inazumatv.com, inc.
- * @author (at)taikiken / http://inazumatv.com
- * @date 2017/08/28 - 17:39
- *
- * Distributed under the terms of the MIT license.
- * http://www.opensource.org/licenses/mit-license.html
- *
- * This notice shall be included in all copies or substantial portions of the Software.
- *
- */
-
 import devices from '../devices';
 
 /**
@@ -31,7 +19,7 @@ const version = () => {
   }
   // iOS N.N.N 削除
   numbers.shift();
-  const versions = numbers.map(number => {
+  const versions = numbers.map((number) => {
     const int = parseInt(number, 10);
     return Number.isNaN(int) ? 0 : int;
   });

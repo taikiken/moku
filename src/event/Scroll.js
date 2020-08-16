@@ -1,15 +1,3 @@
-/**
- * Copyright (c) 2011-2016 inazumatv.com, inc.
- * @author (at)taikiken / http://inazumatv.com
- * @date 2016/07/26 - 21:05
- *
- * Distributed under the terms of the MIT license.
- * http://www.opensource.org/licenses/mit-license.html
- *
- * This notice shall be included in all copies or substantial portions of the Software.
- *
- */
-
 // event
 import EventDispatcher from './EventDispatcher';
 import ScrollEvents from './events/ScrollEvents';
@@ -103,7 +91,7 @@ export default class Scroll extends EventDispatcher {
    * - window scroll event 発生後に scroll top 位置をもたせた Scroll.SCROLL custom event を発火します
    * @param {?Event} event window scroll event, nullable
    */
-  onScroll = event => {
+  onScroll = (event) => {
     // @type {number} - scroll top
     const y = Scroll.y();
     // @type {number} - window height

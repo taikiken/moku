@@ -1,15 +1,3 @@
-/**
- * Copyright (c) 2011-2016 inazumatv.com, inc.
- * @author (at)taikiken / http://inazumatv.com
- * @date 2016/07/01 - 19:41
- *
- * Distributed under the terms of the MIT license.
- * http://www.opensource.org/licenses/mit-license.html
- *
- * This notice shall be included in all copies or substantial portions of the Software.
- *
- */
-
 // util
 import Type from '../util/Type';
 
@@ -215,7 +203,7 @@ export default class Ajax {
     return (
       fetch(request)
         // @param {Object} response - Ajax response
-        .then(response => {
+        .then((response) => {
           // may be success
           if (response.status !== 200) {
             throw new Error(`Ajax status error: (${response.status})`);
@@ -223,7 +211,7 @@ export default class Ajax {
           return response.json();
         })
         // @param {Object} - JSON パース済み Object
-        .then(json => {
+        .then((json) => {
           // complete event fire
           if (Type.method(this.resolve)) {
             this.resolve(json);
@@ -233,7 +221,7 @@ export default class Ajax {
           return json;
         })
         // @param {Error} - Ajax something error
-        .catch(error => {
+        .catch((error) => {
           // error event fire
           if (Type.method(this.reject)) {
             this.reject(error);

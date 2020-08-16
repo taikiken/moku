@@ -1,15 +1,3 @@
-/**
- * Copyright (c) 2011-2016 inazumatv.com, inc.
- * @author (at)taikiken / http://inazumatv.com
- * @date 2016/07/26 - 19:12
- *
- * Distributed under the terms of the MIT license.
- * http://www.opensource.org/licenses/mit-license.html
- *
- * This notice shall be included in all copies or substantial portions of the Software.
- *
- */
-
 // event
 import EventDispatcher from './EventDispatcher';
 import WheelEvents from './events/WheelEvents';
@@ -72,7 +60,7 @@ export default class Wheel extends EventDispatcher {
    * @param {WheelEvent} event window wheel event
    * @returns {number} 前回移動量に delta 値 を加算した値を返します
    */
-  onMouseWheel = event => {
+  onMouseWheel = (event) => {
     const { deltaY } = event;
     return this.moving(deltaY);
   };

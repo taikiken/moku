@@ -1,15 +1,3 @@
-/**
- * Copyright (c) 2011-2016 inazumatv.com, inc.
- * @author (at)taikiken / http://inazumatv.com
- * @date 2016/06/30 - 20:09
- *
- * Distributed under the terms of the MIT license.
- * http://www.opensource.org/licenses/mit-license.html
- *
- * This notice shall be included in all copies or substantial portions of the Software.
- *
- */
-
 // util
 import Type from '../util/Type';
 
@@ -151,7 +139,7 @@ export default class EventDispatcher {
     // Array.some は 戻り値が true の時に走査を止めます
     // types 配列に null 以外があるかを調べます
     // @type {boolean} - listener list に 関数(typeof 'function')が存在すると true になります
-    const hasFunction = types.some(listener => Type.method(listener));
+    const hasFunction = types.some((listener) => Type.method(listener));
 
     if (!hasFunction) {
       // null 以外が無いので空にする
@@ -214,7 +202,7 @@ export default class EventDispatcher {
     // callback を実行する
     listeners[type].map(
       // @param listener {Function}
-      listener => {
+      (listener) => {
         // null が混じっているのでタイプチェックを行い listener 関数を実行します
         if (Type.method(listener)) {
           return listener.call(this, eventObject);

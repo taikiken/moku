@@ -1,16 +1,4 @@
 /**
- * Copyright (c) 2011-2017 inazumatv.com, inc.
- * @author (at)taikiken / http://inazumatv.com
- * @date 2017/08/28 - 18:26
- *
- * Distributed under the terms of the MIT license.
- * http://www.opensource.org/licenses/mit-license.html
- *
- * This notice shall be included in all copies or substantial portions of the Software.
- *
- */
-
-/**
  * Android 4.3 以下
  * requestAnimationFrame 未実装なので polyfill する
  * babel-preset-env 補完しない？
@@ -23,7 +11,7 @@ const animationFrame = () => {
   // vendor prefix
   // const vendors = ['ms', 'moz', 'webkit', 'o'];
   // add vendor prefix
-  ['ms', 'moz', 'webkit', 'o'].some(prefix => {
+  ['ms', 'moz', 'webkit', 'o'].some((prefix) => {
     window.requestAnimationFrame = window[`${prefix}RequestAnimationFrame`];
     window.cancelAnimationFrame =
       window[`${prefix}CancelAnimationFrame`] || window[`${prefix}CancelRequestAnimationFrame`];
@@ -34,7 +22,7 @@ const animationFrame = () => {
   // still check
   if (!window.requestAnimationFrame) {
     let lastTime = 0;
-    window.requestAnimationFrame = callback => {
+    window.requestAnimationFrame = (callback) => {
       const currentTime = new Date().getTime();
       const timeToCall = Math.max(0, 16 - (currentTime - lastTime));
       const id = setTimeout(() => {
@@ -45,7 +33,7 @@ const animationFrame = () => {
     };
   }
   if (!window.cancelAnimationFrame) {
-    window.cancelAnimationFrame = id => {
+    window.cancelAnimationFrame = (id) => {
       clearTimeout(id);
     };
   }

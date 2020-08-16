@@ -1,23 +1,8 @@
 /**
- * Copyright (c) inazumatv.com, inc.
- * @author (at)taikiken / http://inazumatv.com
- * @date 2016/06/30 - 17:54
- *
+ * moku
+ * (c) inazumatv.com, @author (at)taikiken
  * @license MIT
- * Distributed under the terms of the MIT license.
- * http://www.opensource.org/licenses/mit-license.html
- *
- * This notice shall be included in all copies or substantial portions of the Software.
  */
-
-// 'use strict';
-
-// // fetch / promise
-// import 'whatwg-fetch';
-// import Promise from 'promise-polyfill';
-// // for IE
-// import 'babel-polyfill';
-
 // polyfill
 // - babel-polyfill
 // - requestAnimationFrame

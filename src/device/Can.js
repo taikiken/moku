@@ -1,16 +1,4 @@
 /**
- * Copyright (c) 2011-2016 inazumatv.com, inc.
- * @author (at)taikiken / http://inazumatv.com
- * @date 2016/11/30 - 16:47
- *
- * Distributed under the terms of the MIT license.
- * http://www.opensource.org/licenses/mit-license.html
- *
- * This notice shall be included in all copies or substantial portions of the Software.
- *
- */
-
-/**
  * 判定結果を保持します
  * @type {{transition: ?boolean, transform: ?boolean, touch: ?boolean, canvas: ?boolean, webgl: ?boolean, passive: ?boolean}}
  */
@@ -54,7 +42,7 @@ export default class Can {
     if (can.transition === null) {
       const { style } = document.createElement('p');
       can.transition = Can.vendors.some(
-        prefix => typeof style[`${prefix}transition`] !== 'undefined'
+        (prefix) => typeof style[`${prefix}transition`] !== 'undefined'
       );
     }
     return can.transition;
@@ -68,7 +56,7 @@ export default class Can {
     if (can.transform === null) {
       const { style } = document.createElement('p');
       can.transform = Can.vendors.some(
-        prefix => typeof style[`${prefix}transform`] !== 'undefined'
+        (prefix) => typeof style[`${prefix}transform`] !== 'undefined'
       );
     }
     return can.transform;

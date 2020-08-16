@@ -1,15 +1,3 @@
-/**
- * Copyright (c) 2011-2016 inazumatv.com, inc.
- * @author (at)taikiken / http://inazumatv.com
- * @date 2016/11/30 - 14:37
- *
- * Distributed under the terms of the MIT license.
- * http://www.opensource.org/licenses/mit-license.html
- *
- * This notice shall be included in all copies or substantial portions of the Software.
- *
- */
-
 // event
 import Scrolling from './Scrolling';
 // import Events from './Events';
@@ -48,7 +36,7 @@ export default class Rising extends EventDispatcher {
    * @param {ScrollEvents} scrollEvents scroll events object
    * @return {boolean} 衝突時に true を返します
    */
-  onUpdate = scrollEvents => {
+  onUpdate = (scrollEvents) => {
     if (!scrollEvents.changed) {
       return false;
     }
